@@ -1,0 +1,13 @@
+/AssetsService.Core/obj
+/AssetsService.Core/bin
+/AssetsService.Infrastructure/bin
+/AssetsService.Infrastructure/obj
+/AssetsService.UnitTests/bin
+/AssetsService.UnitTests/obj
+/AssetsService/bin
+/AssetsService/obj
+/AssetsService.Application/obj
+/AssetsService.Application/bin
+/.vs
+/.vscode
+/AssetsService/Log/
