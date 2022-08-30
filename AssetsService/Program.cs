@@ -39,7 +39,7 @@ namespace AssetsService.Api
           Host.CreateDefaultBuilder(args).UseSerilog()
             .ConfigureWebHostDefaults(webBuilder =>{
                 webBuilder.UseStartup<Startup>()
-                .UseUrls("http://*:6009");
+                 .UseUrls("http://*:6009");
             });
     }
 }

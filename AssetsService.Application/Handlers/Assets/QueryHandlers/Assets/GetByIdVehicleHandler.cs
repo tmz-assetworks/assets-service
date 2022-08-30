@@ -20,7 +20,7 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 
         public async Task<AssetsService.Core.Entities.Vehicle> Handle(GetByIdVehicleQuery request, CancellationToken cancellationToken)
         {
-            return (AssetsService.Core.Entities.Vehicle)await _vehicleRepo.GetAllVehicleById(request.Id);
+            return (AssetsService.Core.Entities.Vehicle)await _vehicleRepo.GetVehicleById(request.Id);
         }
     }
 }

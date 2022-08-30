@@ -11,3 +11,6 @@
 /.vs
 /.vscode
 /AssetsService/Log/
+/AssetsService/app
+/AssetsService/Log
+/AssetsService/AssetsService.Api.csproj.user

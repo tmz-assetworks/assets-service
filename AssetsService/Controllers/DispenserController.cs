@@ -73,7 +73,7 @@ namespace AssetsService.Api
             try
             {
                 List<AssetsService.Core.Entities.Dispenser> dispenser = await _mediator.Send(new GetAllDispenserQuery());
-              // List<DispenserStatusData> dispenserdata = dispenser.Select(x => new DispenserStatusData { Id = x.Id, ChargeBoxId = x.ChargeBoxId, DispenserStatus = x.DispenserStatus.DispenserStatusName }).ToList();
+                // List<DispenserStatusData> dispenserdata = dispenser.Select(x => new DispenserStatusData { Id = x.Id, ChargeBoxId = x.ChargeBoxId, DispenserStatus = x.DispenserStatus.DispenserStatusName }).ToList();
                 //List<DispenserResponse>dispenserdata = new
                 allDispenserQueryResponse.StatusMessage = "Record found";
                 allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.OK;
@@ -160,21 +160,35 @@ namespace AssetsService.Api
 
         [HttpGet("getdispenserbychargeboxid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetDispenserByChargeBoxId(string ChargeBoxId)
+        public async Task<DispenserByChargeBoxIdResponse> GetDispenserByChargeBoxId(string ChargeBoxId)
         {
+            DispenserByChargeBoxIdResponse dispenserByChargeBoxIdResponse = new DispenserByChargeBoxIdResponse();
             try
             {
                 Dispenser dispenser = await _mediator.Send(new GetDispenserByChargeBoxIdQuery(ChargeBoxId));
-                _logger.LogInformation("Get the data of Dispenser by Id");
-                return getjson(dispenser);
+                dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.OK;
+                if (dispenser != null)
+                {
+                    dispenserByChargeBoxIdResponse.data = new List<Dispenser>();
+                    dispenserByChargeBoxIdResponse.data.Add(dispenser);
+                    dispenserByChargeBoxIdResponse.StatusMessage = "Record found";
+                    dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else
+                {
+                    dispenserByChargeBoxIdResponse.data = null;
+                    dispenserByChargeBoxIdResponse.StatusMessage = "Record not found";
+                }
+                _logger.LogInformation("Get the all data of Dispenser location by Id");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
+                // dispenserByChargeBoxIdResponse.StatusMessage = ex..ToString();
+                dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                dispenserByChargeBoxIdResponse.data = null;
                 _logger.LogError(ex.ToString());
             }
-            return JSONString;
-
+            return dispenserByChargeBoxIdResponse;
         }
 
         [HttpGet("getdispenserbystationid")]
@@ -267,9 +281,9 @@ namespace AssetsService.Api
             DispenserByLocationsQueryResponse dispenserByLocationQueryResponse = new DispenserByLocationsQueryResponse();
             try
             {
-                List<DispenserByLocationsResponse> dispenser = (List<DispenserByLocationsResponse>) await _mediator.Send(new GetDispenserByLocationsQuery(objdisp.LocationIds));
+                List<DispenserByLocationsResponse> dispenser = (List<DispenserByLocationsResponse>)await _mediator.Send(new GetDispenserByLocationsQuery(objdisp.LocationIds));
 
-                
+
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 if (dispenser != null && dispenser.Count > 0)
                 {
@@ -292,6 +306,76 @@ namespace AssetsService.Api
 
             }
             return dispenserByLocationQueryResponse;
+        }
+
+
+        [HttpPost("GetDispensersList")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<DispensersDetailResponse> GetDispensersList([FromBody] DispensersDetailRequest dispensersDetailRequest)
+        {
+            DispensersDetailResponse dispensersDetailResponse = new DispensersDetailResponse();
+            try
+            {
+                if (dispensersDetailRequest.PageSize == 0) dispensersDetailRequest.PageSize = 10;
+                if (dispensersDetailRequest.PageNumber == 0) dispensersDetailRequest.PageNumber = 1;
+                var dispensers = await _mediator.Send(new GetDispensersDetailQuery(dispensersDetailRequest));
+                if (dispensers != null && dispensers.Count > 0)
+                    dispensersDetailResponse.StatusMessage = "Record found";
+                else dispensersDetailResponse.StatusMessage = "Record not found";
+                dispensersDetailResponse.StatusCode = (int)HttpStatusCode.OK;
+                dispensersDetailResponse.data = dispensers;
+                dispensersDetailResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
+                {
+                    TotalCount = dispensers.TotalCount,
+                    PageSize = dispensers.PageSize,
+                    CurrentPage = dispensers.CurrentPage,
+                    TotalPages = dispensers.TotalPages,
+                    HasNext = dispensers.HasNext,
+                    HasPrevious = dispensers.HasPrevious
+                };
+            }
+            catch (Exception ex)
+            {
+                dispensersDetailResponse.StatusMessage = "Operation failed!";
+                dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                dispensersDetailResponse.data = null;
+                _logger.LogError(ex.ToString());
+
+            }
+            return dispensersDetailResponse;
+        }
+
+        [HttpGet("ValidateChargerId/{ChargeBoxId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ValidateChargerIdResponse> ValidateChargerId(string ChargeBoxId)
+        {
+            ValidateChargerIdResponse validateChargerIdResponse = new ValidateChargerIdResponse();
+            try
+            {
+                var charher = await _mediator.Send(new ValidateChargerIdQuery(ChargeBoxId));
+                validateChargerIdResponse.data = charher;
+                validateChargerIdResponse.StatusCode = (int)HttpStatusCode.OK;
+                if(charher.Id != 0){
+                validateChargerIdResponse.StatusMessage = "Record found";
+                }
+                else{
+                    validateChargerIdResponse.data = null;
+                    validateChargerIdResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                    validateChargerIdResponse.StatusMessage = "Record not found";
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                validateChargerIdResponse.data = null;
+                validateChargerIdResponse.StatusCode = 500;
+                validateChargerIdResponse.StatusMessage = ex.Message.ToString();
+            }
+            return validateChargerIdResponse;
+
+
+
         }
     }
 }

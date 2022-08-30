@@ -32,7 +32,7 @@ namespace AssetsService.Core.Response
        
         public string DispenserModel { get; set; }
         public string NoofPort { get; set; }
-
+        public long DispenserStatusId { get; set; }
 
     }
 

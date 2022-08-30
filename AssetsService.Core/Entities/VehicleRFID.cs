@@ -27,6 +27,11 @@ namespace AssetsService.Core.Entities
         [Column(TypeName = "nvarchar(100)")]
         public string CreatedBy { get; set; }
 
+
+         [DataMember(Name = "vehicleId", EmitDefaultValue = false)]
+         public long VehicleId { get; set; }
+      
+
         /// <summary>
         /// Gets or Sets CreatedOn
         /// </summary>

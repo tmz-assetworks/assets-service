@@ -29,10 +29,13 @@ namespace AssetsService.Application.Commands.Assets
 
 
        
-       // public bool IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         
         public string CreatedBy { get; set; }
+
+        
+
 
        
         public DateTime CreatedOn { get; set; }
@@ -54,10 +57,15 @@ namespace AssetsService.Application.Commands.Assets
 
       
         public long VehicleMakeId { get; set; }
+
+        
        
 
        
         public long vehicleRFIDid { get; set; }
+
+    
+
         
     }
 }

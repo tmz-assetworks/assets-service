@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Core.PagingHelper
 {
-
-
-
     public class PagedList<T> : List<T>
     {
         public int CurrentPage { get; private set; }
@@ -17,7 +14,7 @@ namespace AssetsService.Core.PagingHelper
         public int TotalCount { get; private set; }
 
         public bool HasPrevious => CurrentPage > 1;
-        public bool HasNext => CurrentPage < TotalPages;
+        public bool HasNext => PageSize* CurrentPage < TotalCount;
 
         PagedList(List<T> items, int count, int pageNumber, int pageSize)
         {
@@ -35,5 +32,13 @@ namespace AssetsService.Core.PagingHelper
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }
     }
-
+    public class PaginationResponse
+    {
+        public int TotalCount { get;  set; }
+        public int PageSize { get;  set; }
+        public int CurrentPage { get;  set; }
+        public int TotalPages { get;  set; }
+        public bool HasNext { get;  set; } =false;
+        public bool HasPrevious { get; set; } = false;
+    }
 }

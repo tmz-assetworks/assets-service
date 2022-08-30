@@ -4,7 +4,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project>
   <PropertyGroup>
-    <_PublishTargetUrl>F:\source\relese\asset\AssetsService\app\publish</_PublishTargetUrl>
-    <History>True|2022-07-30T11:04:48.8387263Z;</History>
+    <History>True|2022-08-18T13:27:50.5947860Z;True|2022-08-18T18:07:50.3139849+05:30;True|2022-08-17T17:37:48.7744446+05:30;True|2022-08-17T14:57:22.0138818+05:30;False|2022-08-17T14:56:43.8402723+05:30;</History>
+    <_PublishTargetUrl>F:\realease\m4\asset\AssetsService\app\publish</_PublishTargetUrl>
   </PropertyGroup>
 </Project>

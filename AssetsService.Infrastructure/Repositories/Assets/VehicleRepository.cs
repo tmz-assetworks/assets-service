@@ -1,5 +1,7 @@
-﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Responses.Assets;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,59 +13,62 @@ using System.Threading.Tasks;
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
 
-    public class VehicleRepository : Repository<AssetsService.Core.Entities.Vehicle>, IVehicleRepository
+    public class VehicleRepository : Repository<Vehicle>, IVehicleRepository
     {
         public VehicleRepository(AssetsService.Infrastructure.DBContext.DBContextCore dbContext) : base(dbContext)
         {
-            #pragma warning disable 
+#pragma warning disable
         }
-        public async Task<List<Vehicle>> GetAllVehicle()
+        public async Task<StatusVehicleresponcse> GetAllVehicle(GetAllVehicleRequest getAllVehicleRequest)
         {
-            return await _dbContext.Vehicle
-                 .Select(m => new Vehicle
-                 {
-                     Id = m.Id,
-                     VIN = m.VIN,
-                     LicencePlate = m.LicencePlate,
-                     Department = m.Department,
-                     DomicileLocation = m.DomicileLocation,
-                     VehicleMacAddress = m.VehicleMacAddress,
-                     IsActive = m.IsActive,
-                     CreatedBy = m.CreatedBy,
-                     CreatedOn = m.CreatedOn,
-                     ModifiedBy = m.ModifiedBy,
-                     ModifiedOn = m.ModifiedOn,
-                     VehicleModelYearid = m.VehicleModelYearid,
-                     VehicleModelId = m.VehicleModelId,
-                     VehicleMakeId = m.VehicleMakeId,
-                     vehicleRFIDid = m.vehicleRFIDid,
+            StatusVehicleresponcse statusVehicleresponcse =new StatusVehicleresponcse();
+            List<Vehicle> result = new List<Vehicle>();
+            if (string.IsNullOrEmpty(getAllVehicleRequest.SearchParam) == true)
+            {
+                result = await _dbContext.Vehicle
 
+                  .Select(m => new Vehicle
+                  {
+                      Id = m.Id,
+                      VIN = m.VIN,
+                      LicencePlate = m.LicencePlate,
+                      Department = m.Department,
+                      DomicileLocation = m.DomicileLocation,
+                      VehicleMacAddress = m.VehicleMacAddress,
+                      IsActive = m.IsActive,
+                      CreatedBy = m.CreatedBy,
+                      CreatedOn = m.CreatedOn,
+                      ModifiedBy = m.ModifiedBy,
+                      ModifiedOn = m.ModifiedOn,
+                      VehicleModelYearid = m.VehicleModelYearid,
+                      VehicleModelId = m.VehicleModelId,
+                      VehicleMakeId = m.VehicleMakeId,
 
-                     VehicleModelYear = (from obls in _dbContext.VehicleModelYear.Where(x => x.Id == m.VehicleModelYearid)
-                                   select new VehicleModelYear
-                                   {
-                                       Id = obls.Id,
-                                       Name = obls.Name,
-                                       IsActive = obls.IsActive,
-                                       CreatedBy = obls.CreatedBy,
-                                       ModifiedBy = obls.ModifiedBy,
-                                       ModifiedOn = obls.ModifiedOn,
-                                       CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
+                      VehicleModelYear = (from obls in _dbContext.VehicleModelYear.Where(x => x.Id == m.VehicleModelYearid)
+                                          select new VehicleModelYear
+                                          {
+                                              Id = obls.Id,
+                                              Name = obls.Name,
+                                              IsActive = obls.IsActive,
+                                              CreatedBy = obls.CreatedBy,
+                                              ModifiedBy = obls.ModifiedBy,
+                                              ModifiedOn = obls.ModifiedOn,
+                                              CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
 
-                                   }).FirstOrDefault(),
-                     VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
-                               select new VehicleModel
-                               {
-                                   Id = obls.Id,
-                                   Name = obls.Name,
-                                   IsActive = obls.IsActive,
-                                   CreatedBy = obls.CreatedBy,
-                                   CreatedOn = obls.CreatedOn,
-                                   ModifiedBy = obls.ModifiedBy,
-                                   ModifiedOn = obls.ModifiedOn,
+                                          }).FirstOrDefault(),
+                      VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
+                                      select new VehicleModel
+                                      {
+                                          Id = obls.Id,
+                                          Name = obls.Name,
+                                          IsActive = obls.IsActive,
+                                          CreatedBy = obls.CreatedBy,
+                                          CreatedOn = obls.CreatedOn,
+                                          ModifiedBy = obls.ModifiedBy,
+                                          ModifiedOn = obls.ModifiedOn,
 
-                               }).FirstOrDefault(),
-                     VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
+                                      }).FirstOrDefault(),
+                      VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
                                      select new VehicleMake
                                      {
                                          Id = obls.Id,
@@ -76,25 +81,108 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                                      }).FirstOrDefault(),
 
-                     VehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.Id == m.vehicleRFIDid)
-                                    select new VehicleRFID
-                                    {
-                                        Id = obls.Id,
-                                        Name = obls.Name,
-                                        IsActive = obls.IsActive,
-                                        CreatedBy = obls.CreatedBy,
-                                        CreatedOn = obls.CreatedOn,
-                                        ModifiedBy = obls.ModifiedBy,
-                                        ModifiedOn = obls.ModifiedOn,
+                      vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id)
+                                     select new VehicleRFID
+                                     {
+                                         Id = obls.Id,
+                                         VehicleId = obls.VehicleId,
+                                         Name = obls.Name,
+                                         IsActive = obls.IsActive,
+                                         CreatedBy = obls.CreatedBy,
+                                         CreatedOn = obls.CreatedOn,
+                                         ModifiedBy = obls.ModifiedBy,
+                                         ModifiedOn = obls.ModifiedOn,
 
-                                    }).FirstOrDefault(),
-                 })
-                 .ToListAsync();
+                                     }).ToList(),
+                  })
+                 .OrderByDescending(a => a.Id).ToListAsync();
+
+            }
+            else
+                result = await _dbContext.Vehicle.Where(d => d.VIN.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
+                      .Select(m => new Vehicle
+                      {
+                          Id = m.Id,
+                          VIN = m.VIN,
+                          LicencePlate = m.LicencePlate,
+                          Department = m.Department,
+                          DomicileLocation = m.DomicileLocation,
+                          VehicleMacAddress = m.VehicleMacAddress,
+                          IsActive = m.IsActive,
+                          CreatedBy = m.CreatedBy,
+                          CreatedOn = m.CreatedOn,
+                          ModifiedBy = m.ModifiedBy,
+                          ModifiedOn = m.ModifiedOn,
+                          VehicleModelYearid = m.VehicleModelYearid,
+                          VehicleModelId = m.VehicleModelId,
+                          VehicleMakeId = m.VehicleMakeId,
+
+                          VehicleModelYear = (from obls in _dbContext.VehicleModelYear.Where(x => x.Id == m.VehicleModelYearid)
+                                              select new VehicleModelYear
+                                              {
+                                                  Id = obls.Id,
+                                                  Name = obls.Name,
+                                                  IsActive = obls.IsActive,
+                                                  CreatedBy = obls.CreatedBy,
+                                                  ModifiedBy = obls.ModifiedBy,
+                                                  ModifiedOn = obls.ModifiedOn,
+                                                  CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
+
+                                              }).FirstOrDefault(),
+                          VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
+                                          select new VehicleModel
+                                          {
+                                              Id = obls.Id,
+                                              Name = obls.Name,
+                                              IsActive = obls.IsActive,
+                                              CreatedBy = obls.CreatedBy,
+                                              CreatedOn = obls.CreatedOn,
+                                              ModifiedBy = obls.ModifiedBy,
+                                              ModifiedOn = obls.ModifiedOn,
+
+                                          }).FirstOrDefault(),
+                          VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
+                                         select new VehicleMake
+                                         {
+                                             Id = obls.Id,
+                                             Name = obls.Name,
+                                             IsActive = obls.IsActive,
+                                             CreatedBy = obls.CreatedBy,
+                                             CreatedOn = obls.CreatedOn,
+                                             ModifiedBy = obls.ModifiedBy,
+                                             ModifiedOn = obls.ModifiedOn,
+
+                                         }).FirstOrDefault(),
+
+                          vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id)
+
+                                         select new VehicleRFID
+                                         {
+                                             Id = obls.Id,
+                                             Name = obls.Name,
+                                             IsActive = obls.IsActive,
+                                             CreatedBy = obls.CreatedBy,
+                                             VehicleId = obls.VehicleId,
+                                             CreatedOn = obls.CreatedOn,
+                                             ModifiedBy = obls.ModifiedBy,
+                                             ModifiedOn = obls.ModifiedOn,
+
+                                         }).ToList(),
+
+                      })
+                     .OrderByDescending(a => a.Id).ToListAsync();
+                    // var avtive = result.Where(m => m.IsActive == true).Count().ToString();
+             statusVehicleresponcse.data = PagedList<Vehicle>.ToPagedList(result,
+         getAllVehicleRequest.PageNumber,
+         getAllVehicleRequest.PageSize);
+         statusVehicleresponcse.Active = result.Where(m => m.IsActive == true).Count().ToString();
+         statusVehicleresponcse.Inactive = result.Where(m => m.IsActive == false).Count().ToString();
+            return (statusVehicleresponcse);
         }
 
-        public async Task<Vehicle> GetAllVehicleById(long id)
+        public async Task<Vehicle> GetVehicleById(long id)
         {
-            return  _dbContext.Vehicle
+            return _dbContext.Vehicle
                  .Select(m => new Vehicle
                  {
                      Id = m.Id,
@@ -111,9 +199,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      VehicleModelYearid = m.VehicleModelYearid,
                      VehicleModelId = m.VehicleModelId,
                      VehicleMakeId = m.VehicleMakeId,
-                     vehicleRFIDid = m.vehicleRFIDid,
-
-
+                     //CustomerId = m.CustomerId,
+                     SubscriptionPlanCustomerId = m.SubscriptionPlanCustomerId,
                      VehicleModelYear = (from obls in _dbContext.VehicleModelYear.Where(x => x.Id == m.VehicleModelYearid)
                                          select new VehicleModelYear
                                          {
@@ -124,7 +211,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                              ModifiedBy = obls.ModifiedBy,
                                              ModifiedOn = obls.ModifiedOn,
                                              CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-
                                          }).FirstOrDefault(),
                      VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
                                      select new VehicleModel
@@ -136,7 +222,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                          CreatedOn = obls.CreatedOn,
                                          ModifiedBy = obls.ModifiedBy,
                                          ModifiedOn = obls.ModifiedOn,
-
                                      }).FirstOrDefault(),
                      VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
                                     select new VehicleMake
@@ -150,21 +235,30 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                         ModifiedOn = obls.ModifiedOn,
 
                                     }).FirstOrDefault(),
+                     vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id)
 
-                     VehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.Id == m.vehicleRFIDid)
                                     select new VehicleRFID
                                     {
                                         Id = obls.Id,
                                         Name = obls.Name,
                                         IsActive = obls.IsActive,
                                         CreatedBy = obls.CreatedBy,
+                                        VehicleId = obls.VehicleId,
                                         CreatedOn = obls.CreatedOn,
                                         ModifiedBy = obls.ModifiedBy,
                                         ModifiedOn = obls.ModifiedOn,
-
-                                    }).FirstOrDefault(),
+                                    }).ToList(),
+                     SubscriptionPlan = (from obls in _dbContext.SubscriptionPlan.Where(x => x.CustomerId == m.SubscriptionPlanCustomerId)
+                                         select new SubscriptionPlan
+                                         {
+                                             CustomerId = obls.CustomerId,
+                                             SubscriptionPlanName = obls.SubscriptionPlanName,
+                                             SubscriptionsDetails = obls.SubscriptionsDetails,
+                                             SubscriptionsValue = obls.SubscriptionsValue,
+                                             ValidFrom = obls.ValidFrom,
+                                             ValidTo = obls.ValidTo,
+                                         }).FirstOrDefault(),
                  }).Where(x => x.Id == id).FirstOrDefault();
-                 
         }
     }
 }

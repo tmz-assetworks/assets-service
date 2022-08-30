@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    internal class GetLocationsDispenserDetailsHandler : IRequestHandler<GetLocationsDispenserDetailsQuery, List<Core.Response.LocationsDispenserDetails>>
-    //internal class GetLocationsDispenserDetailsHandler : IRequestHandler<GetLocationsDispenserDetailsQuery, List<Core.Response.LocationsDispenserDetails>>
+    public class GetLocationsDispenserDetailsHandler : IRequestHandler<GetLocationsDispenserDetailsQuery, PagedList<Core.Response.LocationsDispenserDetails>>
     {
         private readonly ILocationRepository _LocationRepo;
 
@@ -19,9 +18,10 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         {
             _LocationRepo = LocationRepository;
         }
-        public async Task<List<Core.Response.LocationsDispenserDetails>> Handle(GetLocationsDispenserDetailsQuery request, CancellationToken cancellationToken)
+
+        public async Task<PagedList<Core.Response.LocationsDispenserDetails>> Handle(GetLocationsDispenserDetailsQuery request, CancellationToken cancellationToken)
         {
-            return (List<Core.Response.LocationsDispenserDetails>)await _LocationRepo.GetLocationsDispenserDetails(request.Id);
+            return (PagedList<Core.Response.LocationsDispenserDetails>)await _LocationRepo.GetLocationsDispenserDetails(request.LocationDispenserRequest);
         }
     }
 }

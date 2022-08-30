@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 
 namespace AssetsService.Application.Responses.Assets
 {
@@ -18,15 +19,20 @@ namespace AssetsService.Application.Responses.Assets
     /// </summary>
 
 
-     public class AllDispenserQueryResponse
+    public class AllDispenserQueryResponse
     {
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
 
         public List<Dispenser> data { get; set; }
-        
-    }
 
+    }
+    public class DispenserByChargeBoxIdResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public List<AssetsService.Core.Entities.Dispenser> data { get; set; }
+    }
     public class DispenserStatusData
     {
         public long Id { get; set; }
@@ -59,7 +65,7 @@ namespace AssetsService.Application.Responses.Assets
 
         public double Longitude { get; set; }
 
-        public long MakeMasterId { get; set;}
+        public long MakeMasterId { get; set; }
 
         public string MeterType { get; set; }
 
@@ -67,9 +73,9 @@ namespace AssetsService.Application.Responses.Assets
 
         public bool MultiplePorts { get; set; }
 
-       // public long NetworkId { get; set; }
+        // public long NetworkId { get; set; }
 
-      ///  public string NetworkName { get; set; }
+        ///  public string NetworkName { get; set; }
 
         public string PingSchedule { get; set; }
 
@@ -79,7 +85,7 @@ namespace AssetsService.Application.Responses.Assets
 
         public string SerialNumber { get; set; }
 
-         public string ChargeBoxId { get; set; }
+        public string ChargeBoxId { get; set; }
 
         public long LocationId { get; set; }
 
@@ -87,9 +93,9 @@ namespace AssetsService.Application.Responses.Assets
 
         public string StationName { get; set; }
 
-      ///  public long SubnetworkId { get; set; }
+        ///  public long SubnetworkId { get; set; }
 
-       // public string SubnetworkName { get; set; }
+        // public string SubnetworkName { get; set; }
 
     }
 }

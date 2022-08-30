@@ -2,6 +2,8 @@
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,66 +19,41 @@ namespace AssetsService.Api.Controllers
         private readonly IMediator _mediator;
 
         private readonly ILogger<VehicleController> _logger;
-        string JSONString = String.Empty;
+
         public VehicleController(IMediator mediator, ILogger<VehicleController> logger)
         {
             _mediator = mediator;
             _logger = logger;
-        }
-        string getjson(object res)
-        {
-            string JSONString = String.Empty;
-            if (res != null)
-            {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var data = System.Text.Json.JsonSerializer.Serialize(res, options);
+        }     
 
-                JSONString = "{\n  \"StatusCode\" : " + (int)HttpStatusCode.OK + ",\n  \"StatusMessage\" : \"Record found\",\n  \"data\" : " + data + " \n}";
-            }
-            else
-            {
-                JSONString = "{\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + ",\n  \"StatusMessage\" : \"Record not found\",\n  \"data\" : " + null + " \n}";
-            }
-            return JSONString;
-        }
-        [HttpGet("GetAllVechicle")]
+        [HttpGet("GetAllVehicleById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetAllVechicle()
+        public async Task<VehicleId> GetAllVehicleById(int id)
         {
-            List<AssetsService.Core.Entities.Vehicle> obj = await _mediator.Send(new GetAllVechicleQuery());
+            VehicleId res = new VehicleId();
             try
             {
-                List<AssetsService.Core.Entities.Vehicle> res = await _mediator.Send(new GetAllVechicleQuery());
-                _logger.LogInformation("Get all the data of Vehicle");
-                return getjson(res);
+                AssetsService.Core.Entities.Vehicle vehicle = await _mediator.Send(new GetByIdVehicleQuery(id));
+                if (vehicle != null)
+                {
+                    res.StatusMessage = "Record found";
+                    res.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else
+                {
+                    res.StatusMessage = "Record not found";
+                    res.StatusCode = (int)HttpStatusCode.NotFound;
+                }
+                res.data = vehicle;
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
+                res.StatusMessage = "Operaion failed!";
+                res.StatusCode = (int)HttpStatusCode.NotFound;
+                res.data = null;
                 _logger.LogError(ex.ToString());
-
             }
-            return JSONString;
-        }
-        [HttpGet("getVehiclebyid")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetVehicleById(int id)
-        {
-            try
-            {
-                Vehicle res = await _mediator.Send(new GetByIdVehicleQuery(id));
-                _logger.LogInformation("Get the data of Vehicle by Id");
-                return getjson(res);
-            }
-            catch (Exception ex)
-            {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
-
-            }
-            return JSONString;
-
-
+            return res;
         }
         [HttpPost("CreateVehicle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -120,6 +97,7 @@ namespace AssetsService.Api.Controllers
                 };
             }
         }
+
         [HttpDelete("DeleteVehicleById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<VehicleResponse>> DeleteVehicle([FromBody] DeleteVehicleCommand command)
@@ -141,5 +119,54 @@ namespace AssetsService.Api.Controllers
                 };
             }
         }
+        [HttpPost("GetAllVechicle")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<AllVehicle>> GetAllVechicle([FromBody] GetAllVehicleRequest getAllVehicleRequest)
+        {
+            AllVehicle allVehicle = new AllVehicle();
+            StatusVehicleresponcse statusVehicleresponcse = new StatusVehicleresponcse();
+            try
+            {
+                if (getAllVehicleRequest.PageSize == 0) getAllVehicleRequest.PageSize = 10;
+                if (getAllVehicleRequest.PageNumber == 0) getAllVehicleRequest.PageNumber = 1;
+                 statusVehicleresponcse = await _mediator.Send(new GetAllVechicleQuery(getAllVehicleRequest));
+
+                if (statusVehicleresponcse != null && statusVehicleresponcse.data.Count > 0)
+                {
+                    allVehicle.StatusMessage = "Record found";
+                    allVehicle.data = statusVehicleresponcse.data;
+                    allVehicle.Active = statusVehicleresponcse.Active;
+                    allVehicle.Inactive = statusVehicleresponcse.Inactive;
+                    allVehicle.paginationResponse = new Core.PagingHelper.PaginationResponse
+                    {
+                        TotalCount = statusVehicleresponcse.data.TotalCount,
+                        PageSize = statusVehicleresponcse.data.PageSize,
+                        CurrentPage = statusVehicleresponcse.data.CurrentPage,
+                        TotalPages = statusVehicleresponcse.data.TotalPages,
+                        HasNext = statusVehicleresponcse.data.HasNext,
+                        HasPrevious = statusVehicleresponcse.data.HasPrevious
+                    };
+                    allVehicle.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else
+                {
+
+                    allVehicle.StatusMessage = "Record not found";
+                    allVehicle.StatusCode = (int)HttpStatusCode.OK;
+                    allVehicle.data = null;
+                    allVehicle.paginationResponse = new PaginationResponse();
+                }
+            }
+            catch (Exception ex)
+            {
+                allVehicle.StatusMessage = "Operaion failed!";
+                allVehicle.StatusCode = (int)HttpStatusCode.NotFound;
+                allVehicle.data = null;
+               
+
+            }
+            return allVehicle;
+        }
+
     }
 }

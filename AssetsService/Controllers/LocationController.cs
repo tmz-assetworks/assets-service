@@ -7,6 +7,8 @@ using System.Text.Json;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Core.Response;
+using Newtonsoft.Json;
+using AssetsService.Core.PagingHelper;
 
 namespace AssetsService.Api
 {
@@ -225,32 +227,60 @@ namespace AssetsService.Api
 
         }
 
+
+
+
+        /// <summary>
+        /// Get data for Locations Grid
+        /// </summary>
+        /// <param name="locationDispenserRequest"> Search by Location name </param>
+        /// <returns> Locations List </returns>
         [HttpPost("GetLocationsDispenserDetails")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Core.Response.LocationsDispenserDetailsResponce>> GetLocationsDispenserDetails([FromBody] List<long> Id)
+        public async Task<ActionResult<LocationsDispenserDetailsResponse>> GetLocationsDispenserDetails([FromBody] LocationDispenserRequest locationDispenserRequest)
         {
-            LocationsDispenserDetailsResponce locationQueryResponse = new LocationsDispenserDetailsResponce();
+            LocationsDispenserDetailsResponse locationQueryResponse = new LocationsDispenserDetailsResponse();
             try
             {
+                if (locationDispenserRequest.PageSize == 0) locationDispenserRequest.PageSize = 10;
+                if (locationDispenserRequest.PageNumber == 0) locationDispenserRequest.PageNumber = 1;
+                var location = await _mediator.Send(new GetLocationsDispenserDetailsQuery(locationDispenserRequest));
 
-                List<LocationsDispenserDetails> location = await _mediator.Send(new GetLocationsDispenserDetailsQuery(Id));
+                // Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+                if (location != null && location.Count > 0)
+                {
+                    locationQueryResponse.StatusMessage = "Record found";
+                    locationQueryResponse.data = location;
+                    locationQueryResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
+                    {
+                        TotalCount = location.TotalCount,
+                        PageSize = location.PageSize,
+                        CurrentPage = location.CurrentPage,
+                        TotalPages = location.TotalPages,
+                        HasNext = location.HasNext,
+                        HasPrevious = location.HasPrevious
+                    };
+                    locationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
+                }
+                else
+                {
+                    locationQueryResponse.StatusMessage = "Record not found";
+                    locationQueryResponse.data = null;
+                    locationQueryResponse.paginationResponse = new PaginationResponse();
+                }
 
-                locationQueryResponse.StatusMessage = "Record found";
-                locationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
-                locationQueryResponse.data = location;
-                _logger.LogInformation("Get Location Dispenser Count");
+                _logger.LogInformation("Get Locations  Data List");
             }
             catch (Exception ex)
             {
-                locationQueryResponse.StatusMessage = ex.Message.ToString();
+                locationQueryResponse.StatusMessage = "Operation failed!";
                 locationQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 locationQueryResponse.data = null;
                 _logger.LogError(ex.ToString());
-
             }
             return locationQueryResponse;
-
         }
+
 
         [HttpPost("GetDispenserByLocation")]
         [ProducesResponseType(StatusCodes.Status200OK)]

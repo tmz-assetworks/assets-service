@@ -58,7 +58,7 @@ namespace AssetsService.Core.Entities
         /// </summary>
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
-        //===============
+
 
         [DataMember(Name = "VehicleModelYear", EmitDefaultValue = false)]
         public long VehicleModelYearid { get; set; }
@@ -72,9 +72,13 @@ namespace AssetsService.Core.Entities
         public long VehicleMakeId { get; set; }
         public virtual VehicleMake VehicleMake { get; set; }
 
-        [DataMember(Name = "VehicleRFIDid", EmitDefaultValue = false)]
-        public long vehicleRFIDid { get; set; }
-        public virtual VehicleRFID VehicleRFID { get; set; }
+        [DataMember(Name = "SubscriptionPlanCustomerId", EmitDefaultValue = false)]
+
+         public long SubscriptionPlanCustomerId {get; set;}
+        public virtual SubscriptionPlan SubscriptionPlan {get;set;}
+
+        public virtual ICollection<VehicleRFID> vehicleRFID { get; set; }
+
 
     }
 }

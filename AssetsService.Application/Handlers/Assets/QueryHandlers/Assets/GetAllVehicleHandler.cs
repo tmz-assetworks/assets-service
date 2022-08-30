@@ -1,5 +1,7 @@
 ﻿using AssetsService.Application.Queries;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    public class GetAllVehicleHandler : IRequestHandler<GetAllVechicleQuery, List<AssetsService.Core.Entities.Vehicle>>
+    public class GetAllVehicleHandler : IRequestHandler<GetAllVechicleQuery, StatusVehicleresponcse>
     {
         private readonly IVehicleRepository _vechicleRepo;
 
@@ -17,9 +19,9 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         {
             _vechicleRepo = vechicleRepository;
         }
-        public async Task<List<AssetsService.Core.Entities.Vehicle>> Handle(GetAllVechicleQuery request, CancellationToken cancellationToken)
+        public async Task<StatusVehicleresponcse> Handle(GetAllVechicleQuery request, CancellationToken cancellationToken)
         {
-            return (List<AssetsService.Core.Entities.Vehicle>)await _vechicleRepo.GetAllVehicle();
+            return (StatusVehicleresponcse)await _vechicleRepo.GetAllVehicle(request.GetAllVehicleRequest);
         }
     }
 }

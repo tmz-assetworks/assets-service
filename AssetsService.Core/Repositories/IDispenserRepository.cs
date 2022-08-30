@@ -3,6 +3,7 @@ using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories.Assets.Base;
 using System.Collections.Generic;
 using AssetsService.Core.Response;
+using AssetsService.Core.PagingHelper;
 
 namespace AssetsService.Core.Repositories.Assets
 {
@@ -19,5 +20,8 @@ namespace AssetsService.Core.Repositories.Assets
 
         Task<List<DispenserByLocationIdResponse>> GetDispenserByLocationId(long locationId);
         Task<List<DispenserByLocationsResponse>> GetDispenserByLocations(List<long> locationId);
+       Task<PagedList<DispensersDetail>> GetDispensersDetail(DispensersDetailRequest dispensersDetailRequest);
+       Task<ChargerResponse>ValidateChargerId(string ChargeBoxId);
+        
     }
 }

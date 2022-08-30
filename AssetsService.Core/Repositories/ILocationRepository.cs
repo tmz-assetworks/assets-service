@@ -12,8 +12,7 @@ namespace AssetsService.Core.Repositories.Assets
         Task<List<AssetsService.Core.Entities.Location>> GetAllLocation();
         Task<List<Core.Response.LocationData>> GetAllLocationName();
         Task<List<Core.Response.LocationsDispenser>> GetLocationsDispenserformap(List<long> Id);
-        //  Task<List<Core.Response.LocationsDispenserDetails>> GetLocationsDispenserDetails(List<long> Id);
-        Task<List<Core.Response.LocationsDispenserDetails>> GetLocationsDispenserDetails(List<long> Id);
+        Task<PagedList<Core.Response.LocationsDispenserDetails>> GetLocationsDispenserDetails(LocationDispenserRequest locationDispenserRequest);
         Task<List<Core.Response.LocationDispenserForLocation>> GetLocationsDispenserForLocation(List<long> Id);
 
     }

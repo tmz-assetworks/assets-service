@@ -3,8 +3,11 @@ using AssetsService.Core.Entities;
 using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Core.Response;
+using AssetsService.Infrastructure.EnumData;
+using AssetsService.Infrastructure.Helpers;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
@@ -404,10 +407,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             return Task.FromResult(result);
         }
 
-        public Task<List<LocationsDispenserDetails>> GetLocationsDispenserDetails(List<long> Id)
+        public Task<PagedList<LocationsDispenserDetails>> GetLocationsDispenserDetails(LocationDispenserRequest locationDispenserRequest)
         {
             List<LocationsDispenserDetails> result = new List<LocationsDispenserDetails>();
-            if (Id.Count <= 0 || Id == null)
+            if (locationDispenserRequest.LocationIds.Count <= 0 || locationDispenserRequest.LocationIds == null)
             {
                 result = (from location in _dbContext.Locations
                           select new LocationsDispenserDetails
@@ -428,18 +431,18 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                           {
                                               DispenserId = charger.Id
                                           }).ToList<Port>().Count.ToString(),
-                              Available = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName == "Available")
+                              Available = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Available.GetEnumDisplayName())) //"Available")
                                            select new DispenserStatus
                                            {
                                                Id = charger.DispenserStatusId,
                                            }
                                            ).ToList<DispenserStatus>().Count.ToString(),
-                              Connected = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName == "Connected")
+                              Connected = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Connected.GetEnumDisplayName())) //== "Connected")
                                            select new DispenserStatus
                                            {
                                                Id = charger.DispenserStatusId,
                                            }).ToList<DispenserStatus>().Count.ToString(),
-                              Faulted = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName == "Faulted")
+                              Faulted = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Faulted.GetEnumDisplayName()))  // == "Faulted")
                                          select new DispenserStatus
                                          {
                                              Id = charger.DispenserStatusId,
@@ -447,12 +450,11 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ContactNo = location.LocationAddress.MobileNumber.ToString(),
                               ContactName = location.ContactPersonName.ToString(),
 
-
                           }).ToList<LocationsDispenserDetails>();
             }
             else
             {
-                result = (from location in _dbContext.Locations.Where(x => Id.Contains(x.Id))
+                result = (from location in _dbContext.Locations.Where(x => locationDispenserRequest.LocationIds.Contains(x.Id))
                           select new LocationsDispenserDetails
                           {
                               Address = location.LocationAddress.CityName + ", " + location.LocationAddress.StateName,
@@ -470,18 +472,18 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                           {
                                               DispenserId = charger.Id
                                           }).ToList<Port>().Count.ToString(),
-                              Available = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName == "Available")
+                              Available = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Available.GetEnumDisplayName()))
                                            select new DispenserStatus
                                            {
                                                Id = charger.DispenserStatusId,
                                            }
                                            ).ToList<DispenserStatus>().Count.ToString(),
-                              Connected = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName == "Connected")
+                              Connected = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Connected.GetEnumDisplayName()))
                                            select new DispenserStatus
                                            {
                                                Id = charger.DispenserStatusId,
                                            }).ToList<DispenserStatus>().Count.ToString(),
-                              Faulted = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName == "Faulted")
+                              Faulted = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Faulted.GetEnumDisplayName()))
                                          select new DispenserStatus
                                          {
                                              Id = charger.DispenserStatusId,
@@ -492,10 +494,16 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                           }).ToList<LocationsDispenserDetails>();
             }
+            result = result != null ? result.OrderByDescending(a => a.locationId).ToList() : result;
+            if (!string.IsNullOrEmpty(locationDispenserRequest.SearchParam))
+                result = result.Where(d => d.LocationName.ToLower().Contains(locationDispenserRequest.SearchParam.ToLower())
+             ).ToList<LocationsDispenserDetails>();
+            //Paging on Records           
 
-
-            result = result.OrderByDescending(a => a.locationId).ToList();
-            return Task.FromResult(result);
+            var dataResult = PagedList<LocationsDispenserDetails>.ToPagedList(result,
+              locationDispenserRequest.PageNumber,
+              locationDispenserRequest.PageSize);
+            return Task.FromResult(dataResult);
         }
         public async Task<List<Core.Response.LocationData>> GetAllLocationName()
         {
@@ -524,7 +532,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           join protocol in _dbContext.Protocol
                           on model.ProtocolId equals protocol.Id
                           join status in _dbContext.DispenserStatus
-                          on charger.DispenserStatusId equals status.Id                        
+                          on charger.DispenserStatusId equals status.Id
                           select new LocationDispenserForLocation
                           {
                               locationId = location.Id,
@@ -537,7 +545,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               DispenserMake = make.Name,
                               DispenserModel = model.ModelName,
                               ConnectorType = _dbContext.Port.FirstOrDefault(p => p.DispenserId == charger.Id).Connector.ConnectorType,
-                              DispenserName = charger.StationName
+                              DispenserName = charger.StationName,
+                               DispenserStatusId = charger.DispenserStatusId
                           }).ToList<LocationDispenserForLocation>();
             }
             else
@@ -552,7 +561,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           join protocol in _dbContext.Protocol
                           on model.ProtocolId equals protocol.Id
                           join status in _dbContext.DispenserStatus
-                          on charger.DispenserStatusId equals status.Id                         
+                          on charger.DispenserStatusId equals status.Id
                           select new LocationDispenserForLocation
                           {
                               locationId = location.Id,
@@ -564,8 +573,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               NoofPort = charger.Ports.Where(t => t.DispenserId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.DispenserId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = make.Name,
                               DispenserModel = model.ModelName,
-                              ConnectorType = _dbContext.Port.FirstOrDefault(p=>p.DispenserId==charger.Id).Connector.ConnectorType,
-                              DispenserName = charger.StationName
+                              ConnectorType = _dbContext.Port.FirstOrDefault(p => p.DispenserId == charger.Id).Connector.ConnectorType,                          
+                              DispenserName = charger.StationName,
+                              DispenserStatusId = charger.DispenserStatusId
                           }).ToList<LocationDispenserForLocation>();
             }
             return Task.FromResult(result);

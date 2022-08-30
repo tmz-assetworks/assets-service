@@ -37,7 +37,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                          select new Port
                                          {
                                              Id = obls.Id,
-                                             ConnectorId = obls.ConnectorId,
+                                             ConnectorType = obls.ConnectorType,
                                              IsActive = obls.IsActive,
                                              CreatedBy = obls.CreatedBy,
                                              ModifiedBy = obls.ModifiedBy,
@@ -114,7 +114,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                              select new Port
                              {
                                  Id = obls.Id,
-                                 ConnectorId = obls.ConnectorId,
+                                 ConnectorType = obls.ConnectorType,
                                  IsActive = obls.IsActive,
                                  CreatedBy = obls.CreatedBy,
                                  ModifiedBy = obls.ModifiedBy,

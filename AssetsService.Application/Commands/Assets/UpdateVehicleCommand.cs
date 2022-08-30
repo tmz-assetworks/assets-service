@@ -39,6 +39,9 @@ namespace AssetsService.Application.Commands.Assets
         public string ModifiedBy { get; set; }
       
         public DateTime ModifiedOn { get; set; }
+
+    
+
        
         public long VehicleModelYearid { get; set; }
       
@@ -47,10 +50,14 @@ namespace AssetsService.Application.Commands.Assets
 
        
         public long VehicleMakeId { get; set; }
+
+        public long CustomerId {get; set;}
         
 
         
         public long vehicleRFIDid { get; set; }
+
+     ///   public long VehicleSubscriptionPlanId {get; set;}
        
     }
 }

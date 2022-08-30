@@ -7,7 +7,15 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Responses.Assets
 {
-    public class VehicleResponse
+
+    public class vehicleStatus{
+        
+        public int StatusCode;
+        public string StatusMessage;
+
+        public Vehicle data{get;set;}
+    }
+    public  class VehicleResponse
     {
        
         public long Id { get; set; }
@@ -17,6 +25,9 @@ namespace AssetsService.Application.Responses.Assets
 
        
         public string LicencePlate { get; set; }
+
+        
+
 
        
         public string Department { get; set; }
@@ -58,5 +69,9 @@ namespace AssetsService.Application.Responses.Assets
        
         public long vehicleRFIDid { get; set; }
         public  VehicleRFID VehicleRFID { get; set; }
+
+        public long SubscriptionPlanCustomerId {get;set;}
+
+        public  SubscriptionPlan SubscriptionPlan{get;set;}
     }
 }

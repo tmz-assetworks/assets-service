@@ -1,0 +1,84 @@
+stages:
+  - Tag_Release
+  - Sonarqube
+  - App_Publish
+  - Docker_Image_Build
+
+Tag_Release:
+  stage: Tag_Release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest 
+  rules:
+    - if: $CI_COMMIT_BRANCH == "m4_qa_release"
+      when: always    
+  script:
+    - tag_time=`date "+%d-%m-%Y-%H-%M-%S"`
+    - export COMMIT_TAG="m4_qa_release-$tag_time"
+    - release-cli create --name "Release $COMMIT_TAG" --tag-name $COMMIT_TAG
+
+
+Sonarqube:
+  stage: Sonarqube
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar/repository"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: build-cache
+    paths:
+      - ./.sonar/repository
+    policy: pull-push 
+  script: 
+      - "apt-get update"
+      - "apt-get install --yes openjdk-11-jre"
+      - "dotnet tool install --global dotnet-sonarscanner"
+      - "export PATH=\"$PATH:$HOME/.dotnet/tools\""
+      - "dotnet sonarscanner begin /k:\"engineering_assetworks_assets-service_AYJ8YcNpTuKOie5PVxoA\" /d:sonar.login=\"$SONAR_TOKEN\" /d:\"sonar.host.url=$SONAR_HOST_URL\" "
+      - "dotnet build"
+      - "dotnet sonarscanner end /d:sonar.login=\"$SONAR_TOKEN\""
+  allow_failure: true
+  only:
+    - /^(m4_qa_release)+-?.*$/
+  except:
+    - branches
+
+Dotnet_App_Publish:
+
+  stage: App_Publish
+  image: mcr.microsoft.com/dotnet/sdk:6.0
+  tags: 
+   - assets-service
+  only:
+    - /^(m4_qa_release)+-?.*$/
+  except:
+    - branches
+  script:
+   - mkdir publish 
+   - dotnet build
+   - dotnet publish AssetsService/AssetsService.Api.csproj -c Release -o publish/
+   - ls -lrth publish/
+  artifacts:
+    paths:
+      - /builds/engineering/assetworks/assets-service/AssetsService/bin/Release/net6.0/AssetsService.Api.dll
+      - publish/
+
+Docker_Image_Build:
+  image: docker:latest
+  stage: Docker_Image_Build
+  services:
+      - docker:dind
+  tags: 
+      - assets-service
+  dependencies:
+      - Dotnet_App_Publish 
+  script:
+      - cp -R publish/ AssetsService/publish
+      - ls -lrth AssetsService/publish
+      - docker build -t $IMAGE_TAG -f AssetsService/Dockerfile .
+      - docker login -u $AZ_TOKEN_NAME -p $AZ_LOGIN_TOKEN $AZ_ECR_REPO
+      - docker push $IMAGE_TAG
+  only:
+    - /^(m4_qa_release)+-?.*$/
+  except:
+    - branches
+  when: manual
+  timeout: 5 minute 

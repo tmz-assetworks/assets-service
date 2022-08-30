@@ -1001,8 +1001,8 @@ namespace AssetsService.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<int>("ConnectorId")
-                           .HasColumnType("int");
+                    b.Property<long>("ConnectorId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CreatedBy")
                         .IsRequired()
@@ -1643,12 +1643,26 @@ namespace AssetsService.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Make")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("Model")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModelYear")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime>("ModifiedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VIN")
                         .IsRequired()
@@ -1667,6 +1681,9 @@ namespace AssetsService.Infrastructure.Migrations
                     b.Property<long>("VehicleModelYearid")
                         .HasColumnType("bigint");
 
+                    b.Property<long>("VehicleSubscriptionPlanId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("vehicleRFIDid")
                         .HasColumnType("bigint");
 
@@ -1677,6 +1694,8 @@ namespace AssetsService.Infrastructure.Migrations
                     b.HasIndex("VehicleModelId");
 
                     b.HasIndex("VehicleModelYearid");
+
+                    b.HasIndex("VehicleSubscriptionPlanId");
 
                     b.HasIndex("vehicleRFIDid");
 
@@ -1817,6 +1836,57 @@ namespace AssetsService.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("VehicleRFID");
+                });
+
+            modelBuilder.Entity("AssetsService.Core.Entities.VehicleSubscriptionPlan", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("RfidNo")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SubscriptionPlanName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ValidFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ValidTo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehicleSubscriptionPlan");
                 });
 
             modelBuilder.Entity("AssetsService.Core.Entities.Vendor", b =>
@@ -2178,6 +2248,12 @@ namespace AssetsService.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("AssetsService.Core.Entities.VehicleSubscriptionPlan", "VehicleSubscriptionPlan")
+                        .WithMany()
+                        .HasForeignKey("VehicleSubscriptionPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("AssetsService.Core.Entities.VehicleRFID", "VehicleRFID")
                         .WithMany()
                         .HasForeignKey("vehicleRFIDid")
@@ -2191,6 +2267,8 @@ namespace AssetsService.Infrastructure.Migrations
                     b.Navigation("VehicleModelYear");
 
                     b.Navigation("VehicleRFID");
+
+                    b.Navigation("VehicleSubscriptionPlan");
                 });
 
             modelBuilder.Entity("AssetsService.Core.Entities.Dispenser", b =>

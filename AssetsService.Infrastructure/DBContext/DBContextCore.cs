@@ -7,22 +7,16 @@ namespace AssetsService.Infrastructure.DBContext
 
     public class DBContextCore : DbContext
     {
-        public DBContextCore(DbContextOptions<DBContextCore> options) : base(options)
-        {
+         public DBContextCore(DbContextOptions<DBContextCore> options) : base(options)
+         {
 
-        }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //   // optionsBuilder.UseSqlServer(@"Data Source= LT01814; Initial Catalog =asset_db4; User ID =sa; Password=Ocpp@1234;");
-        //}
+         }
+         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+         //{
+         //   optionsBuilder.UseSqlServer(@"Data Source=LT1828; Initial Catalog =Assets_5_aug; User ID =sa; Password=Ocpp@12345");
+         //}
 
-
-
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"Data Source=LT1828; Initial Catalog =asset_18-july-Location-update; User ID =sa; Password=Ocpp@12345");
-        //}
+        
 
         public DbSet<AssetsService.Core.Entities.Cable> Cables { get; set; }
         public DbSet<AssetsService.Core.Entities.Status> Status { get; set; }
@@ -85,6 +79,11 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.Department> Department {get;set;}
 
         public DbSet<AssetsService.Core.Entities.OperatorUserMapper> OperatorUserMapper {get;set;}
+
+        public DbSet<AssetsService.Core.Entities.Country> Country {get;set;}
+        public DbSet<AssetsService.Core.Entities.State> State {get;set;}
+        public DbSet<AssetsService.Core.Entities.City> City {get;set;}
+
 
 
 

@@ -19,8 +19,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
            TotalLocationAndChargerResponse totalLocationAndChargerResponse = new TotalLocationAndChargerResponse();
 
-            totalLocationAndChargerResponse.TotalLocations = _dbContext.Locations.Where(m => m.IsActive==true).Count();
-            totalLocationAndChargerResponse.TotalDispenser = _dbContext.Dispenser.Where(n => n.IsActive == true).Count();
+            totalLocationAndChargerResponse.TotalLocations = _dbContext.Locations.Where(m => true==true).Count();
+            totalLocationAndChargerResponse.TotalDispenser = _dbContext.Dispenser.Where(n => true == true).Count();
             return  Task.FromResult(totalLocationAndChargerResponse);
         }
     }

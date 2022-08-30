@@ -19,6 +19,9 @@ using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.Pad;
 using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.SubscriptionPlan;
 using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId;
 using AssetsService.Application.Handlers.Assets.QueryHandlers.Assets;
+using AssetsService.Api.Service;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace AssetsService.Api
 {
@@ -30,34 +33,17 @@ namespace AssetsService.Api
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // public void ConfigureServices(IServiceCollection services)
-        // {
-
-        //     services.AddControllers();
-        //     services.AddDbContext<AssetsService.Infrastructure.DBContext.DBContextCore>(
-        //          m => m.UseSqlServer(Configuration.GetConnectionString("OcppDB")), ServiceLifetime.Singleton);
-        // public void ConfigureServices(IServiceCollection services)
-        // {
-        //     services.AddControllers();
-        //     services.AddDbContext<AssetsService.Infrastructure.DBContext.DBContextCore>(
-        //          m => m.UseSqlServer(Configuration.GetConnectionString("OcppDB")), ServiceLifetime.Singleton);
-
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.AddControllers();
-            //     services.AddDbContextFactory<DBContextCore>(
-            //options =>
-            //    options.UseSqlServer(@"Data Source=LT1828; Initial Catalog =asset_18-july-Location-update; User ID =sa; Password=Ocpp@12345"));
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbName = Environment.GetEnvironmentVariable("DB_NAME");
             var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
             var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
             services.AddDbContext<AssetsService.Infrastructure.DBContext.DBContextCore>(
 
-            //m => m.UseSqlServer(Configuration.GetConnectionString("OcppDB")), ServiceLifetime.Transient);
+           // m => m.UseSqlServer(Configuration.GetConnectionString("AssetsDB")), ServiceLifetime.Transient);
             m => m.UseSqlServer(connectionString), ServiceLifetime.Transient);
             services.AddSwaggerGen(c =>
             {
@@ -130,12 +116,13 @@ namespace AssetsService.Api
             services.AddMediatR(typeof(UpdatePricePlanHandler).GetTypeInfo().Assembly);
             services.AddTransient<IPricePlanRepository, PricePlanRepository>();
 
-            
-            
-            
-        }
+            services.AddTransient<ICountryRepository, CountryRepository>();
+            services.AddHealthChecks()
+                .AddCheck<AssetHealthCheck>("example_health_check");
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -166,11 +153,23 @@ namespace AssetsService.Api
             app.UseRouting();
 
             app.UseAuthorization();
-            //app.UseCors();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    ResultStatusCodes =
+                    {
+                        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+                    }
+                });
             });
         }
     }
 }
+
+
+
+ 

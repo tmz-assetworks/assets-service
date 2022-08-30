@@ -7,20 +7,25 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Core.Response
 {
-    public class LocationsDispenserDetailsResponce
-    { 
-    public LocationsDispenserDetailsResponce()
+
+    public class LocationsDispenserDetailsResponse 
     {
-        data = new List<LocationsDispenserDetails>();
+        public LocationsDispenserDetailsResponse()
+        {
+            data = new List<LocationsDispenserDetails>();
+        }
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+
+        public List<LocationsDispenserDetails> data { get; set; }      
+        public PaginationResponse paginationResponse { get; set; }
+        
     }
-    public int StatusCode { get; set; }
-    public string StatusMessage { get; set; }
 
-    public List<LocationsDispenserDetails> data { get; set; }
-}
+   
 
-public class LocationsDispenserDetails
-{
+    public class LocationsDispenserDetails
+    {
         public long locationId { get; set; }
         public string LocationName { get; set; }
         public string Address { get; set; }
@@ -34,10 +39,11 @@ public class LocationsDispenserDetails
 
         public DateTime CreatedOn { get; set; }
     }
-    public class LocationDispenserParams : QueryStringParameters
-    {
-        public LocationsDispenserDetails LocationsDispenserDetails { get; set; }
 
-    }   
+    public class LocationDispenserRequest : QueryStringParameters
+    {
+        public List<long> LocationIds { get; set; }
+        public string? opratorid { get; set; }
+    }
 }
 

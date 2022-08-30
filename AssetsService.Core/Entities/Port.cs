@@ -20,55 +20,57 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "dispenserId", EmitDefaultValue = false)]
         public long DispenserId { get; set; }
         public virtual Dispenser Dispenser { get; set; }
-
        
-        [DataMember(Name = "connectorId", EmitDefaultValue = false)]
         public long ConnectorId { get; set; }
-        public virtual Connector Connector { get; set; }
 
+
+        [DataMember(Name = "connectorType", EmitDefaultValue = false)]
+        [ForeignKey("Connector")]
+        public long ConnectorType { get; set; }
+        public virtual Connector Connector { get; set; }
 
         [DataMember(Name = "createdBy", EmitDefaultValue = false)]
         public string CreatedBy { get; set; }
 
-       
+
         [DataMember(Name = "createdOn", EmitDefaultValue = false)]
         public DateTime CreatedOn { get; set; }
 
 
-       
+
         [DataMember(Name = "incrementalPower", EmitDefaultValue = false)]
         public long IncrementalPower { get; set; }
 
-       
+
         [DataMember(Name = "isActive", EmitDefaultValue = false)]
         public bool IsActive { get; set; }
 
-       
+
         [DataMember(Name = "maxPower", EmitDefaultValue = false)]
         public long MaxPower { get; set; }
 
-        
+
         [DataMember(Name = "minPower", EmitDefaultValue = false)]
         public long MinPower { get; set; }
 
-      
+
         [DataMember(Name = "modifiedBy", EmitDefaultValue = false)]
         public string ModifiedBy { get; set; }
 
-        
+
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
 
-       
+
         [DataMember(Name = "plugTypeId", EmitDefaultValue = false)]
         public long PlugTypeId { get; set; }
         public PlugType PlugType { get; set; }
 
-       
+
         [DataMember(Name = "portName", EmitDefaultValue = false)]
         public string PortName { get; set; }
 
-        
+
         [DataMember(Name = "power", EmitDefaultValue = false)]
         public long Power { get; set; }
 

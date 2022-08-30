@@ -1,5 +1,7 @@
 ﻿using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories.Assets.Base;
+using AssetsService.Core.Responses.Assets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace AssetsService.Core.Repositories
 {
     public interface IVehicleRepository : IRepository<AssetsService.Core.Entities.Vehicle>
     {
-        Task<List<Vehicle>> GetAllVehicle();
-        Task<Vehicle> GetAllVehicleById(long id);
+        Task<StatusVehicleresponcse> GetAllVehicle(GetAllVehicleRequest getAllVehicleRequest);
+        Task<Vehicle> GetVehicleById(long id);
     }
 }
