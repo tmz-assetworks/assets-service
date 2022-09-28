@@ -12,44 +12,42 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
 
         }
-
         public async Task<List<CountryData>> GetAllCountry()
         {
             List<CountryData> res = new List<CountryData>();
-
             res = (from v in _dbContext.Country
                    select new CountryData
                    {
                        Id = v.Id,
                        CountryName = v.CountryName,
-                       CreatedBy = v.CreatedBy,
-                       CreatedOn = v.CreatedOn,
-                       ModifiedBy = v.ModifiedBy,
-                       ModifiedOn = v.ModifiedOn,
-                       StateData = (from s in _dbContext.State.Where(x => x.CountryId == v.Id)
-                                    select new StateData
-                                    {
-                                        Id = s.Id,
-                                        CountryId = s.CountryId,
-                                        StateName = s.StateName,
-                                        CreatedBy = s.CreatedBy,
-                                        CreatedOn = s.CreatedOn,
-                                        ModifiedBy = s.ModifiedBy,
-                                        ModifiedOn = s.ModifiedOn,
-                                        CityData = (from c in _dbContext.City.Where(x => x.StateId == s.Id)
-                                                    select new CityData
-                                                    {
-                                                        Id = c.Id,
-                                                        StateId = c.StateId,
-                                                        CityName = c.CityName,
-                                                        CreatedBy = c.CreatedBy,
-                                                        CreatedOn = c.CreatedOn,
-                                                        ModifiedBy = c.ModifiedBy,
-                                                        ModifiedOn = c.ModifiedOn,
+                    //    CreatedBy = v.CreatedBy,
+                    //    CreatedOn = v.CreatedOn,
+                    //    ModifiedBy = v.ModifiedBy,
+                    //    ModifiedOn = v.ModifiedOn,
+                    //    StateData = (from s in _dbContext.State.Where(x => x.CountryId == v.Id)
+                    //                 select new StateData
+                    //                 {
+                    //                     Id = s.Id,
+                    //                     CountryId = s.CountryId,
+                    //                     StateName = s.StateName,
+                    //                     CreatedBy = s.CreatedBy,
+                    //                     CreatedOn = s.CreatedOn,
+                    //                     ModifiedBy = s.ModifiedBy,
+                    //                     ModifiedOn = s.ModifiedOn,
+                    //                     CityData = (from c in _dbContext.City.Where(x => x.StateId == s.Id)
+                    //                                 select new CityData
+                    //                                 {
+                    //                                     Id = c.Id,
+                    //                                     StateId = c.StateId,
+                    //                                     CityName = c.CityName,
+                    //                                     CreatedBy = c.CreatedBy,
+                    //                                     CreatedOn = c.CreatedOn,
+                    //                                     ModifiedBy = c.ModifiedBy,
+                    //                                     ModifiedOn = c.ModifiedOn,
 
-                                                    }).ToList(),
-                                    }).ToList(),
-                   }).ToList();
+                    //                                 }).ToList(),
+                    //                 }).ToList(),
+                   }).OrderBy(a=> a.CountryName).ToList();
 
             return res;
         }
@@ -58,18 +56,17 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
             return await Task.Factory.StartNew<List<StateData>>(() =>
              {
-                 return (from country in _dbContext.Country
-                         join state in _dbContext.State on country.Id equals state.CountryId
+                 return (from state in _dbContext.State.Where(x=> x.CountryId.Equals(id))
                          select new StateData
                          {
                              Id = state.Id,
-                             CountryId = state.CountryId,
+                             CountryId = (long) state.CountryId,
                              StateName = state.StateName,
-                             CreatedBy = state.CreatedBy,
-                             CreatedOn = state.CreatedOn,
-                             ModifiedBy = state.ModifiedBy,
-                             ModifiedOn = state.ModifiedOn,
-                         }).ToList<StateData>();
+                            //  CreatedBy = state.CreatedBy,
+                            //  CreatedOn = state.CreatedOn,
+                            //  ModifiedBy = state.ModifiedBy,
+                            //  ModifiedOn = state.ModifiedOn,
+                         }).OrderBy(a=> a.StateName).ToList<StateData>();
              });
         }
 
@@ -77,18 +74,17 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
              return await Task.Factory.StartNew<List<CityData>>(() =>
              {
-                 return (from state in _dbContext.State
-                         join city in _dbContext.City on state.Id equals city.StateId
+                 return (from city in _dbContext.City.Where(x=> x.StateId.Equals(id))
                          select new CityData
                          {
                              Id = city.Id,
                              StateId = city.StateId,
                              CityName = city.CityName,
-                             CreatedBy = city.CreatedBy,
-                             CreatedOn = city.CreatedOn,
-                             ModifiedBy = city.ModifiedBy,
-                             ModifiedOn = city.ModifiedOn,
-                         }).ToList<CityData>();
+                            //  CreatedBy = city.CreatedBy,
+                            //  CreatedOn = city.CreatedOn,
+                            //  ModifiedBy = city.ModifiedBy,
+                            //  ModifiedOn = city.ModifiedOn,
+                         }).OrderBy(a=> a.CityName).ToList<CityData>();
              });
         }
     }

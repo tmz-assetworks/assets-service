@@ -28,7 +28,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             {
                 throw new ApplicationException("Issue with mapper");
             }
-
+            posEntitiy.CreatedOn = DateTime.Now;
+            posEntitiy.ModifiedOn = DateTime.Now;
             var updatePos = _posRepo.UpdateAsync(posEntitiy, request.Id, "POS");
             var mapPosResponse = Mapper.Mappers.Map<PosResponse>(updatePos.Result);
             return mapPosResponse;

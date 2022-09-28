@@ -1,15 +1,17 @@
-﻿using AssetsService.Core.Repositories.Assets.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
+using AssetsService.Core.Repositories.Assets.Base;
+using AssetsService.Core.Response;
 
 namespace AssetsService.Core.Repositories
 {
-    public interface IRFIdRepository : IRepository<AssetsService.Core.Entities.RFIDReader>
+    public interface IRFIdRepository : IRepository<RFIDReader>
     {
-        Task<List<AssetsService.Core.Entities.RFIDReader>> GetAllRfIdReader();
-        Task<AssetsService.Core.Entities.RFIDReader> GetByIdRfIdReader(long rfId);
+       
+        Task<RFIDReaderDetails> GetByIdRfIdReader(long rfId);
+        Task<PagedList<RFIDReaderDetails>> GetAllRfIdReader(RfIdReaderRequest rfIdReaderRequest);
+        Task<List<AssetsService.Core.Entities.RFIDReader>> GetAllRfIdReaderData(RfIdReaderDataRequest rfIdReaderRequest);
+        Task<RFIDReader> GetByIdRfIdReaderData(long Id);
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Queries
 {
-    public class GetByIdVehicleQuery : IRequest<Vehicle>
+    public class GetByIdVehicleQuery : IRequest<VehicleDTO>
     {
         public long Id { get; set; }
-        public GetByIdVehicleQuery(int id)
+        public GetByIdVehicleQuery(int Id)
         {
-            Id = id;
+            this.Id = Id;
         }
     }
 }

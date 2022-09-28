@@ -1,4 +1,5 @@
-﻿using System;
+using AssetsService.Core.PagingHelper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,13 +13,21 @@ namespace AssetsService.Core.Response
         public string StatusMessage { get; set; }
         public List<DispenserByLocationsResponse> data { get; set; }
     }
+    public class LocationDispensersResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+
+        public List<DispenserByLocationsResponse> data { get; set; }
+        public PaginationResponse paginationResponse { get; set; }
+    }
     public class DispenserByLocationsResponse
     {
-        public long ChargerId { get; set; }
+        public long DispenserId { get; set; }
         public long LocationId { get; set; }
 
         public string LocationName { get; set; }
-        public string DispenserName { get; set; }
+       // public string DispenserName { get; set; }
         public string ContactPersonName { get; set; }
 
         public string AddressLine1 { get; set; }
@@ -45,6 +54,6 @@ namespace AssetsService.Core.Response
     {
         public List<long> LocationIds { get; set; }
 
-        public string opratorid { get; set; }
+        public string operatorid { get; set; }
     }
 }

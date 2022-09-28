@@ -8,20 +8,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AssetsService.Core.Response;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers
 {
 
-public class GetPowerCabinetByIdHandler : IRequestHandler<GetPowerCabinetByIdQuery, AssetsService.Core.Entities.PowerCabinet>
+public class GetPowerCabinetByIdHandler : IRequestHandler<GetPowerCabinetByIdQuery, GetPowerCabinetResponse>
     {
         private readonly IPowerCabinetRepository _powerCabinetRepository;
         public GetPowerCabinetByIdHandler(IPowerCabinetRepository powerCabinetRepository)
         {
             _powerCabinetRepository = powerCabinetRepository;
         }
-        public async Task<AssetsService.Core.Entities.PowerCabinet> Handle(GetPowerCabinetByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetPowerCabinetResponse> Handle(GetPowerCabinetByIdQuery request, CancellationToken cancellationToken)
         {
-            return (AssetsService.Core.Entities.PowerCabinet)await _powerCabinetRepository.GetByIdAsync(Convert.ToInt32(request.Id));
+            return (GetPowerCabinetResponse)await _powerCabinetRepository.GetPowerCabinetById(Convert.ToInt32(request.Id));
         }
     }
 }

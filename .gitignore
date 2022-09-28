@@ -14,3 +14,7 @@
 /AssetsService/app
 /AssetsService/Log
 /AssetsService/AssetsService.Api.csproj.user
+/AssetsService/logs
+/AssetsService.ApiTests/obj/Debug/net6.0
+/AssetsService.ApiTests/bin/Debug/net6.0
+/AssetsService.ApiTests/obj

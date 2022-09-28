@@ -1,4 +1,4 @@
-﻿using AssetsService.Application.Commands.Assets;
+using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Repositories;
 using AssetsService.Core.Mapper;
@@ -28,7 +28,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             {
                 throw new ApplicationException("Issue with mapper");
             }
-
+             MakeMasterEntitiy.CreatedOn = DateTime.Now;
+            MakeMasterEntitiy.ModifiedOn = DateTime.Now;
             var updateMakeMaster = _MakeMasterRepo.UpdateAsync(MakeMasterEntitiy, request.Id, "MODEL");
             var mapMakeMasterResponse = Mapper.Mappers.Map<MakeMasterResponse>(updateMakeMaster.Result);
             return mapMakeMasterResponse;

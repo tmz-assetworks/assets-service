@@ -1,4 +1,5 @@
 using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -7,160 +8,108 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 {
     public class ModemRepository : Repository<AssetsService.Core.Entities.Modem>, IModemRepository
     {
+        #pragma warning disable
         public ModemRepository(AssetsService.Infrastructure.DBContext.DBContextCore dbContext) : base(dbContext)
         {
 
-        }
-        public async Task<IEnumerable<AssetsService.Core.Entities.Modem>> GetModemById(long modemId)
+        }        
+        public  Task<PagedList<ModemDTO>> GetAllModem(ModemRequest ModemRequest)
         {
-            return await _dbContext.Modem
-                .Where(abc => abc.Id == modemId)
-                .ToListAsync();
-        }
-        public async Task<List<Modem>> GetAllModem()
-        {
-            return await _dbContext.Modem
-                 .Select(abc => new Modem
-                 {
-                     Id = abc.Id,
-                     AssetId = abc.AssetId,
-                     CreatedBy = abc.CreatedBy,
-                     CreatedOn = abc.CreatedOn,
-                     InstallationDate = abc.InstallationDate,
-                     Carrier = abc.Carrier,
-                     ModelId = abc.ModelId,
-                     ModifiedBy = abc.ModifiedBy,
-                     ModifiedOn = abc.ModifiedOn,
-                     NetworkId = abc.NetworkId,
-                     NetworkName = abc.NetworkName,
-                     SerialNumber = abc.SerialNumber,
-                     StatusId = abc.StatusId,
-                     LocationId = abc.LocationId,
-                     ModemTypeId = abc.ModemTypeId,
-                     SubNetworkId = abc.SubNetworkId,
-                     SubNetworkName = abc.SubNetworkName,
-                     WarrantyDuration = abc.WarrantyDuration,
-                     WarrantyExpiryDate = abc.WarrantyExpiryDate,
-                     WarrantyStartDate = abc.WarrantyStartDate,
-                     IpAddress = abc.IpAddress,
-                     MakeId = abc.MakeId,
-                     SimNumber= abc.SimNumber,
-                     ImeiNumber = abc.ImeiNumber,
-                      Location = (from obls in _dbContext.Locations.Where(x => x.Id == abc.LocationId)
-                                select new Location
-                                {
-                                    Id = obls.Id,
-                                    LocationName = obls.LocationName,
-                                    IsActive = obls.IsActive,
-                                    CreatedBy = obls.CreatedBy,
-                                    ModifiedBy = obls.ModifiedBy,
-                                    ModifiedOn = obls.ModifiedOn,
-                                    CreatedOn = (obls.CreatedOn==DateTime.MinValue? DateTime.MinValue: obls.CreatedOn),
-
-                                }).FirstOrDefault(),
-
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == abc.StatusId)
-                              select new Status
-                              {
-                                  Id = obls.Id,
-                                  StatusName = obls.StatusName,
-                                  IsActive = obls.IsActive,
-                                  CreatedBy = obls.CreatedBy,
-                                  CreatedOn = obls.CreatedOn,
-                                  ModifiedBy = obls.ModifiedBy,
-                                  ModifiedOn = obls.ModifiedOn,
-
-                              }).FirstOrDefault(),
-                              
-                 
-                 ModemType = (from obls in _dbContext.ModemType.Where(x => x.Id == abc.ModemTypeId)
-                              select new ModemType
-                              {
-                                  Id = obls.Id,
-                                  ModemTypeName = obls.ModemTypeName,
-                                  IsActive = obls.IsActive,
-                                  CreatedBy = obls.CreatedBy,
-                                  CreatedOn = obls.CreatedOn,
-                                  ModifiedBy = obls.ModifiedBy,
-                                  ModifiedOn = obls.ModifiedOn,
-
-                              }).FirstOrDefault(),
-                              
-                 })
-                 .ToListAsync();
-
-
-
-                     
-                     
+            ModemResponse re = new ModemResponse();           
           
-        }
-        public async Task<Modem> GetByIdModem(long Modemid)
+                List<ModemDTO> query = (from Modem in _dbContext.Modem
+                                        
+                                        select new ModemDTO
+                                        {
+                                            Id = Modem.Id,
+                                            AssetId = Modem.AssetId,
+                                            Carrier = Modem.Carrier,
+                                            ImeiNumber = Modem.ImeiNumber,
+                                            InstallationDate = Modem.InstallationDate,
+                                            IpAddress = Modem.IpAddress,
+                                            MakeMasterId = Modem.MakeMasterId,
+                                            ModelId =(long) Modem.ModelId,
+                                            MakeMasterName = Modem.MakeMaster.Name,
+                                            ModelName = Modem.Model.ModelName,
+                                            SerialNumber = Modem.SerialNumber,
+                                            SimNumber = Modem.SimNumber,
+                                            StatusId = Modem.StatusId,
+                                            ModemTypeId = Modem.ModemTypeId,
+                                            ModemTypeName = Modem.ModemType.ModemTypeName,
+                                            WarrantyDuration = Modem.WarrantyDuration,
+                                            WarrantyExpiryDate = Modem.WarrantyExpiryDate,
+                                            WarrantyStartDate = Modem.WarrantyStartDate,
+                                            LocationId = Modem.LocationId,
+                                            IsActive = Modem.IsActive,
+                                            LocationName = Modem.Location.LocationName,
+                                            ModifiedAt = Modem.ModifiedOn,
+                                            StatusName = Modem.Status.StatusName,
+                                        }
+                           ).OrderByDescending(a => a.ModifiedAt).ToList();
+                
+                var dataResult = PagedList<ModemDTO>.ToPagedList(query,
+             ModemRequest.PageNumber,
+             ModemRequest.PageSize);
+                return Task.FromResult(dataResult);         
+
+        }    
+        async Task<ModemByIDResponse> IModemRepository.GetByIdModem(long id)
         {
-            return  _dbContext.Modem
-                 .Select(abc => new Modem
-                 {
-                      Id = abc.Id,
-                     AssetId = abc.AssetId,
-                     CreatedBy = abc.CreatedBy,
-                     CreatedOn = abc.CreatedOn,
-                     InstallationDate = abc.InstallationDate,
-                     Carrier = abc.Carrier,
-                     ModelId = abc.ModelId,
-                     ModifiedBy = abc.ModifiedBy,
-                     ModifiedOn = abc.ModifiedOn,
-                     NetworkId = abc.NetworkId,
-                     NetworkName = abc.NetworkName,
-                     SerialNumber = abc.SerialNumber,
-                     StatusId = abc.StatusId,
-                     SubNetworkId = abc.SubNetworkId,
-                     SubNetworkName = abc.SubNetworkName,
-                     WarrantyDuration = abc.WarrantyDuration,
-                     WarrantyExpiryDate = abc.WarrantyExpiryDate,
-                     WarrantyStartDate = abc.WarrantyStartDate,
-                     IpAddress = abc.IpAddress,
-                     MakeId = abc.MakeId,
-                     SimNumber= abc.SimNumber,
-                     ImeiNumber = abc.ImeiNumber,
+            ModemByIDResponse re = new ModemByIDResponse();
 
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == abc.StatusId)
-                               select new Status
-                               {
-                                   Id = obls.Id,
-                                   StatusName = obls.StatusName,
-                                   IsActive = obls.IsActive,
-                                   CreatedBy = obls.CreatedBy,
-                                   CreatedOn = obls.CreatedOn,
-                                   ModifiedBy = obls.ModifiedBy,
-                                   ModifiedOn = obls.ModifiedOn,
+            try
+            {
+                ModemDTO query = (from Modem in _dbContext.Modem
+                                        
+                                        select new ModemDTO
+                                        {
+                                            Id = Modem.Id,
+                                            AssetId = Modem.AssetId,
+                                            Carrier = Modem.Carrier,
+                                            ImeiNumber = Modem.ImeiNumber,
+                                            InstallationDate = Modem.InstallationDate,
+                                            IpAddress = Modem.IpAddress,
+                                            MakeMasterId = Modem.MakeMasterId,
+                                            ModelId = (long)Modem.ModelId,
+                                            MakeMasterName = Modem.MakeMaster.Name,
+                                            ModelName = Modem.Model.ModelName,
+                                            SerialNumber = Modem.SerialNumber,
+                                            SimNumber = Modem.SimNumber,
+                                            StatusId = Modem.StatusId,
+                                            ModemTypeId = Modem.ModemTypeId,
+                                            ModemTypeName = Modem.ModemType.ModemTypeName,
+                                            WarrantyDuration = Modem.WarrantyDuration,
+                                            WarrantyExpiryDate = Modem.WarrantyExpiryDate,
+                                            WarrantyStartDate = Modem.WarrantyStartDate,
+                                            LocationId = Modem.LocationId,
+                                            IsActive = Modem.IsActive,
+                                            LocationName = Modem.Location.LocationName,
+                                            ModifiedAt = Modem.ModifiedOn,
+                                            StatusName= Modem.Status.StatusName,
+                                            
 
-                               }).FirstOrDefault(),
-                               ModemType = (from obls in _dbContext.ModemType.Where(x => x.Id == abc.ModemTypeId)
-                              select new ModemType
-                              {
-                                  Id = obls.Id,
-                                  ModemTypeName = obls.ModemTypeName,
-                                  IsActive = obls.IsActive,
-                                  CreatedBy = obls.CreatedBy,
-                                  CreatedOn = obls.CreatedOn,
-                                  ModifiedBy = obls.ModifiedBy,
-                                  ModifiedOn = obls.ModifiedOn,
-
-                              }).FirstOrDefault(),
-                              Location = (from obls in _dbContext.Locations.Where(x => x.Id == abc.LocationId)
-                                select new Location
-                                {
-                                    Id = obls.Id,
-                                    LocationName = obls.LocationName,
-                                    IsActive = obls.IsActive,
-                                    CreatedBy = obls.CreatedBy,
-                                    ModifiedBy = obls.ModifiedBy,
-                                    ModifiedOn = obls.ModifiedOn,
-                                    CreatedOn = (obls.CreatedOn==DateTime.MinValue? DateTime.MinValue: obls.CreatedOn),
-
-                                }).FirstOrDefault()
-                 }).Where(x => x.Id == Modemid).FirstOrDefault();
+                                        }
+                           ).Where(d => d.Id == id).OrderByDescending(a => a.ModifiedAt).FirstOrDefault();
+                if (query !=null)
+                {
+                    re.StatusCode = 200;
+                    re.StatusMessage = "Record found!";
+                    re.data = query;
+                   
+                }
+                else
+                {
+                    re.StatusCode = 200;
+                    re.StatusMessage = "Record not found";
+                    re.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                re.StatusCode = 500;
+                re.StatusMessage = "Internal server Error";
+            }
+            return re;
         }
-
     }
 }

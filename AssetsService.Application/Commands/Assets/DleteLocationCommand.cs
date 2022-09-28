@@ -10,5 +10,7 @@ namespace AssetsService.Application.Commands.Assets
         public long Id { get; set; }
 
         public bool IsActive { get; set; }
+        public string UserId {get ; set;}
+
     }
 }

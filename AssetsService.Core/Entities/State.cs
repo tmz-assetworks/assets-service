@@ -18,11 +18,10 @@ namespace AssetsService.Core.Entities
         public long Id { get; set; }
 
         [DataMember(Name = "countryId", EmitDefaultValue = false)]
-        public long CountryId { get; set; }
+        public long? CountryId { get; set; }
 
         [DataMember(Name = "stateName", EmitDefaultValue = false)]
         public string StateName { get; set; }
-
 
         [DataMember(Name = "createdBy", EmitDefaultValue = false)]
         public string CreatedBy { get; set; }
@@ -33,11 +32,8 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "modifiedBy", EmitDefaultValue = false)]
         public string ModifiedBy { get; set; }
 
-
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
-
         public virtual ICollection<City> City { get; set; }
-
     }
 }

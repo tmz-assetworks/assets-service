@@ -1,18 +1,14 @@
 ﻿using AssetsService.Application.Commands.Assets;
-using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Repositories;
-using AssetsService.Infrastructure.Repositories.Assets;
+
 using AssetsService.Core.Mapper;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AssetsService.Core.Responses.Assets;
+using AssetsService.Core.Entities;
 
 namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
 {
-    public class UpdateVehicleHandler : IRequestHandler<UpdateVehicleCommand, VehicleResponse>
+    public class UpdateVehicleHandler : IRequestHandler<UpdateVehicleCommand, CreateVehicleResponse>
     {
         private readonly IVehicleRepository _vehicleRepo;
 
@@ -21,18 +17,73 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             _vehicleRepo = vehicleRepository;
         }
 
+        public async Task<CreateVehicleResponse> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
 
-        public async Task<VehicleResponse> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
         {
-            var VehicleEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Vehicle>(request);
-            if (VehicleEntitiy is null)
+            CreateVehicleResponse vehicleResponse = new CreateVehicleResponse();
+
+            if (request.Id <= 0)
             {
-                throw new ApplicationException("Issue with mapper");
+                throw new ApplicationException("Invalid Vehicle Id.");
             }
-           
-            var updateVehicle = _vehicleRepo.UpdateAsync(VehicleEntitiy, request.Id, "CABLE");
-            var mapCableResponse = Mapper.Mappers.Map<VehicleResponse>(updateVehicle.Result);
-            return mapCableResponse;
+
+            var vehicledetails = _vehicleRepo.GetByIdVehicleData(request.Id);
+            if (vehicledetails is not null && vehicledetails.Result is not null)
+            {
+                vehicledetails.Result.ModifiedBy = request.ModifiedBy;
+                vehicledetails.Result.VIN = request.VIN;
+                vehicledetails.Result.LicencePlate = request.LicencePlate;
+                vehicledetails.Result.DomicileLocation = request.DomicileLocation;
+                vehicledetails.Result.VehicleMacAddress = request.VehicleMacAddress;
+                vehicledetails.Result.VehicleModelYearid = request.VehicleModelYearid;
+                vehicledetails.Result.VehicleModelId = request.VehicleModelId;
+                vehicledetails.Result.VehicleMakeId = request.VehicleMakeId;
+                vehicledetails.Result.Department = request.Department;
+                vehicledetails.Result.ModifiedOn = DateTime.Now;
+            }
+
+            if (request.RfIdCardsAssigneds != null && request.RfIdCardsAssigneds.Count() > 0)
+            {
+
+                List<VehicleRFID> cardsAssigned = new List<VehicleRFID>();
+                VehicleRFID vehicle = null;
+                var dataDublicate = request.RfIdCardsAssigneds.GroupBy(x => new { x.Name }).Where(x => x.Count() > 1).ToList();
+                if (dataDublicate != null && dataDublicate.Count() > 0)
+                {
+                    foreach (var name in dataDublicate)
+                    {
+                        vehicleResponse.VIN = name.Key.Name + ", " + vehicleResponse.VIN;
+                    }
+                    return vehicleResponse;
+
+
+                }
+                foreach (var item in request.RfIdCardsAssigneds.Where(m => m.Id == 0))
+                {
+                    vehicle = new VehicleRFID();
+                    vehicle.CreatedBy = request.ModifiedBy;
+                    vehicle.ModifiedBy = request.ModifiedBy;
+                    vehicle.ModifiedOn = DateTime.Now;
+                    vehicle.Name = item.Name;
+                    vehicle.IsActive = item.IsActive;
+                    vehicle.VehicleId = request.Id;
+                    cardsAssigned.Add(vehicle);
+                }
+                foreach (var item in request.RfIdCardsAssigneds.Where(m => m.Id > 0))
+                {
+                    vehicle = await _vehicleRepo.GetVehicleRFIDDetails(item.Id);
+                    vehicle.IsActive = item.IsActive;
+                    cardsAssigned.Add(vehicle);
+                }
+
+
+
+                vehicledetails.Result.vehicleRFID = cardsAssigned;
+            }
+            var vehicleResponses = await _vehicleRepo.UpdateVehicle(vehicledetails.Result);
+            return vehicleResponses;
         }
     }
 }
+
+

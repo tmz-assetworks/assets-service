@@ -2,9 +2,12 @@
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.Net;
 using System.Text.Json;
 
@@ -12,6 +15,7 @@ namespace AssetsService.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SubscriptionPlanController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -21,7 +25,7 @@ namespace AssetsService.Api.Controllers
         public SubscriptionPlanController(IMediator mediator, ILogger<SubscriptionPlan> logger)
         {
             _mediator = mediator;
-            _logger = logger;
+            //_logger = logger;
         }
         [HttpPost]
         [Route("/asset/subscriptionplan")]
@@ -31,12 +35,13 @@ namespace AssetsService.Api.Controllers
             try
             {
                 var result = await _mediator.Send(planCommand);
-                _logger.LogInformation("Create Subscription Plan successfully");
+                //_logger.LogInformation("Create Subscription Plan successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
@@ -49,40 +54,52 @@ namespace AssetsService.Api.Controllers
         [HttpGet]
         [Route("/asset/subscriptionplan")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetAllubscriptionPlan()
+        public async Task<ActionResult<AllSubscriptionplan>> GetAllubscriptionPlan()
         {
-            List<AssetsService.Core.Entities.SubscriptionPlan> obj = await _mediator.Send(new GetAllSubscriptionQuery());
+            AllSubscriptionplan allSubscriptionplan = new AllSubscriptionplan();
             try
             {
                 List<AssetsService.Core.Entities.SubscriptionPlan> res = await _mediator.Send(new GetAllSubscriptionQuery());
-                _logger.LogInformation("Get all the data of Subscription Plan");
-                return getjson(res);
+                allSubscriptionplan.StatusCode = (int)HttpStatusCode.OK;
+                allSubscriptionplan.StatusMessage = "Record found";
+                allSubscriptionplan.data = res;
+                //_logger.LogInformation("Get all the data of Subscription Plan");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
+                allSubscriptionplan.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allSubscriptionplan.StatusCode = (int)HttpStatusCode.NotFound;
+                allSubscriptionplan.data = null;
+                Log.Information("error occurred :" + ex.Message);
+                //_logger.LogError(ex.ToString());
 
             }
-            return JSONString;
+            return allSubscriptionplan;
         }
 
         [HttpGet("/asset/subscriptionplanById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetSubscriptionById(int id)
+        public async Task<ActionResult<SubscriptionplanById>> GetSubscriptionById(int id)
         {
+            SubscriptionplanById subscriptionplanById = new SubscriptionplanById();
             try
             {
-                SubscriptionPlan subscriptionPlan = await _mediator.Send(new GetSubscriptionByIdQuery(id));
-                _logger.LogInformation("Get the data of Subscription Plan by Id");
-                return getjson(subscriptionPlan);
+                SubscriptionPlan res = await _mediator.Send(new GetSubscriptionByIdQuery(id));
+                subscriptionplanById.StatusCode = (int)HttpStatusCode.OK;
+                subscriptionplanById.StatusMessage = "Record found";
+                subscriptionplanById.data = res;
+                //_logger.LogInformation("Get the data of Subscription Plan by Id");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
+                subscriptionplanById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                subscriptionplanById.StatusCode = (int)HttpStatusCode.NotFound;
+                subscriptionplanById.data = null;
+                Log.Information("error occurred :" + ex.Message);
+                //_logger.LogError(ex.ToString());
+
             }
-            return JSONString;
+            return subscriptionplanById;
         }
         string getjson(object res)
         {
@@ -108,12 +125,13 @@ namespace AssetsService.Api.Controllers
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Subscription Plan updated successfully");
+                //_logger.LogInformation("Subscription Plan updated successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",

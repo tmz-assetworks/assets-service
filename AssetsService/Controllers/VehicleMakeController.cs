@@ -2,9 +2,13 @@
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using System.Dynamic;
 using System.Net;
 using System.Text.Json;
 
@@ -12,6 +16,7 @@ namespace AssetsService.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VehicleMakeController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,7 +25,7 @@ namespace AssetsService.Api.Controllers
         public VehicleMakeController(IMediator mediator, ILogger<VehicleMakeController> logger)
         {
             _mediator = mediator;
-            _logger = logger;
+            //_logger = logger;
         }
         string getjson(object res)
         {
@@ -45,12 +50,13 @@ namespace AssetsService.Api.Controllers
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Create Vehicle Make successfully");
+                //_logger.LogInformation("Create Vehicle Make successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
@@ -61,40 +67,51 @@ namespace AssetsService.Api.Controllers
         }
         [HttpGet("GetAllVehicleMake")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetAllVehicleMake()
+        public async Task<ActionResult<AllVehicleMake>> GetAllVehicleMake()
         {
+            AllVehicleMake allVehicleMake = new AllVehicleMake();
             
             try
             {
                 List<AssetsService.Core.Entities.VehicleMake> res = await _mediator.Send(new GetAllVehicleMakeQuery());
-                _logger.LogInformation("Get all the data of Vehicle Make");
-                return getjson(res);
+                allVehicleMake.StatusCode = (int)HttpStatusCode.OK;
+                allVehicleMake.StatusMessage = "Record found";
+                allVehicleMake.data = res;
+                //_logger.LogInformation("Get all the data of Vehicle Make");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
+                allVehicleMake.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allVehicleMake.StatusCode = (int)HttpStatusCode.NotFound;
+                allVehicleMake.data = null;
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
-            return JSONString;
+            return allVehicleMake;
         }
         [HttpGet("getVehicleMakebyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetVehicleMakeById(int id)
+        public async Task<ActionResult<VehicleMakeById>> GetVehicleMakeById(int id)
         {
+            VehicleMakeById vehicleMakeById = new VehicleMakeById();
             try
             {
                 VehicleMake res = await _mediator.Send(new GetByIdVehicleMakeQuery(id));
-                _logger.LogInformation("Get the data of Vehicle Make by Id");
-                return getjson(res);
+                vehicleMakeById.StatusCode = (int)HttpStatusCode.OK;
+                vehicleMakeById.StatusMessage = "Record found";
+                vehicleMakeById.data = res;
+                //_logger.LogInformation("Get the data of Vehicle Make by Id");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
-
+                vehicleMakeById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                vehicleMakeById.StatusCode = (int)HttpStatusCode.NotFound;
+                vehicleMakeById.data = null;
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
             }
-            return JSONString;
+            return vehicleMakeById;
 
 
         }
@@ -105,12 +122,13 @@ namespace AssetsService.Api.Controllers
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Update Vehicle Make successfully");
+                //_logger.LogInformation("Update Vehicle Make successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
@@ -126,12 +144,13 @@ namespace AssetsService.Api.Controllers
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Delete Vehicle Make successfully");
+                //_logger.LogInformation("Delete Vehicle Make successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
@@ -140,5 +159,32 @@ namespace AssetsService.Api.Controllers
                 };
             }
         }
+
+
+        // [HttpGet("GetVehicleMakeDDLList")]
+        // [ProducesResponseType(StatusCodes.Status200OK)]
+        // public async Task<ActionResult<ExpandoObject>> GetVehicleMakeDDLList()
+        // {
+        //     dynamic vehicleMakeDDLResponse = new ExpandoObject();  
+        //     try
+        //     {
+        //         vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.OK;
+        //         vehicleMakeDDLResponse.statusMessage = "Record found.";
+        //         List<ListDropDown> res = await _mediator.Send(new GetVechicleMakeDDLQuery());
+               
+        //         vehicleMakeDDLResponse.data = res;
+        //         //_logger.LogInformation("Get all the data of Vehicle Make.");
+        //         return vehicleMakeDDLResponse;
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         vehicleMakeDDLResponse.statusMessage = "Operaion failed!";
+        //         vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.NotFound;
+        //         vehicleMakeDDLResponse.data = null;
+        //         //_logger.LogError(ex.ToString());
+
+        //     }
+        //     return vehicleMakeDDLResponse;
+        // }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AssetsService.Application.Handlers.Assets.CommandHandlers;
+using AssetsService.Application.Handlers.Assets.CommandHandlers;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Core.Repositories.Assets.Base;
 using AssetsService.Infrastructure.DBContext;
@@ -22,6 +22,10 @@ using AssetsService.Application.Handlers.Assets.QueryHandlers.Assets;
 using AssetsService.Api.Service;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AssetsService.Infrastructure.Helpers;
 
 namespace AssetsService.Api
 {
@@ -35,28 +39,64 @@ namespace AssetsService.Api
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+           .AddJwtBearer(options =>
+           {
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = true,
+                   ValidateAudience = true,
+                   ValidateLifetime = true,
+                   ValidateIssuerSigningKey = true,
+                   ValidIssuer = Configuration["Jwt:Issuer"],
+                   ValidAudience = Configuration["Jwt:Audience"],
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+               };
+           });
             services.AddControllers();
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbName = Environment.GetEnvironmentVariable("DB_NAME");
             var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
             var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
             services.AddDbContext<AssetsService.Infrastructure.DBContext.DBContextCore>(
-
-           // m => m.UseSqlServer(Configuration.GetConnectionString("AssetsDB")), ServiceLifetime.Transient);
+            //m => m.UseSqlServer(Configuration.GetConnectionString("AssetsDB")), ServiceLifetime.Transient);
             m => m.UseSqlServer(connectionString), ServiceLifetime.Transient);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Assets.API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "www.Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
             });
             services.AddCors();
             services.AddAutoMapper(typeof(Startup));
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICableRepository, CableRepository>();
             services.AddMediatR(typeof(CreateCableHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateCableHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(CreatePadHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdatePadHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(IsActivePadHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(CreateSubscriptionPlanHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateSubscriptionPlanHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(CreateRFIdHandler).GetTypeInfo().Assembly);
@@ -87,7 +127,7 @@ namespace AssetsService.Api
             services.AddTransient<IVehicleRepository, VehicleRepository>();
             services.AddMediatR(typeof(CreateVehicleHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateVehicleHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteVehicleHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(IsActiveVehicleHandler).GetTypeInfo().Assembly);
 
             services.AddTransient<IVehicleMakeRepository, VehicleMakeRepository>();
             services.AddMediatR(typeof(CreateVehicleMakeHandler).GetTypeInfo().Assembly);
@@ -115,8 +155,12 @@ namespace AssetsService.Api
             services.AddMediatR(typeof(CreatePricePlanHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdatePricePlanHandler).GetTypeInfo().Assembly);
             services.AddTransient<IPricePlanRepository, PricePlanRepository>();
+            services.AddTransient<ICombineAssetRepository, CombineAssetRepository>();
 
             services.AddTransient<ICountryRepository, CountryRepository>();
+
+            services.AddMediatR(typeof(IsActiveAssetHandler).GetTypeInfo().Assembly);
+            services.AddScoped<TokenBase>();
             services.AddHealthChecks()
                 .AddCheck<AssetHealthCheck>("example_health_check");
 
@@ -151,7 +195,7 @@ namespace AssetsService.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {

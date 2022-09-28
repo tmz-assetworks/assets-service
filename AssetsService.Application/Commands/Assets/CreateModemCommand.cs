@@ -1,55 +1,65 @@
+using System.ComponentModel.DataAnnotations;
+using AssetsService.Core.Entities;
 using AssetsService.Core.Responses;
 using MediatR;
 
 
 namespace AssetsService.Application.Commands.Assets
 {
-    public class CreateModemCommand : IRequest<ModemResponse>
+    public class CreateModemCommand : IRequest<Modem>
     {
-         public string AssetId { get; set; }
+        [StringLength(50, MinimumLength = 0, ErrorMessage = "AssetId must be fewer than 50 characters.")]
+        [Required]
+        public string AssetId { get; set; }
 
+        [StringLength(50, MinimumLength = 0, ErrorMessage = "carrier must be fewer than 50 characters.")]
+        [Required]
         public string Carrier { get; set; }
-
-        
+        [Required]
         public string CreatedBy { get; set; }
-
-        
-        public DateTime CreatedOn { get; set; }
-
+        [Required]
         public DateTime InstallationDate { get; set; }
-        public long MakeId { get; set; }
 
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid MakeMasterId")]
+        public long MakeMasterId { get; set; }
+
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModelId")]
+        [Required]
         public long ModelId { get; set; }
+        [StringLength(20, MinimumLength = 0, ErrorMessage = "SimNumber must be fewer than 20 characters.")]
 
-        public string ModifiedBy { get; set; }
+        [Required]
+        public string SimNumber { get; set; }
+        [Required]
+        public string SerialNumber { get; set; }
 
-        public DateTime ModifiedOn { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid StatusId")]
+        [Required]
+        public long StatusId { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModemTypeIdId")]
+        [Required]
+        public long ModemTypeId { get; set; }
 
-       // public long NetworkId { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid LocationId")]
+        [Required]
+        public long LocationId { get; set; }
 
-        public long SimNumber { get; set; }
+        [StringLength(50, MinimumLength = 0, ErrorMessage = "ImeiNumber must be fewer than 50 characters.")]
+        [Required]
+        public string ImeiNumber { get; set; }
+                
+      //[RegularExpression(@"^[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}}$", ErrorMessage = "Only Number  and dot are allowed.")]
 
-       // public string NetworkName { get; set; }
-
-        public long SerialNumber { get; set; }
-
-
-          public virtual long StatusId { get; set; }
-
-          public long ModemTypeId { get; set; }
-
-          public long LocationId { get; set; }
-       // public long SubNetworkId { get; set; }
-        
-        public long ImeiNumber { get; set; }
-
+       [Required]
         public string IpAddress { get; set; }
-
-      //  public string SubNetworkName { get; set; }
         public long WarrantyDuration { get; set; }
-
+        [DataType(DataType.DateTime)]
+        [Required]
         public DateTime WarrantyExpiryDate { get; set; }
+        [DataType(DataType.DateTime)]
+        [Required]
         public DateTime WarrantyStartDate { get; set; }
+        public bool IsActive { get; set; }
 
     }
-    }
+}

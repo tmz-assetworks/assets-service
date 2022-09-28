@@ -11,7 +11,7 @@ using AssetsService.Application.Handlers.Assets.QueryHandlers;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    public class GetByIdModemHandler : IRequestHandler<GetByIdModemsQuery, AssetsService.Core.Entities.Modem>
+    public class GetByIdModemHandler : IRequestHandler<GetByIdModemsQuery, AssetsService.Core.Entities.ModemByIDResponse>
     {
         private readonly IModemRepository _modemRepo;
 
@@ -20,14 +20,10 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
             _modemRepo = modemRepository;
         }
 
-     public async Task<AssetsService.Core.Entities.Modem> Handle(GetByIdModemsQuery request, CancellationToken cancellationToken)
+        public async Task<AssetsService.Core.Entities.ModemByIDResponse> Handle(GetByIdModemsQuery request, CancellationToken cancellationToken)
         {
-            return (AssetsService.Core.Entities.Modem)await _modemRepo.GetByIdModem(request.Id);
-        }
-
-        
-    }
-
-    
+            return await _modemRepo.GetByIdModem(request.Id);
+        }        
+    }   
 
 }

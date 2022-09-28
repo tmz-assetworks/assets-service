@@ -23,7 +23,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             {
                 throw new ApplicationException("Issue with mapper");
             }
-
+            pricePlanEntitiy.CreatedOn = DateTime.Now;
+            pricePlanEntitiy.ModifiedOn = DateTime.Now;
             var updatePricePlan = _pricePlanRepo.UpdateAsync(pricePlanEntitiy, request.Id, "PRICEPLAN");
             var mapPricePlanResponse = Mapper.Mappers.Map<PricePlanResponse>(updatePricePlan.Result);
             return mapPricePlanResponse;

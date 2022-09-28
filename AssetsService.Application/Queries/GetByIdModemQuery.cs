@@ -8,7 +8,7 @@ using AssetsService.Core.Entities;
 
 namespace AssetsService.Core.Queries
 {
-   public class GetByIdModemsQuery : IRequest<Modem>
+   public class GetByIdModemsQuery : IRequest<ModemByIDResponse>
     {
         public long Id { get; set; }
         public GetByIdModemsQuery(int id)

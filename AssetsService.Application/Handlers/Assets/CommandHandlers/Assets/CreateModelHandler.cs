@@ -1,4 +1,4 @@
-﻿using AssetsService.Application.Commands.Assets;
+using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Repositories;
 using AssetsService.Core.Mapper;
@@ -26,6 +26,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             {
                 throw new ApplicationException("Issue with mapper");
             }
+            ModelEntitiy.CreatedOn = DateTime.Now;
+            ModelEntitiy.ModifiedOn = DateTime.Now;
             ModelEntitiy.IsActive = true;
             var addModelResponse = await _ModelRepo.AddAsync(ModelEntitiy);
             var mapModelResponse = Mapper.Mappers.Map<ModelResponse>(addModelResponse);

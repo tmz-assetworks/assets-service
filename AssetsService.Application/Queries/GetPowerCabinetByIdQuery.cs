@@ -1,4 +1,5 @@
 using AssetsService.Core.Entities;
+using AssetsService.Core.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Core.Queries
 {
-    public class GetPowerCabinetByIdQuery : IRequest<PowerCabinet>
+    public class GetPowerCabinetByIdQuery : IRequest<GetPowerCabinetResponse>
     {
 
         public long Id{get ; set;}

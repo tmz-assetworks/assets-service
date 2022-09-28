@@ -1,5 +1,7 @@
 ﻿using AssetsService.Application.Queries;
+using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    public class GetByIdRFIdHandler : IRequestHandler<GetByIdRfIdReaderQuery, AssetsService.Core.Entities.RFIDReader>
+    public class GetByIdRFIdHandler : IRequestHandler<GetByIdRfIdReaderQuery, RFIDReaderDetails>
     {
         private readonly IRFIdRepository _rFIdRepository;
         public GetByIdRFIdHandler(IRFIdRepository rFIdRepository)
         {
             _rFIdRepository = rFIdRepository;
         }
-        public async Task<AssetsService.Core.Entities.RFIDReader> Handle(GetByIdRfIdReaderQuery request, CancellationToken cancellationToken)
+        public async Task<RFIDReaderDetails> Handle(GetByIdRfIdReaderQuery request, CancellationToken cancellationToken)
         {
-            return (AssetsService.Core.Entities.RFIDReader)await _rFIdRepository.GetByIdRfIdReader(Convert.ToInt32(request.Id));
+            return (RFIDReaderDetails)await _rFIdRepository.GetByIdRfIdReader(request.Id);
         }
     }
 }

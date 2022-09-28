@@ -7,12 +7,20 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Core.Responses
 {
-    public class CableQueryResponse
-    {
-        public int StatusCode { get; set; }
-        public string StatusMessage { get; set; }
-        public List<AssetsService.Core.Entities.Cable> data { get; set; }
-    }
+    // public class CableQueryResponse
+    // {
+    //     public int StatusCode { get; set; }
+    //     public string StatusMessage { get; set; }
+    //     public List<AssetsService.Core.Entities.Cable> data { get; set; }
+    // }
+
+    // public class CableByIdResponse
+    // {
+    //     public int StatusCode { get; set; }
+    //     public string StatusMessage { get; set; }
+    //     public AssetsService.Core.Entities.Cable data { get; set; }
+    // }
+
     public class CableResponse
     {
        

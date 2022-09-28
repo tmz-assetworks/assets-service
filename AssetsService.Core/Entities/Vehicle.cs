@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AssetsService.Core.Entities
 {
@@ -20,17 +17,22 @@ namespace AssetsService.Core.Entities
         public long Id { get; set; }
 
         [DataMember(Name = "VIN", EmitDefaultValue = false)]
+
         public string VIN { get; set; }
 
+        [RegularExpression("^[a-zA-Z0-9]{20}*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [DataMember(Name = "LicencePlate", EmitDefaultValue = false)]
-        public string LicencePlate { get; set; }
 
-        [DataMember(Name = "Department", EmitDefaultValue = false)]
+        public string LicencePlate { get; set; }
+       // [StringLength(5, ErrorMessage = "LicencePlate name must be 5 characters or less")]
+       [DataMember(Name = "Department", EmitDefaultValue = false)]
         public string Department { get; set; }
 
+        [RegularExpression("^[a-zA-Z0-9]{25}*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [DataMember(Name = "DomicileLocation", EmitDefaultValue = false)]
         public string DomicileLocation { get; set; }
 
+        [RegularExpression("^[a-zA-Z0-9]{25}*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [DataMember(Name = "VehicleMacAddress", EmitDefaultValue = false)]
         public string VehicleMacAddress { get; set; }
 
@@ -61,24 +63,29 @@ namespace AssetsService.Core.Entities
 
 
         [DataMember(Name = "VehicleModelYear", EmitDefaultValue = false)]
+        [Required]
         public long VehicleModelYearid { get; set; }
         public virtual VehicleModelYear VehicleModelYear { get; set; }
-
+        [Required]
         [DataMember(Name = "vehicleModelId", EmitDefaultValue = false)]
         public long VehicleModelId { get; set; }
         public virtual VehicleModel VehicleModel { get; set; }
 
         [DataMember(Name = "VehicleMakeId", EmitDefaultValue = false)]
+        [Required]
         public long VehicleMakeId { get; set; }
         public virtual VehicleMake VehicleMake { get; set; }
 
         [DataMember(Name = "SubscriptionPlanCustomerId", EmitDefaultValue = false)]
 
-         public long SubscriptionPlanCustomerId {get; set;}
-        public virtual SubscriptionPlan SubscriptionPlan {get;set;}
+        public long SubscriptionPlanCustomerId { get; set; }
+        public virtual SubscriptionPlan SubscriptionPlan { get; set; }
 
         public virtual ICollection<VehicleRFID> vehicleRFID { get; set; }
 
 
     }
+
+
+
 }

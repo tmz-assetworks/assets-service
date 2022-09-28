@@ -10,21 +10,28 @@ using System.Text.Json;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Core.Responses.Assets;
+using Serilog;
+using Microsoft.AspNetCore.Authorization;
+using AssetsService.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AssetsService.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ChargingInfrastureController : ControllerBase
     {
         private readonly IMediator _mediator;
 
         private readonly ILogger<ChargingInfrastureController> _logger;
         string JSONString = string.Empty;
-        public ChargingInfrastureController(IMediator mediator, ILogger<ChargingInfrastureController> logger)
+        TokenBase _token;
+        public ChargingInfrastureController(IMediator mediator, ILogger<ChargingInfrastureController> logger,TokenBase token)
         {
-            _logger = logger;
+            //_logger = logger;
             _mediator = mediator;
+            _token=token;
         }
 
         string getjson(object res)
@@ -51,18 +58,20 @@ namespace AssetsService.Api
             TotalLocationAndChargerResponse totalLocationAndChargerResponse = null;
             try
             {
+                _token.acces_token = await HttpContext.GetTokenAsync("access_token");
                 totalLocationAndChargerResponse = new TotalLocationAndChargerResponse();
                  totalLocationAndChargerResponse = await _mediator.Send(new GetTotalLocationAndChargerQuery());
                 totalLocationAndChargerResponse.StatusCode = (int)HttpStatusCode.OK;
                 totalLocationAndChargerResponse.StatusMessage = "Record found";
-                _logger.LogInformation("Get all data of Location");
+                ////_logger.LogInformation("Get all data of Location");
                 return totalLocationAndChargerResponse;
             }
             catch (Exception ex)
             {
                 totalLocationAndChargerResponse.StatusMessage = "Faild!";
                 totalLocationAndChargerResponse.StatusCode = (int)HttpStatusCode.NotFound;
-                _logger.LogError(ex.ToString());
+               // //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
             }
             return totalLocationAndChargerResponse;
         }

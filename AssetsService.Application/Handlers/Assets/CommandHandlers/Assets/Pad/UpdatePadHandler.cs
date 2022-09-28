@@ -28,7 +28,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.Pad
             {
                 throw new ApplicationException("Issue with mapper");
             }
-            var updatePad = _padRepo.UpdateAsync(padEntitiy, request.Id);
+            padEntitiy.ModifiedOn=DateTime.Now;
+            var updatePad = _padRepo.UpdateAsync(padEntitiy, request.Id, "PAD");
             var mapPadResponse = Mapper.Mappers.Map<PadResponse>(updatePad.Result);
             return mapPadResponse;
         }

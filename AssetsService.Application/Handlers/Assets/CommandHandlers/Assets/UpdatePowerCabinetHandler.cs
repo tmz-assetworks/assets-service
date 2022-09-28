@@ -32,8 +32,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             {
                 throw new ApplicationException("Issue with mapper");
             }
-
-            var updatePowerCabinet = _PowerCabinetRepo.UpdateAsync(PowerCabinetEntitiy, PowerCabinetEntitiy.Id);
+            PowerCabinetEntitiy.ModifiedOn = DateTime.Now;
+            var updatePowerCabinet = _PowerCabinetRepo.UpdateAsync(PowerCabinetEntitiy, PowerCabinetEntitiy.Id, "powercabinet");
             var mapUserResponse = Mapper.Mappers.Map<PowerCabinetResponse>(updatePowerCabinet.Result);
             return mapUserResponse;
         }

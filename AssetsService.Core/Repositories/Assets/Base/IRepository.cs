@@ -18,6 +18,6 @@ namespace AssetsService.Core.Repositories.Assets.Base
         Task<T> DeleteDispenserAsync(T entity, long id,string types);
         Task<T> DeleteLocationAsync(T entity, long id,string types);
 
-
+        Task<T> IsActiveStatusChangeAsync(T entity, long id, string types);
     }
 }

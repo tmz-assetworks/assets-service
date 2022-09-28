@@ -3,7 +3,9 @@ using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
@@ -12,16 +14,17 @@ namespace AssetsService.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PosController : ControllerBase
     {
         private readonly IMediator _mediator;
-       
+
         private readonly ILogger<PosController> _logger;
         string JSONString = String.Empty;
         public PosController(IMediator mediator, ILogger<PosController> logger)
         {
             _mediator = mediator;
-            _logger = logger;
+            //_logger = logger;
         }
         string getjson(object res)
         {
@@ -41,42 +44,53 @@ namespace AssetsService.Api
         }
         [HttpGet("GetAllPos")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetAllPos()
+        public async Task<ActionResult<AllPos>> GetAllPos()
         {
-            List<AssetsService.Core.Entities.Pos> obj =await _mediator.Send(new GetAllPosQuery());
+            AllPos allPos = new AllPos();
             try
             {
                 List<AssetsService.Core.Entities.Pos> res = await _mediator.Send(new GetAllPosQuery());
-                _logger.LogInformation("Get all the data of Pos");
-                return getjson(res);
+                allPos.StatusCode = (int)HttpStatusCode.OK;
+                allPos.StatusMessage = "Record found";
+                allPos.data = res;
+                //_logger.LogInformation("Get all the data of Pos");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
-
+                allPos.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allPos.StatusCode = (int)HttpStatusCode.NotFound;
+                allPos.data = null;
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
             }
-            return JSONString;
+            return allPos;
         }
 
 
-            [HttpGet("getPosbyid")]
+        [HttpGet("getPosbyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetPosById(int id)
+        public async Task<ActionResult<PosById>> GetPosById(int id)
         {
+            PosById posById = new PosById();
             try
             {
                 Pos res = await _mediator.Send(new GetByIdPosQuery(id));
-                _logger.LogInformation("Get the data of Pos by Id");
-                return getjson(res);
+                posById.StatusCode = (int)HttpStatusCode.OK;
+                posById.StatusMessage = "Record found";
+                posById.data = res;
+                //_logger.LogInformation("Get the data of Pos by Id");
+
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
+                posById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                posById.StatusCode = (int)HttpStatusCode.NotFound;
+                posById.data = null;
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
-            return JSONString;
+            return posById;
 
 
         }
@@ -87,12 +101,13 @@ namespace AssetsService.Api
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Create Pos successfully");
+                //_logger.LogInformation("Create Pos successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
@@ -108,16 +123,20 @@ namespace AssetsService.Api
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Update Pos successfully");
+                //_logger.LogInformation("Update Pos successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
                     StatusCode = 404,
                     Content = "Pos not Created "
                 };
-        }}}}
+            }
+        }
+    }
+}

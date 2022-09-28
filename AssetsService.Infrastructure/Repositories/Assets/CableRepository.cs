@@ -1,5 +1,7 @@
 ﻿using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories.Assets;
+using AssetsService.Core.Responses.Assets;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,15 +14,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
         }
         public async Task<IEnumerable<AssetsService.Core.Entities.Cable>> GetEmployeeById(long cableId)
-
         {
             return await _dbContext.Cables
                 .Where(m => m.Id == cableId)
                 .ToListAsync();
         }
-        public async Task<List<Cable>> GetAllCable()
+        public async Task<PagedList<Cable>> GetAllCable(GetAllCableRequest getAllCableRequest)
         {
-            return await _dbContext.Cables
+            List<Cable> result = new List<Cable>();
+            result = await _dbContext.Cables
                  .Select(m => new Cable
                  {
                      Id = m.Id,
@@ -32,70 +34,18 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ModelId = m.ModelId,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
+                     //  NetworkId = m.NetworkId,
+                     //  NetworkName = m.NetworkName,
                      SerialNumber = m.SerialNumber,
                      StatusId = m.StatusId,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
+                     //  SubNetworkId = m.SubNetworkId,
+                     //  SubNetworkName = m.SubNetworkName,
                      WarrantyDuration = m.WarrantyDuration,
                      WarrantyExpiryDate = m.WarrantyExpiryDate,
                      WarrantyStartDate = m.WarrantyStartDate,
                      IsActive = m.IsActive,
-
-                     MakeMaster = (from obls in _dbContext.MakeMaster.Where(x => x.Id == m.MakeMasterId)
-                                select new MakeMaster
-                                {
-                                    Id = obls.Id,
-                                    Name = obls.Name,
-                                    Description = obls.Description,
-                                    IsActive = obls.IsActive,
-                                    CreatedBy = obls.CreatedBy,
-                                    ModifiedBy = obls.ModifiedBy,
-                                    ModifiedOn = obls.ModifiedOn,
-                                    CreatedOn = (obls.CreatedOn==DateTime.MinValue? DateTime.MinValue: obls.CreatedOn),
-
-                                }).FirstOrDefault(),
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
-                              select new Status
-                              {
-                                  Id = obls.Id,
-                                  StatusName = obls.StatusName,
-                                  IsActive = obls.IsActive,
-                                  CreatedBy = obls.CreatedBy,
-                                  CreatedOn = obls.CreatedOn,
-                                  ModifiedBy = obls.ModifiedBy,
-                                  ModifiedOn = obls.ModifiedOn,
-
-                              }).FirstOrDefault(),
-                 })
-                 .ToListAsync();
-        }
-        public async Task<Cable> GetByIdCable(long Cableid)
-        {
-            return  _dbContext.Cables
-                 .Select(m => new Cable
-                 {
-                     Id = m.Id,
-                     AssetId = m.AssetId,
-                     CreatedBy = m.CreatedBy,
-                     CreatedOn = m.CreatedOn,
-                     InstallationDate = m.InstallationDate,
-                     MakeMasterId = m.MakeMasterId,
-                     ModelId = m.ModelId,
-                     ModifiedBy = m.ModifiedBy,
-                     ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
-                     SerialNumber = m.SerialNumber,
-                     StatusId = m.StatusId,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
-                     WarrantyDuration = m.WarrantyDuration,
-                     WarrantyExpiryDate = m.WarrantyExpiryDate,
-                     WarrantyStartDate = m.WarrantyStartDate,
-                     IsActive = m.IsActive,
-
+                     LocationId = m.LocationId,
+                     Model = m.Model,
                      MakeMaster = (from obls in _dbContext.MakeMaster.Where(x => x.Id == m.MakeMasterId)
                                    select new MakeMaster
                                    {
@@ -106,9 +56,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                        CreatedBy = obls.CreatedBy,
                                        ModifiedBy = obls.ModifiedBy,
                                        ModifiedOn = obls.ModifiedOn,
-                                       CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-
+                                       CreatedOn = obls.CreatedOn,//==DateTime.MinValue? DateTime.MinValue: obls.CreatedOn),
                                    }).FirstOrDefault(),
+
                      Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
                                select new Status
                                {
@@ -121,8 +71,74 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                    ModifiedOn = obls.ModifiedOn,
 
                                }).FirstOrDefault(),
-                 }).Where(x => x.Id == Cableid).FirstOrDefault();
+                 })
+                 .ToListAsync();
+            var dataResult = PagedList<Cable>.ToPagedList(result,
+   getAllCableRequest.PageNumber,
+   getAllCableRequest.PageSize);
+            return (dataResult);
         }
+        public async Task<CableData> GetByIdCable(long Cableid)
+        {
+            return (from m in _dbContext.Cables.Where(t => t.Id == Cableid)
+                    select new CableData
+                    {
+                        Id = m.Id,
+                        AssetId = m.AssetId,
+                        MakeMasterId = m.MakeMasterId,
+                        ModelId = (long)m.ModelId,
+                        SerialNumber = m.SerialNumber,
+                        LocationName = m.Location.LocationName,
+                        ModelName = m.Model.ModelName,
+                        StatusName = m.Status.StatusName,
+                        WarrantyDuration = m.WarrantyDuration,
+                        WarrantyExpiryDate = m.WarrantyExpiryDate,
+                        WarrantyStartDate = m.WarrantyStartDate,
+                        IsActive = m.IsActive,
+                        LocationId = m.LocationId,
+                        StatusId = m.StatusId,
+                        MakeMasterName = m.MakeMaster.Name
 
+                    }).FirstOrDefault();
+        }
+        public async Task<CreateCableResponse> CreateCable(Cable cable)
+        {
+            CreateCableResponse createCableResponse = new CreateCableResponse();
+            cable.CreatedOn = DateTime.Now;
+            cable.ModifiedOn = DateTime.Now;
+            cable.IsActive = true;
+            cable.ModifiedBy = "";
+            _dbContext.Cables.Add(cable);
+            _dbContext.SaveChanges();
+            createCableResponse.Id = cable.Id;
+            return (createCableResponse);
+        }
+        public async Task<Cable> Updatecable(Cable cable)
+        {
+            try
+            {
+                Cable oldCable = _dbContext.Cables.Find(cable.Id);
+                oldCable.AssetId = cable.AssetId;
+                oldCable.LocationId = cable.LocationId;
+                oldCable.MakeMasterId = cable.MakeMasterId;
+                oldCable.ModelId = cable.ModelId;
+                oldCable.StatusId = cable.StatusId;
+                oldCable.WarrantyDuration = cable.WarrantyDuration;
+                oldCable.WarrantyExpiryDate = cable.WarrantyExpiryDate;
+                oldCable.WarrantyStartDate = cable.WarrantyStartDate;
+                oldCable.ModifiedBy = cable.ModifiedBy;
+                oldCable.SerialNumber = cable.SerialNumber;
+                oldCable.ModifiedOn = DateTime.Now;
+
+                _dbContext.Update(oldCable);
+                _dbContext.SaveChanges();
+
+            }
+            catch
+            {
+                cable.Id = 0;
+            }
+            return (cable);
+        }
     }
 }

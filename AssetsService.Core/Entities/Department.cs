@@ -11,16 +11,17 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Core.Entities
 {
-    
+
     [DataContract]
     public partial class Department
     {
-         [Key]
+        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public long Id { get; set; }
 
         [DataMember(Name = "departmentName", EmitDefaultValue = false)]
+        [StringLength(40, MinimumLength = 2)]
         public string DepartmentName { get; set; }
 
 
@@ -55,4 +56,4 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
     }
-    }
+}

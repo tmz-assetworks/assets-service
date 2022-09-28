@@ -17,11 +17,12 @@ namespace AssetsService.Core.Entities
     {
 
         [Key]
-        [DataMember(Name = "id", EmitDefaultValue = false)]       
+        [DataMember(Name = "id", EmitDefaultValue = false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }      
+        public long Id { get; set; }
 
         [DataMember(Name = "locationStatusName", EmitDefaultValue = false)]
+        [StringLength(40, MinimumLength = 2)]
         public string LocationStatusName { get; set; }
 
         [DataMember(Name = "createdBy", EmitDefaultValue = false)]
@@ -38,8 +39,8 @@ namespace AssetsService.Core.Entities
 
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
-        
 
 
-}
+
+    }
 }

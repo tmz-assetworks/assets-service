@@ -1,6 +1,7 @@
 using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.Entities;
 using AssetsService.Core.Mapper;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Core.Responses;
@@ -15,7 +16,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
 {
 
 
-    public class UpdateLocationHandler : IRequestHandler<UpdateLocationCommand, LocationResponse>
+    public class UpdateLocationHandler : IRequestHandler<UpdateLocationCommand, Location>
     {
         private readonly ILocationRepository _LocationRepo;
 
@@ -25,17 +26,53 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         }
 
 
-        public async Task<LocationResponse> Handle(UpdateLocationCommand request, CancellationToken cancellationToken)
+        public async Task<Location> Handle(UpdateLocationCommand request, CancellationToken cancellationToken)
         {
+
             var LocationEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Location>(request);
             if (LocationEntitiy is null)
             {
                 throw new ApplicationException("Issue with mapper");
             }
+            LocationEntitiy.ModifiedBy = request.UserId;
+            LocationEntitiy.CreatedOn = DateTime.Now;
+            LocationEntitiy.ModifiedOn = DateTime.Now;
+            LocationEntitiy.LocationAddress = new Core.Entities.LocationAddress()
+            {
+                AddressLine1 = request.AddressLine1,
+                AddressLine2 = request.AddressLine2,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude,
+                Id = request.LocationAddressId,
+                CountryId = request.CountryId,
+                CountryName = request.CountryName,
+                StateId = request.StateId,
+                StateName = request.StateName,
+                CityId = request.CityId,
+                CityName = request.CityName,
+                PinCode = request.PinCode,
+                ModifiedOn = DateTime.Now,
+                ModifiedBy = request.UserId,
+            };
+             List<LocationSchedule> locationSchedules = new List<LocationSchedule>();
+            for (int i = 0; i < request.locationScheduleCommand.Count(); i++)
+            {
+                locationSchedules.Add(new LocationSchedule()
+                {
+                    Id = request.locationScheduleCommand[i].Id,
+                    ModifiedOn = DateTime.Now,
+                    Day = request.locationScheduleCommand[i].Day,
+                    LocationId = 0,
+                    StartTime = request.locationScheduleCommand[i].StartTime,
+                    EndTime = request.locationScheduleCommand[i].EndTime,
+                    ModifiedBy = request.UserId
+                });
+            }
+            LocationEntitiy.LocationSchedule = locationSchedules;
 
-            var updateLocation = _LocationRepo.UpdateAsync(LocationEntitiy, LocationEntitiy.Id);
-            var mapUserResponse = Mapper.Mappers.Map<LocationResponse>(updateLocation.Result);
-            return mapUserResponse;
+            var updateLocation = await _LocationRepo.UpdateLocation(LocationEntitiy);
+           // var mapUserResponse = Mapper.Mappers.Map<LocationResponse>(updateLocation.Result);
+            return updateLocation;
         }
 
     }

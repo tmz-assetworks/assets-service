@@ -1,4 +1,5 @@
 ﻿using AssetsService.Core.Repositories.Assets.Base;
+using AssetsService.Core.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,8 @@ namespace AssetsService.Core.Repositories
     public interface IPadRepository : IRepository<AssetsService.Core.Entities.Pad>
     {
         //custom operations here
-        Task<List<AssetsService.Core.Entities.Pad>> GetAllPad();
-        Task<AssetsService.Core.Entities.Pad> GetPadById(long padId);
+        Task<List<GetPadResponse>> GetAllPad();
+        Task<GetPadResponse> GetPadById(long padId);
 
 
 

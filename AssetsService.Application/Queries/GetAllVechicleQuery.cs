@@ -19,8 +19,5 @@ namespace AssetsService.Application.Queries
             this.GetAllVehicleRequest = getAllVehicleRequest;
 
         }
-
-
-
     }
 }

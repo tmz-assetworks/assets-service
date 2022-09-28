@@ -1,63 +1,49 @@
-﻿using AssetsService.Application.Responses.Assets;
+﻿using System.ComponentModel.DataAnnotations;
+using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.Entities;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AssetsService.Application.Commands.Assets
 {
-    public class UpdateVehicleCommand : IRequest<VehicleResponse>
+    public class UpdateVehicleCommand : IRequest<CreateVehicleResponse>
     {
-        
+        public long Id { get; set; }
+        [RegularExpression("^[a-zA-Z0-9]{1,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [StringLength(50, MinimumLength = 0, ErrorMessage = "Vin must be fewer than 50 characters.")]
+        [Required]
+        public string VIN { get; set; }
+        [RegularExpression("^[a-zA-Z0-9]{0,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [StringLength(20, MinimumLength = 0, ErrorMessage = "LicencePlate must be fewer than 50 characters.")]
+        public string LicencePlate { get; set; }
+        [StringLength(255, MinimumLength = 0, ErrorMessage = "Department must be fewer than 255 characters.")]
+        public string Department { get; set; }
+        [RegularExpression("^[a-zA-Z0-9]{0,25}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [StringLength(25, MinimumLength = 0, ErrorMessage = "DomicileLocation must be fewer than 50 characters.")]
+        public string DomicileLocation { get; set; }
+        [StringLength(25, MinimumLength = 0, ErrorMessage = "VehicleMacAddress must be fewer than 25 characters.")]
+        public string VehicleMacAddress { get; set; }
+        //  public bool IsActive { get; set; }
+        public string ModifiedBy { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid VehicleMOdelYearIdId")]
+
+        [Required]
+        public long VehicleModelYearid { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid MakeModelId")]
+        [Required]
+        public long VehicleModelId { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid VehicleMakeId")]
+        [Required]
+        public long VehicleMakeId { get; set; }
+        public List<RfIdCardsAssigned> RfIdCardsAssigneds { get; set; }
+    }
+    public class RfIdCardsAssigned
+    {
         public long Id { get; set; }
 
-        
-        public string VIN { get; set; }
-
-       
-        public string LicencePlate { get; set; }
-
-        
-        public string Department { get; set; }
-
-        
-        public string DomicileLocation { get; set; }
-
-       
-        public string VehicleMacAddress { get; set; }
-
+        public string Name { get; set; }
 
         public bool IsActive { get; set; }
-        public string CreatedBy { get; set; }
-
-       
-        public DateTime CreatedOn { get; set; }
-
-
-        public string ModifiedBy { get; set; }
-      
-        public DateTime ModifiedOn { get; set; }
-
-    
-
-       
-        public long VehicleModelYearid { get; set; }
-      
-        public long VehicleModelId { get; set; }
-      
-
-       
-        public long VehicleMakeId { get; set; }
-
-        public long CustomerId {get; set;}
-        
-
-        
-        public long vehicleRFIDid { get; set; }
-
-     ///   public long VehicleSubscriptionPlanId {get; set;}
-       
     }
+
+
 }

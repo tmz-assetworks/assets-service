@@ -5,41 +5,125 @@ using System.Text;
 using System.Threading.Tasks;
 using AssetsService.Core.Entities;
 using AssetsService.Core.PagingHelper;
+using AssetsService.Core.Response;
 
 namespace AssetsService.Core.Responses.Assets
 {
-
-
-   
-
-   
     public class AllVehicle
     {
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
-        public string Active {get; set;}
-        public string Inactive {get; set;}
+        public string Active { get; set; }
+        public string Inactive { get; set; }
         public PagedList<Vehicle> data { get; set; }
         public PaginationResponse paginationResponse { get; set; }
 
     }
 
+
+
+    public class VehicleListResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public List<StatusData> statusData { get; set; }
+        public PagedList<VehicleDTO> data { get; set; }
+        public PaginationResponse paginationResponse { get; set; }
+
+    }
+    public class VehicleListData
+    {
+        
+        public int Active { get; set; }
+        public int InActive { get; set; }
+       
+        public PagedList<VehicleDTO> data { get; set; }       
+
+    }
+
+  
     public class StatusVehicleresponcse
     {
-         public string Active {get; set;}
-        public string Inactive {get; set;}
+        public string Active { get; set; }
+        public string Inactive { get; set; }
         public PagedList<Vehicle> data { get; set; }
 
     }
-public class VehicleId{
-    public int StatusCode { get; set;}
-    public string StatusMessage { get;set;}
+    public class VehicleDetailsResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
 
-    public Vehicle data {get;set;}
-}
- public class GetAllVehicleRequest : QueryStringParameters
+        public List<VehicleDTO> data { get; set; }
+    }
+
+    public class VehicleInfo
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+
+        public Vehicle data { get; set; }
+    }
+    public class GetAllVehicleRequest : QueryStringParameters
     {
         public string? opratorid { get; set; }
     }
-  
+    public class CreateVehicle
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public CreateVehicleResponse data { get; set; }
+    }
+    public class CreateVehicleResponse
+
+    {
+        public long id { get; set; }
+        public string VIN { get; set; }
+        public long VehicleModelYearid { get; set; }
+        public long VehicleMakeId { get; set; }
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public long VehicleModelId { get; set; }
+        public string LicencePlate { get; set; }
+        public string Department { get; set; }
+        public string DomicileLocation { get; set; }
+        public string VehicleMacAddress { get; set; }
+        public List <Rfids> rfids{ get; set; }
+    }
+
+    public class VehicleDTO
+    {
+        public long Id { get; set; }
+        public string VIN { get; set; }
+        public string LicencePlate { get; set; }
+        public string Department { get; set; }
+        public string DomicileLocation { get; set; }
+        public string VehicleMacAddress { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime ModifiedOn { get; set; }
+
+        public long VehicleModelYearid { get; set; }
+        public string VehicleModelYear { get; set; }
+        public string VehicleModelName { get; set; }
+        public string VehicleMakeName { get; set; }
+        public string vehicleRFIDName { get; set; }
+        public long VehicleModelId { get; set; }
+        public long VehicleMakeId { get; set; }
+        public List <VehicleRFIDId> vehicleRFIDIds  { get; set; }
+      
+    }
+    public class VehicleRFIDId
+    {
+        public long Id { get;set;}
+        public string Name {get;set;}
+        public bool IsActive { get;set;}
+
+    }
+    public class Rfids{
+        public long Id{get;set;}
+        public string Name{get;set;}
+        public bool IsActive { get;set;}
+    }
 }

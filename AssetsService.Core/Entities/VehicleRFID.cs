@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AssetsService.Core.Entities
 {
+    
     [DataContract]
     public partial class VehicleRFID
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public long Id { get; set; }
+        public long  Id { get; set; }
 
         [DataMember(Name = "Name", EmitDefaultValue = false)]
-        public string Name { get; set; }
+        public string  Name { get; set; }
 
         [DataMember(Name = "IsActive", EmitDefaultValue = false)]
-        public bool IsActive { get; set; }
+        public bool  IsActive { get; set; }
 
         [DataMember(Name = "createdBy", EmitDefaultValue = false)]
         [Column(TypeName = "nvarchar(100)")]
@@ -42,7 +40,6 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "modifiedBy", EmitDefaultValue = false)]
         [Column(TypeName = "nvarchar(100)")]
         public string ModifiedBy { get; set; }
-
         /// <summary>
         /// Gets or Sets ModifiedOn
         /// </summary>

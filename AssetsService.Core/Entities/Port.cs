@@ -21,7 +21,7 @@ namespace AssetsService.Core.Entities
         public long DispenserId { get; set; }
         public virtual Dispenser Dispenser { get; set; }
        
-        public long ConnectorId { get; set; }
+        public int ConnectorId { get; set; }
 
 
         [DataMember(Name = "connectorType", EmitDefaultValue = false)]

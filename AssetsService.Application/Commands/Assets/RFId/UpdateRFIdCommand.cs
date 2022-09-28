@@ -1,34 +1,52 @@
 ﻿using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AssetsService.Application.Commands.Assets.RFId
 {
-    public class UpdateRFIdCommand : IRequest<RFIdResponse>
+    public class UpdateRFIdCommand : IRequest<RFIDReader>
     {
+
+        [Range(1, long.MaxValue, ErrorMessage = "Please provide the Id value.")]
         public long Id { get; set; }
+
+        [Required(ErrorMessage = "Please provide the AssetId value.")]
+        [StringLength(50, ErrorMessage = "AssetId must be fewer than 50 characters.")]
         public string AssetId { get; set; }
-        public string CardReader { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public bool IsActive { get; set; }
-        public long MakeId { get; set; }
-        public long ModelId { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime ModifiedOn { get; set; }
-        // public long NetworkId { get; set; }
-        // public string NetworkName { get; set; }
-        public long SerialNumber { get; set; }
-        public long StatusId { get; set; }
-        // public long SubNetworkId { get; set; }
-        // public string SubNetworkName { get; set; }
-        public long WarrantyDuration { get; set; }
-        public DateTime WarrantyExpiryDate { get; set; }
+        //[StringLength(20, ErrorMessage = "SerialNumber lenght must be 1 or 20 alpha numeric.")]
+        [Required(ErrorMessage = "Please provide the SerialNumber value.")]
+        [StringLength(20, ErrorMessage = "SerialNumber must be fewer than 20 characters.")]
+        public string SerialNumber { get; set; }
+
+        [Range(1, long.MaxValue, ErrorMessage = "Please provide the LocationId value.")]
         public long LocationId { get; set; }
+        [Range(1, long.MaxValue, ErrorMessage = "Please provide the StatusId value.")]
+        public long StatusId { get; set; }
+
+        [Required(ErrorMessage = "Please provide the CardReader value.")]
+        [StringLength(20, ErrorMessage = "CardReader must be fewer than 20 characters.")]
+        public string CardReader { get; set; }
+
+        [Required(ErrorMessage = "Please provide the MakeMasterId value.")]
+        [Range(1, long.MaxValue, ErrorMessage = "Please provide the MakeMasterId value.")]
+        public long MakeMasterId { get; set; }
+        [Required(ErrorMessage = "Please provide the ModelId value.")]
+        [Range(1, long.MaxValue, ErrorMessage = "Please provide the ModelId value.")]
+        public long ModelId { get; set; }
         public DateTime WarrantyStartDate { get; set; }
+        public DateTime WarrantyExpiryDate { get; set; }
+        public long WarrantyDuration { get; set; }
+
+        [Required(ErrorMessage = "Please provide the value of ModifiedBy.")]
+        public string ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
+      
+      
     }
 }

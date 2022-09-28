@@ -8,11 +8,14 @@ using AssetsService.Application.Responses.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Core.Response;
 using AssetsService.Core.Responses.Assets;
+using Serilog;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssetsService.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CountryController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -21,14 +24,14 @@ namespace AssetsService.Api
         string JSONString = string.Empty;
         public CountryController(IMediator mediator, ILogger<CountryController> logger)
         {
-            _logger = logger;
+            //_logger = logger;
             _mediator = mediator;
         }
 
 
 
 
-        [HttpGet("getallcity")]
+        [HttpGet("getallcountry")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<AllCountryResponse> GetAllCity()
         {
@@ -45,6 +48,7 @@ namespace AssetsService.Api
                 allCityResponse.StatusMessage = ex.Message.ToString();
                 allCityResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 allCityResponse.data = null;
+                Log.Information("error occurred :" + ex.Message);
 
             }
             return allCityResponse;
@@ -62,14 +66,15 @@ namespace AssetsService.Api
                 stateByCountryIdResponse.StatusMessage = "Record found";
                 stateByCountryIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 stateByCountryIdResponse.data = states;
-                _logger.LogInformation("Get the all data of State by country Id");
+                ////_logger.LogInformation("Get the all data of State by country Id");
             }
             catch (Exception ex)
             {
                 stateByCountryIdResponse.StatusMessage = ex.Message.ToString();
                 stateByCountryIdResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 stateByCountryIdResponse.data = null;
-                _logger.LogError(ex.ToString());
+                ////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
             return stateByCountryIdResponse;
@@ -88,14 +93,15 @@ namespace AssetsService.Api
                 cityByStateIdResponse.StatusMessage = "Record found";
                 cityByStateIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 cityByStateIdResponse.data = city;
-                _logger.LogInformation("Get the all data of City by state Id");
+                ////_logger.LogInformation("Get the all data of City by state Id");
             }
             catch (Exception ex)
             {
                 cityByStateIdResponse.StatusMessage = ex.Message.ToString();
                 cityByStateIdResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 cityByStateIdResponse.data = null;
-                _logger.LogError(ex.ToString());
+                //////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
             return cityByStateIdResponse;

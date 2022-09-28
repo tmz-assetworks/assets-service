@@ -5,41 +5,69 @@ namespace AssetsService.Api
 {
     public class Program
     {
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
+            //string connectionString = Environment.GetEnvironmentVariable("logurl");
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=assetswork;AccountKey=Rk7iyAEtGHdMWfojFlyE23dXYsMDUkH1zvLghSjWW9kZX7Ecv6wuJuvRifNQfOChKmY5d1Hvx7mE+AStxFztQw==;EndpointSuffix=core.windows.net";
+            var containerName = "assets-service-log";
             Log.Logger = new LoggerConfiguration()
-          .MinimumLevel.Debug()
-          .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-          .Enrich.FromLogContext()
-          .WriteTo.File("Log//log.txt", rollingInterval: RollingInterval.Day)
-          //.WriteTo.Seq("http://localhost:5341")
-          .CreateLogger();
-
-            CreateHostBuilder(args).Build().Run();
+                 .WriteTo.Console().WriteTo.Debug(outputTemplate: DateTime.Now.ToString()).WriteTo.File("./logs/log-.txt", rollingInterval: RollingInterval.Day)
+                 .WriteTo.AzureBlobStorage(connectionString, LogEventLevel.Information,
+                        containerName,
+                        "{yyyy}{MM}{dd}.txt",
+                        null,
+                        false,
+                        TimeSpan.FromMinutes(1),
+                        null,
+                        true)
+                 .CreateLogger();
             try
             {
-                Log.Information("Starting host===========================================================");
-
-                return 0;
+                Log.Information("Starting AssetAPI-Service !");
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "Host terminated unexpectedly");
-                return 1;
+                Log.Fatal(ex, "Host terminated unexpected !");
             }
             finally
             {
                 Log.CloseAndFlush();
             }
 
-            //CreateHostBuilder(args).Build().Run();
+          // Log.Logger = new LoggerConfiguration()
+          //.MinimumLevel.Debug()
+          //.MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+          //.Enrich.FromLogContext()
+          //.WriteTo.File("Log//log.txt", rollingInterval: RollingInterval.Day)
+          ////.WriteTo.Seq("http://localhost:5341")
+          //.CreateLogger();
+
+           
+          //  try
+          //  {
+          //      Log.Information("Starting host===========================================================");
+
+          //      return 0;
+          //  }
+          //  catch (Exception ex)
+          //  {
+               
+          //      Log.Fatal(ex, "Host terminated unexpectedly");
+          //      return 1;
+          //  }
+          //  finally
+          //  {
+          //      Log.CloseAndFlush();
+          //  }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
           Host.CreateDefaultBuilder(args).UseSerilog()
             .ConfigureWebHostDefaults(webBuilder =>{
                 webBuilder.UseStartup<Startup>()
-                 .UseUrls("http://*:6009");
+               .UseUrls("http://*:6009");
             });
     }
 }

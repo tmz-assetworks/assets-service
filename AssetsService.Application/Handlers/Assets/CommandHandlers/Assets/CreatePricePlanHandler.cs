@@ -21,6 +21,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             {
                 throw new ApplicationException("Issue with mapper");
             }
+            pricePlanEntitiy.CreatedOn = DateTime.Now;
+            pricePlanEntitiy.ModifiedOn = DateTime.Now;
             var addPricePlanResponse = await _pricePlanRepo.AddAsync(pricePlanEntitiy);
             var mapPricePlanResponse = Mapper.Mappers.Map<PricePlanResponse>(addPricePlanResponse);
             return mapPricePlanResponse;

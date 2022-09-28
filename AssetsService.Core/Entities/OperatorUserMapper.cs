@@ -30,7 +30,7 @@ namespace AssetsService.Core.Entities
         public string UserName { get; set; }
 
         [DataMember(Name = "userId", EmitDefaultValue = false)]
-        public string UserId { get; set; }
+        public long UserId { get; set; }
 
         [DataMember(Name = "IsActive", EmitDefaultValue = false)]
         public bool IsActive { get; set; }

@@ -4,6 +4,7 @@ using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
+using AssetsService.Core.Response;
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
@@ -14,11 +15,11 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
 
         }
-
-        public async Task<PowerCabinet> GetPowerCabinetById(long powerCabinetId)
+        
+        public async Task<List<GetPowerCabinetResponse>> GetPowerCabinetData()
         {
-            return _dbContext.PowerCabinet
-                 .Select(m => new PowerCabinet
+                 return _dbContext.PowerCabinet
+                 .Select(m => new GetPowerCabinetResponse
                  {
                      Id = m.Id,
                      AssetId = m.AssetId,
@@ -27,29 +28,55 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      CreatedOn = m.CreatedOn,
                      DcPortQuantityRating = m.DcPortQuantityRating,
                      InstallationDate = m.InstallationDate,
-                     MakeId = m.MakeId,
-                     ModelId = m.ModelId,
+                     MakeMasterId = m.MakeMasterId,
+                     ModelId = (long)m.ModelId,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
                      PeakCurrent = m.PeakCurrent,
                      SerialNumber = m.SerialNumber,
                      ServiceVolts = m.ServiceVolts,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
                      WarrantyDuration = m.WarrantyDuration,
                      WarrantyExpiryDate = m.WarrantyExpiryDate,
                      WarrantyStartDate = m.WarrantyStartDate,
-
+                     StatusName = m.Status.StatusName,
+                     IsActive = m.IsActive,
+                     LocationId = m.LocationId,
+                     MakeMasterName = m.MakeMaster.Name,
+                     ModelName = m.Model.ModelName,
+                     LocationName = m.Location.LocationName,
+                     StatusId = m.StatusId
                      
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
-                               select new Status
-                               {
-                                   Id = obls.Id,
-                                   StatusName = obls.StatusName,
-
-                               }).FirstOrDefault(),
+                 }).ToList();
+        }
+        public async Task<GetPowerCabinetResponse> GetPowerCabinetById(long powerCabinetId)
+        {
+            return _dbContext.PowerCabinet
+                 .Select(m => new GetPowerCabinetResponse
+                 {
+                     Id = m.Id,
+                     AssetId = m.AssetId,
+                     BreakerRating = m.BreakerRating,
+                     CreatedBy = m.CreatedBy,
+                     CreatedOn = m.CreatedOn,
+                     DcPortQuantityRating = m.DcPortQuantityRating,
+                     InstallationDate = m.InstallationDate,
+                     MakeMasterId = m.MakeMasterId,
+                     ModelId = (long)m.ModelId,
+                     ModifiedBy = m.ModifiedBy,
+                     ModifiedOn = m.ModifiedOn,
+                     PeakCurrent = m.PeakCurrent,
+                     SerialNumber = m.SerialNumber,
+                     ServiceVolts = m.ServiceVolts,
+                     WarrantyDuration = m.WarrantyDuration,
+                     WarrantyExpiryDate = m.WarrantyExpiryDate,
+                     WarrantyStartDate = m.WarrantyStartDate,
+                     StatusName = m.Status.StatusName,
+                     IsActive = m.IsActive,
+                     LocationId = m.LocationId,
+                     MakeMasterName = m.MakeMaster.Name,
+                     ModelName = m.Model.ModelName,
+                     LocationName = m.Location.LocationName,
+                     StatusId = m.StatusId
                  }).Where(x => x.Id == powerCabinetId).FirstOrDefault();
 
 

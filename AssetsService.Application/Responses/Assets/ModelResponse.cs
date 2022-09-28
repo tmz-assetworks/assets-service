@@ -58,4 +58,22 @@ namespace AssetsService.Application.Responses.Assets
         public long LevelId { get; set; }
         public virtual Level Level { get; set; }
     }
+
+    public class AllModel{
+        
+        public int StatusCode;
+        public string StatusMessage;
+
+        public List<Model> data{get;set;}
+    }
+
+    public class ModelById{
+        
+        public int StatusCode;
+        public string StatusMessage;
+
+        public Model data{get;set;}
+    }
+
+
 }

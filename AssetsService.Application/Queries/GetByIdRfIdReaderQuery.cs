@@ -1,4 +1,5 @@
 ﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Queries
 {
-    public class GetByIdRfIdReaderQuery : IRequest<RFIDReader>
+    public class GetByIdRfIdReaderQuery : IRequest<RFIDReaderDetails>
     {
         public long Id { get; set; }
         public GetByIdRfIdReaderQuery(int id)

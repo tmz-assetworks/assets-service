@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AssetsService.Core.Response;
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
@@ -29,9 +30,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
                      CreatedOn = m.CreatedOn == DateTime.MinValue ? DateTime.MinValue : m.CreatedOn,
-                 }).ToListAsync();
+                 }).Where(m=>m.Name!=null).OrderBy(m=>m.Name).ToListAsync();
         }
-
         public async Task<MakeMaster> GetAllMakeMasterById(long id)
         {
             return _dbContext.MakeMaster
@@ -46,7 +46,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ModifiedOn = m.ModifiedOn,
                      CreatedOn = m.CreatedOn == DateTime.MinValue ? DateTime.MinValue : m.CreatedOn,
                  }).Where(x => x.Id == id).FirstOrDefault();
-
+ }
+        public async Task<List<MakeMasterList>> GetAllMakeMasterList()
+        {
+            return _dbContext.MakeMaster
+                 .Select(m => new Core.Response.MakeMasterList
+                 {
+                     Id = m.Id,
+                     Name = m.Name
+                 }).Where(m => m.Name!= "").OrderBy(m => m.Name).ToList<Core.Response.MakeMasterList>();
         }
     }
 }

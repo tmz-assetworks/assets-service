@@ -1,5 +1,6 @@
 ﻿using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Responses.Assets;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -46,7 +47,5 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                  }).Where(x => x.Id == id).FirstOrDefault();
         }
-
-       
     }
 }

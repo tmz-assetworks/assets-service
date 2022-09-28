@@ -11,7 +11,7 @@ namespace AssetsService.Core.Entities
     /// <summary>
     /// 
     /// </summary>
-    [DataContract] 
+    [DataContract]
     public partial class Cable
     {
         /// <summary>
@@ -28,13 +28,16 @@ namespace AssetsService.Core.Entities
         [Column(TypeName = "nvarchar(100)")]
         public string AssetId { get; set; }
 
+        [DataMember(Name = "locationId", EmitDefaultValue = false)]
+        public long LocationId { get; set; }
+        public virtual Location? Location { get; set; }
+
         /// <summary>
         /// Gets or Sets CreatedBy
         /// </summary>
         [DataMember(Name = "createdBy", EmitDefaultValue = false)]
         [Column(TypeName = "nvarchar(100)")]
         public string CreatedBy { get; set; }
-
         /// <summary>
         /// Gets or Sets CreatedOn
         /// </summary>
@@ -52,6 +55,7 @@ namespace AssetsService.Core.Entities
         /// </summary>
         //[DataMember(Name="makeIdMasterList", EmitDefaultValue=false)]
         //public List<MakeMaster> MakeIdMasterList { get; set; }
+        [DataMember(Name = "makeMaster", EmitDefaultValue = false)]
         public long MakeMasterId { get; set; }
         public virtual MakeMaster MakeMaster { get; set; }
 
@@ -59,7 +63,8 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets ModelId
         /// </summary>
         [DataMember(Name = "modelId", EmitDefaultValue = false)]
-        public long ModelId { get; set; }
+        public long? ModelId { get; set; }
+        public virtual Model Model { get; set; }
 
         /// <summary>
         /// Gets or Sets ModifiedBy
@@ -75,19 +80,6 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
 
         /// <summary>
-        /// Gets or Sets NetworkId
-        /// </summary>
-        [DataMember(Name = "networkId", EmitDefaultValue = false)]
-        public long NetworkId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets NetworkName
-        /// </summary>
-        [DataMember(Name = "networkName", EmitDefaultValue = false)]
-        [Column(TypeName = "nvarchar(100)")]
-        public string NetworkName { get; set; }
-
-        /// <summary>
         /// Gets or Sets SerialNumber
         /// </summary>
         [DataMember(Name = "serialNumber", EmitDefaultValue = false)]
@@ -100,19 +92,6 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "status", EmitDefaultValue = false)]
         public long StatusId { get; set; }
         public virtual Status Status { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SubNetworkId
-        /// </summary>
-        [DataMember(Name = "subNetworkId", EmitDefaultValue = false)]
-        public long SubNetworkId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SubNetworkName
-        /// </summary>
-        [DataMember(Name = "subNetworkName", EmitDefaultValue = false)]
-        [Column(TypeName = "nvarchar(100)")]
-        public string SubNetworkName { get; set; }
 
         /// <summary>
         /// Gets or Sets WarrantyDuration
@@ -134,7 +113,6 @@ namespace AssetsService.Core.Entities
 
         [DataMember(Name = "IsActive", EmitDefaultValue = false)]
         public bool IsActive { get; set; }
-
 
 
     }

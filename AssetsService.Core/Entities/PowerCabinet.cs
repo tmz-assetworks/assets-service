@@ -60,15 +60,15 @@ namespace AssetsService.Core.Entities
         /// <summary>
         /// Gets or Sets MakeId
         /// </summary>
-        [DataMember(Name="makeId", EmitDefaultValue=false)]
-        public long MakeId { get; set; }
-
+        [DataMember(Name= "makeMasterId", EmitDefaultValue=false)]
+        public long MakeMasterId { get; set; }
+        public virtual MakeMaster MakeMaster { get; set; }
         /// <summary>
         /// Gets or Sets ModelId
         /// </summary>
         [DataMember(Name="modelId", EmitDefaultValue=false)]
-        public long ModelId { get; set; }
-
+        public long? ModelId { get; set; }
+        public virtual Model Model { get; set; }
         /// <summary>
         /// Gets or Sets ModifiedBy
         /// </summary>
@@ -82,18 +82,6 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
 
         /// <summary>
-        /// Gets or Sets NetworkId
-        /// </summary>
-        [DataMember(Name="networkId", EmitDefaultValue=false)]
-        public long NetworkId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets NetworkName
-        /// </summary>
-        [DataMember(Name="networkName", EmitDefaultValue=false)]
-        public string NetworkName { get; set; }
-
-        /// <summary>
         /// Gets or Sets PeakCurrent
         /// </summary>
         [DataMember(Name="peakCurrent", EmitDefaultValue=false)]
@@ -103,7 +91,7 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets SerialNumber
         /// </summary>
         [DataMember(Name="serialNumber", EmitDefaultValue=false)]
-        public long SerialNumber { get; set; }
+        public string SerialNumber { get; set; }
 
         /// <summary>
         /// Gets or Sets ServiceVolts
@@ -117,18 +105,6 @@ namespace AssetsService.Core.Entities
         [DataMember(Name="statusId", EmitDefaultValue=false)]
         public long StatusId { get; set; }
         public virtual Status Status { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SubNetworkId
-        /// </summary>
-        [DataMember(Name="subNetworkId", EmitDefaultValue=false)]
-        public long SubNetworkId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets SubNetworkName
-        /// </summary>
-        [DataMember(Name="subNetworkName", EmitDefaultValue=false)]
-        public string SubNetworkName { get; set; }
 
         /// <summary>
         /// Gets or Sets WarrantyDuration
@@ -148,5 +124,10 @@ namespace AssetsService.Core.Entities
         [DataMember(Name="warrantyStartDate", EmitDefaultValue=false)]
         public DateTime WarrantyStartDate { get; set; }
 
+        [DataMember(Name = "IsActive", EmitDefaultValue = false)]
+        public bool IsActive { get; set; }
+
+        public long LocationId { get; set; }
+        public virtual Location Location { get; set; }
     }
 }

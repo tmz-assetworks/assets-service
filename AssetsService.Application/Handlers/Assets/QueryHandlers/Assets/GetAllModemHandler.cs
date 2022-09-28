@@ -1,3 +1,5 @@
+using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Repositories.Assets;
 using MediatR;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers
 {
-    public class GetAllModemHandler : IRequestHandler<GetAllModemQuery, List<AssetsService.Core.Entities.Modem>>
+    public class GetAllModemHandler : IRequestHandler<GetAllModemQuery, PagedList<ModemDTO>>
     {
         private readonly IModemRepository _modemRepo;
 
@@ -17,9 +19,10 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers
         {
             _modemRepo = modemRepository;
         }
-        public async Task<List<AssetsService.Core.Entities.Modem>> Handle(GetAllModemQuery request, CancellationToken cancellationToken)
+        public async Task<PagedList<ModemDTO>> Handle(GetAllModemQuery request, CancellationToken cancellationToken)
         {
-            return (List<AssetsService.Core.Entities.Modem>)await _modemRepo.GetAllModem();
+            return await _modemRepo.GetAllModem(request._modemRequest);
+          
         }
     }
 }

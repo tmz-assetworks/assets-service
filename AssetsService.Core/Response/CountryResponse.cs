@@ -18,15 +18,6 @@ namespace AssetsService.Core.Responses.Assets
     {
         public long Id { get; set; }
         public string CountryName { get; set; }
-
-        public string CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
-
-        public string ModifiedBy { get; set; }
-
-        public DateTime ModifiedOn { get; set; }
-
-        public List<StateData> StateData { get; set; }
     }
 
     public class StateData
@@ -34,11 +25,6 @@ namespace AssetsService.Core.Responses.Assets
         public long Id { get; set; }
         public long CountryId { get; set; }
         public string StateName { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime ModifiedOn { get; set; }
-        public List<CityData> CityData { get; set; }
 
     }
     public class CityData
@@ -46,10 +32,6 @@ namespace AssetsService.Core.Responses.Assets
         public long Id { get; set; }
         public long StateId { get; set; }
         public string CityName { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public string ModifiedBy { get; set; }
-        public DateTime ModifiedOn { get; set; }
     }
 
     public class StateByCountryIdResponse

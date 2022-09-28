@@ -1,4 +1,4 @@
-﻿using AssetsService.Application.Commands.Assets;
+using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Repositories;
 using AssetsService.Core.Mapper;
@@ -28,7 +28,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             {
                 throw new ApplicationException("Issue with mapper");
             }
-
+            VehicleMakeEntitiy.CreatedOn = DateTime.Now;
+            VehicleMakeEntitiy.ModifiedOn = DateTime.Now;
             var updateVehicleMake = _VehicleMakeRepo.UpdateAsync(VehicleMakeEntitiy, request.Id, "VEHICLEMAKE");
             var mapCableResponse = Mapper.Mappers.Map<VehicleMakeResponse>(updateVehicleMake.Result);
             return mapCableResponse;

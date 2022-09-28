@@ -1,4 +1,5 @@
 ﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Queries
 {
-    public class GetByIdPadQuery : IRequest<Pad>
+    public class GetByIdPadQuery : IRequest<GetPadResponse>
     {
         public long Id { get; set; }
         public GetByIdPadQuery(int id)

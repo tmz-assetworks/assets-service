@@ -1,5 +1,6 @@
 ﻿using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Response;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,75 +17,51 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
 
         }
-        public async Task<List<Pad>> GetAllPad()
+        public async Task<List<GetPadResponse>> GetAllPad()
         {
             return await _dbContext.Pads
-                 .Select(m => new Pad
+                 .Select(m => new GetPadResponse
                  {
                      Id = m.Id,
                      AssetId = m.AssetId,
                      CreatedBy = m.CreatedBy,
                      CreatedOn = m.CreatedOn,
-                     Description = m.Description,
-                     InsertDate = m.InsertDate,
-                     Latitude = m.Latitude,
-                     Longitude = m.Longitude,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
                      PadName = m.PadName,
                      StatusId = m.StatusId,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
-                                select new Status
-                                {
-                                    Id = obls.Id,
-                                    StatusName = obls.StatusName,
-                                    CreatedBy = obls.CreatedBy,
-                                    CreatedOn = obls.CreatedOn,
-                                    ModifiedBy = obls.ModifiedBy,
-                                    ModifiedOn = obls.ModifiedOn,
-                                    IsActive = obls.IsActive,
-                                }).FirstOrDefault(),
-                 })
+                     LocationId = m.LocationId,
+                     InstallationDate=m.InstallationDate,
+                     IsActive= m.IsActive,
+                     SerialNumber=m.SerialNumber,
+                     LocationName=m.Location.LocationName,
+                     StatusName=m.Status.StatusName
+                     
+                 }).OrderByDescending(m=>m.ModifiedOn)
                  .ToListAsync();
         }
 
-        public async Task<Pad> GetPadById(long id)
+        public async Task<GetPadResponse> GetPadById(long id)
         {
-            return _dbContext.Pads
-                 .Select(m => new Pad
+            return _dbContext.Pads.Where(x => x.Id == id)
+                 .Select(m => new GetPadResponse
                  {
                      Id=m.Id,
                      AssetId = m.AssetId,
                      CreatedBy = m.CreatedBy,
                      CreatedOn = m.CreatedOn,
-                     Description = m.Description,
-                     InsertDate = m.InsertDate,
-                     Latitude = m.Latitude,
-                     Longitude = m.Longitude,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
                      PadName = m.PadName,
                      StatusId = m.StatusId,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
-                               select new Status
-                               {
-                                   Id = obls.Id,
-                                   StatusName = obls.StatusName,
-                                   CreatedBy = obls.CreatedBy,
-                                   CreatedOn = obls.CreatedOn,
-                                   ModifiedBy = obls.ModifiedBy,
-                                   ModifiedOn = obls.ModifiedOn,
-                                   IsActive = obls.IsActive,
-                               }).FirstOrDefault(),
-                 }).Where(x => x.Id == id).FirstOrDefault();
-
+                     StatusName = m.Status.StatusName,
+                     SerialNumber=m.SerialNumber,
+                     InstallationDate=m.InstallationDate,
+                     IsActive=m.IsActive,
+                     LocationId=m.LocationId,
+                     LocationName=m.Location.LocationName
+                  
+                 }).FirstOrDefault();
+            
         }
     } }

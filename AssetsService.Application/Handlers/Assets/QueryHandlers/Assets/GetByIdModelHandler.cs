@@ -17,11 +17,9 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         {
             _ModelRepo = ModelRepository;
         }
-
         public async Task<AssetsService.Core.Entities.Model> Handle(GetByIdModelQuery request, CancellationToken cancellationToken)
         {
             return (AssetsService.Core.Entities.Model)await _ModelRepo.GetAllModelById(request.Id);
-        }
-    
+        }    
     }
 }

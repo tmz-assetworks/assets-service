@@ -6,7 +6,7 @@ using MediatR;
 namespace AssetsService.Application.Queries
 {
 
-    public class GetDispensersDetailQuery : IRequest<PagedList<DispensersDetail>>
+       public class GetDispensersDetailQuery : IRequest<PagedList<DispensersDetail>>
     {
         public DispensersDetailRequest _dispensersDetailRequest = null;
         public GetDispensersDetailQuery(DispensersDetailRequest dispensersDetailRequest)
@@ -15,5 +15,5 @@ namespace AssetsService.Application.Queries
         }
     }
 
-   
-}
+
+    }

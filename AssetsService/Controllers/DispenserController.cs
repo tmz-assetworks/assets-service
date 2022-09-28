@@ -13,20 +13,30 @@ using AssetsService.Application.Responses.Assets;
 using AssetsService.Application.Queries;
 using System.Collections.Generic;
 using AssetsService.Core.Response;
+using Serilog;
+using static AssetsService.Core.Response.GetDispenserStatusResponse;
+using System.Dynamic;
+using Microsoft.AspNetCore.Authorization;
+using AssetsService.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace AssetsService.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DispenserController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ILogger<DispenserController> _logger;
         string JSONString = string.Empty;
-        public DispenserController(IMediator mediator, ILogger<DispenserController> logger)
+        TokenBase _token;
+        public DispenserController(IMediator mediator, ILogger<DispenserController> logger,TokenBase token)
         {
-            _logger = logger;
+            //_logger = logger;
             _mediator = mediator;
+            _token = token;
+            
         }
 
         string getjson(object res)
@@ -59,7 +69,7 @@ namespace AssetsService.Api
         //     catch (Exception ex)
         //     {
         //         JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-        //         _logger.LogError(ex.ToString());
+        //         //_logger.LogError(ex.ToString());
 
         //     }
         //     return JSONString;
@@ -72,26 +82,101 @@ namespace AssetsService.Api
             AllDispenserQueryResponse allDispenserQueryResponse = new AllDispenserQueryResponse();
             try
             {
-                List<AssetsService.Core.Entities.Dispenser> dispenser = await _mediator.Send(new GetAllDispenserQuery());
-                // List<DispenserStatusData> dispenserdata = dispenser.Select(x => new DispenserStatusData { Id = x.Id, ChargeBoxId = x.ChargeBoxId, DispenserStatus = x.DispenserStatus.DispenserStatusName }).ToList();
-                //List<DispenserResponse>dispenserdata = new
+                _token.acces_token = await HttpContext.GetTokenAsync("access_token");
+                List<AssetsService.Core.Entities.Dispenser> dispenser = await _mediator.Send(new GetAllDispenserQuery());                
                 allDispenserQueryResponse.StatusMessage = "Record found";
                 allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.OK;
-                allDispenserQueryResponse.data = dispenser;
-                _logger.LogInformation("Get all Dispenser data");
+                allDispenserQueryResponse.data = dispenser;               
             }
             catch (Exception ex)
             {
                 allDispenserQueryResponse.StatusMessage = ex.Message.ToString();
-                allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 allDispenserQueryResponse.data = null;
-                _logger.LogError(ex.ToString());
+                ////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
             return allDispenserQueryResponse;
         }
+        [HttpPost("GetDispenserStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<GetDispenserStatus> GetAllModelData(DispenserStatusRequest dispenserStatusRequest)
+        {
+            GetDispenserStatus allModelDataResponse = new GetDispenserStatus();
+            try
+            {
+                List<AssetsService.Core.Entities.DispenserStatus> dispensers = await _mediator.Send(new GetDispenserStatusQuery(dispenserStatusRequest));
+                List<DispenserStatusList> modelResults = dispensers.Select(x => new DispenserStatusList { Id = x.Id,  Status = x.DispenserStatusName }).Where(m => m.Status != "").OrderBy(m => m.Status).ToList();
+                allModelDataResponse.StatusMessage = "Record found";
+                allModelDataResponse.StatusCode = (int)HttpStatusCode.OK;
+                allModelDataResponse.Data = modelResults;
+            }
+            catch (Exception ex)
+            {
+                allModelDataResponse.StatusMessage = ex.Message.ToString();
+                allModelDataResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                allModelDataResponse.Data = null;
+                Log.Information("error occurred :" + ex.Message);
 
+            }
+            return allModelDataResponse;
+        }
+        [HttpPost("GetDispensersWithPagination")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<AllDispenserResponse>> GetDispensersWithPagination([FromBody] DispensersRequest getAllDispenserRequest)
+        {
+            AllDispenserResponse allDispenserQueryResponse = new AllDispenserResponse();
+            try
+            {
+                if (getAllDispenserRequest.PageSize == 0) getAllDispenserRequest.PageSize = 10;
+                if (getAllDispenserRequest.PageNumber == 0) getAllDispenserRequest.PageNumber = 1;
+                allDispenserQueryResponse = await _mediator.Send(new GetAllDispenserDetailQuery(getAllDispenserRequest));
+            }
+            catch (Exception ex)
+            {
+                allDispenserQueryResponse.StatusMessage = ex.Message.ToString();
+                allDispenserQueryResponse.StatusMessage = "Operation failed!";
+                allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                allDispenserQueryResponse.Data = null;
+                _logger.LogError(ex.ToString());
+            }
+            return allDispenserQueryResponse;
+        }
 
+        /// <summary>
+        /// Get Dispenser deatil by Id
+        /// </summary>
+        /// <param name="dispenserId"></param>
+        /// <returns></returns>
+        [HttpPost("GetDispenserDetailsById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<GetDispenserByIdResponse> GetDispenserDetailsById(long dispenserId)
+        {
+            GetDispenserByIdResponse dispenserQueryResponse = new GetDispenserByIdResponse();
+            try
+            {
+                dispenserQueryResponse.StatusCode = (int)HttpStatusCode.OK;
+                var dispenser = await _mediator.Send(new GetDispenserDetailByIdQuery(dispenserId));
+                if (dispenser != null)
+                {
+                    dispenserQueryResponse.StatusMessage = "Record found";
+                    dispenserQueryResponse.Data.Add(dispenser);
+                }
+                else
+                {
+                    dispenserQueryResponse.StatusMessage = "Record not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                dispenserQueryResponse.StatusMessage = "Operation failed!";
+                dispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
+                dispenserQueryResponse.Data = null;
+                _logger.LogError(ex.ToString());
+            }
+            return dispenserQueryResponse;
+        }
 
         [HttpGet("getdispenserbyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -111,9 +196,10 @@ namespace AssetsService.Api
             catch (Exception ex)
             {
                 dispenserQueryResponse.StatusMessage = ex.Message.ToString();
-                dispenserQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                dispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserQueryResponse.data = null;
-                _logger.LogError(ex.ToString());
+                ////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
             return dispenserQueryResponse;
@@ -126,13 +212,13 @@ namespace AssetsService.Api
             //catch (Exception ex)
             //{
             //    JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-            //    //_logger.LogError(ex.ToString());
+            //    //////_logger.LogError(ex.ToString());
             //}
             //return JSONString;
 
         }
 
-        [HttpGet("getdispenserbylocationid")]
+         [HttpGet("getdispenserbylocationid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<DispenserByLocationQueryResponse> getDispenserByLocationId(long Id)
         {
@@ -140,22 +226,31 @@ namespace AssetsService.Api
             try
             {
                 List<AssetsService.Core.Responses.Assets.DispenserByLocationIdResponse> dispenser = await _mediator.Send(new GetDispenserByLocationIdQuery(Id));
-
+                if (dispenser != null && dispenser.Count() != 0)
+                {
                 dispenserByLocationQueryResponse.StatusMessage = "Record found";
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 dispenserByLocationQueryResponse.data = dispenser;
-                _logger.LogInformation("Get the all data of Dispenser location by Id");
+               // ////_logger.LogInformation("Get the all data of Dispenser location by Id");
+                }
+                 else
+                {
+                    dispenserByLocationQueryResponse.data = null;
+                    dispenserByLocationQueryResponse.StatusMessage = "Record not found";
+                }
             }
             catch (Exception ex)
             {
                 dispenserByLocationQueryResponse.StatusMessage = ex.Message.ToString();
-                dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserByLocationQueryResponse.data = null;
-                _logger.LogError(ex.ToString());
+                //////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
 
             }
             return dispenserByLocationQueryResponse;
         }
+
 
 
         [HttpGet("getdispenserbychargeboxid")]
@@ -179,14 +274,15 @@ namespace AssetsService.Api
                     dispenserByChargeBoxIdResponse.data = null;
                     dispenserByChargeBoxIdResponse.StatusMessage = "Record not found";
                 }
-                _logger.LogInformation("Get the all data of Dispenser location by Id");
+                //////_logger.LogInformation("Get the all data of Dispenser location by Id");
             }
             catch (Exception ex)
             {
                 // dispenserByChargeBoxIdResponse.StatusMessage = ex..ToString();
-                dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserByChargeBoxIdResponse.data = null;
-                _logger.LogError(ex.ToString());
+                //////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
             }
             return dispenserByChargeBoxIdResponse;
         }
@@ -198,13 +294,14 @@ namespace AssetsService.Api
             try
             {
                 Dispenser dispenser = await _mediator.Send(new GetDispenserByStationIdQuery(StationId));
-                _logger.LogInformation("Get the Dispenser data by Station Id");
+                ////_logger.LogInformation("Get the Dispenser data by Station Id");
                 return getjson(dispenser);
             }
             catch (Exception ex)
             {
                 JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
+                ////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
             }
             return JSONString;
         }
@@ -216,12 +313,13 @@ namespace AssetsService.Api
             try
             {
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Dispenser data deleted successfully");
+                ////_logger.LogInformation("Dispenser data deleted successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                ////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
                     ContentType = "Exception",
@@ -231,48 +329,95 @@ namespace AssetsService.Api
             }
         }
 
-        [HttpPost("createdispenser")]
+        [HttpPost("CreateDispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<DispenserResponse>> CreateDispenser([FromBody] CreateDispenserCommand command)
+        public async Task<ActionResult<ExpandoObject>> CreateDispenser([FromBody] CreateDispenserCommand command)
         {
+            dynamic expendo = new ExpandoObject();
+            var result = await _mediator.Send(command);
             try
             {
-                var result = await _mediator.Send(command);
-                _logger.LogInformation("All Dispenser data saved successfully");
-                return Ok(result);
+                if (result.Id > 0)
+                {
+                    expendo.statusCode = 200;
+                    expendo.Id = result.Id;
+                    expendo.statusMessage = "Record Saved Successfully";
+                }
+                else
+                {
+                    if (result.Id == -1)
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        return BadRequest(expendo);
+                    }
+                    if (result.Id == -2)
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Mapped RFIdReaderId is not exits.";
+                        return BadRequest(expendo);
+                    }
+                    if (result.Id == -3)
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Mapped LocationID is not exits.";
+                        return BadRequest(expendo);
+                    }
+                    else
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Record not saved";
+                    }
+                }           
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.StackTrace.ToString());
-                return new ContentResult()
-                {
-                    ContentType = "Exception",
-                    StatusCode = 404,
-                    Content = "Dispenser not Created "
-                };
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = "Record not saved";
+                Log.Information("error occurred :" + ex.Message);
             }
+            return (expendo);
         }
 
         [HttpPut("updatedispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<DispenserResponse>> UpdateDispenser([FromBody] UpdateDispenserCommand command)
+        public async Task<ActionResult<ExpandoObject>> UpdateDispenser([FromBody] UpdateDispenserCommand command)
         {
+            dynamic expendo = new ExpandoObject();
+            var result = await _mediator.Send(command);
             try
             {
-                var result = await _mediator.Send(command);
-                _logger.LogInformation("All Dispenser data updated successfully");
-                return Ok(result);
+                if (result.Id > 0)
+                {
+                    expendo.statusCode = 200;
+                    expendo.Id = result.Id;
+                    expendo.statusMessage = "Record Updated Successfully";
+                }
+                if (result.Id == -2)
+                {
+                    expendo.statusCode = 200;
+                    expendo.statusMessage = "Mapped RFIdReaderId is not exits.";
+                    return BadRequest(expendo);
+                }
+                if (result.Id == -3)
+                {
+                    expendo.statusCode = 200;
+                    expendo.statusMessage = "Mapped LocationId is not exits.";
+                    return BadRequest(expendo);
+                }
+                else
+                {
+                    expendo.statusCode = (int)HttpStatusCode.OK;
+                    expendo.statusMessage = "Record not updated";
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                return new ContentResult()
-                {
-                    ContentType = "Exception",
-                    StatusCode = 404,
-                    Content = "Dispenser not Update "
-                };
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = "Record not updated";
+                Log.Information("error occurred :" + ex.Message);
             }
+            return (expendo);
         }
         [HttpPost("GetDispenserByLocations")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -281,6 +426,7 @@ namespace AssetsService.Api
             DispenserByLocationsQueryResponse dispenserByLocationQueryResponse = new DispenserByLocationsQueryResponse();
             try
             {
+                _token.acces_token = await HttpContext.GetTokenAsync("access_token");
                 List<DispenserByLocationsResponse> dispenser = (List<DispenserByLocationsResponse>)await _mediator.Send(new GetDispenserByLocationsQuery(objdisp.LocationIds));
 
 
@@ -295,14 +441,15 @@ namespace AssetsService.Api
                     dispenserByLocationQueryResponse.data = null;
                     dispenserByLocationQueryResponse.StatusMessage = "Record not found";
                 }
-                _logger.LogInformation("Get the all data of Dispenser location by Id");
+                ////_logger.LogInformation("Get the all data of Dispenser location by Id");
             }
             catch (Exception ex)
             {
                 dispenserByLocationQueryResponse.StatusMessage = ex.Message.ToString();
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispenserByLocationQueryResponse.data = null;
-                _logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
+                ////_logger.LogError(ex.ToString());
 
             }
             return dispenserByLocationQueryResponse;
@@ -316,6 +463,7 @@ namespace AssetsService.Api
             DispensersDetailResponse dispensersDetailResponse = new DispensersDetailResponse();
             try
             {
+                _token.acces_token= await HttpContext.GetTokenAsync("access_token");
                 if (dispensersDetailRequest.PageSize == 0) dispensersDetailRequest.PageSize = 10;
                 if (dispensersDetailRequest.PageNumber == 0) dispensersDetailRequest.PageNumber = 1;
                 var dispensers = await _mediator.Send(new GetDispensersDetailQuery(dispensersDetailRequest));
@@ -339,7 +487,8 @@ namespace AssetsService.Api
                 dispensersDetailResponse.StatusMessage = "Operation failed!";
                 dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispensersDetailResponse.data = null;
-                _logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
+                ////_logger.LogError(ex.ToString());
 
             }
             return dispensersDetailResponse;
@@ -347,6 +496,7 @@ namespace AssetsService.Api
 
         [HttpGet("ValidateChargerId/{ChargeBoxId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<ValidateChargerIdResponse> ValidateChargerId(string ChargeBoxId)
         {
             ValidateChargerIdResponse validateChargerIdResponse = new ValidateChargerIdResponse();
@@ -371,12 +521,146 @@ namespace AssetsService.Api
                 validateChargerIdResponse.data = null;
                 validateChargerIdResponse.StatusCode = 500;
                 validateChargerIdResponse.StatusMessage = ex.Message.ToString();
+                Log.Information("error occurred :" + ex.Message);
             }
             return validateChargerIdResponse;
 
 
 
         }
+
+        #region Modem DDL List
+        /// <summary>
+        /// This api is used for binding the Modem data with dropdown , Id, SerialNumer
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+
+        [HttpPost("GetModemDDL")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ExpandoObject>> GetModemDDL(PadDataRequest  userId)
+        {
+            dynamic expendo = new ExpandoObject();
+            var result = await _mediator.Send(new GetModemDDLQuery(userId.userId));
+            try
+            {
+                expendo.statusCode = 200;
+                if (result is not null)
+                {
+                    expendo.statusMessage = "Record found";
+                    expendo.data = result;
+                }
+                else
+                {
+                    expendo.statusMessage = "Record not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = "Failed";
+                Log.Information("error occurred :" + ex.Message);
+            }
+            return (expendo);
+        }
+        [HttpPost("GetPlugType")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ExpandoObject>> GetPlugType(PlugTypeRequest plugTypeRequest)
+        {
+            dynamic expendo = new ExpandoObject();
+            var result = await _mediator.Send(new GetAllPlugTypeQuery(plugTypeRequest.userId));
+            try
+            {
+                expendo.statusCode = 200;
+                if (result is not null)
+                {
+                    expendo.statusMessage = "Record found";
+                    expendo.data = result;
+                }
+                else
+                {
+                    expendo.statusMessage = "Record not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = "Failed";
+                Log.Information("error occurred :" + ex.Message);
+            }
+            return (expendo);
+        }
+        [HttpPost("GetConnectorType")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ExpandoObject>> GetConnectorType(ConnectorTypeRequest plugTypeRequest)
+        {
+            dynamic expendo = new ExpandoObject();
+            var result = await _mediator.Send(new GetConnectorTypeQuery(plugTypeRequest.userId));
+            try
+            {
+                expendo.statusCode = 200;
+                if (result is not null)
+                {
+                    expendo.statusMessage = "Record found";
+                    expendo.data = result;
+                }
+                else
+                {
+                    expendo.statusMessage = "Record not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = "Failed";
+                Log.Information("error occurred :" + ex.Message);
+            }
+            return (expendo);
+        }
+
+        #endregion
+
+
+        [HttpPost("GetLocationDispensers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<LocationDispensersResponse> GetLocationDispensers([FromBody] LocationDispensersRequest locationDispenser)
+        {
+            LocationDispensersResponse dispensersDetailResponse = new LocationDispensersResponse();
+            try
+            {
+                _token.acces_token = await HttpContext.GetTokenAsync("access_token");
+                if (locationDispenser.PageSize == 0) locationDispenser.PageSize = 10;
+                if (locationDispenser.PageNumber == 0) locationDispenser.PageNumber = 1;
+                var dispensers = await _mediator.Send(new GetLocationDispensersQuery(locationDispenser));
+                if (dispensers != null && dispensers.Count > 0)
+                    dispensersDetailResponse.StatusMessage = "Record found";
+                else dispensersDetailResponse.StatusMessage = "Record not found";
+                dispensersDetailResponse.StatusCode = (int)HttpStatusCode.OK;
+                dispensersDetailResponse.data = dispensers;
+                dispensersDetailResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
+                {
+                    TotalCount = dispensers.TotalCount,
+                    PageSize = dispensers.PageSize,
+                    CurrentPage = dispensers.CurrentPage,
+                    TotalPages = dispensers.TotalPages,
+                    HasNext = dispensers.HasNext,
+                    HasPrevious = dispensers.HasPrevious
+                };
+            }
+            catch (Exception ex)
+            {
+                dispensersDetailResponse.StatusMessage = "Operation failed!";
+                dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                dispensersDetailResponse.data = null;
+                Log.Information("error occurred :" + ex.Message);
+                ////_logger.LogError(ex.ToString());
+
+            }
+            return dispensersDetailResponse;
+        }
+
+
+
     }
 }
 

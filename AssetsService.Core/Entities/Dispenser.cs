@@ -36,8 +36,8 @@ namespace AssetsService.Core.Entities
         /// <summary>
         /// Gets or Sets Description
         /// </summary>
-        [DataMember(Name = "description", EmitDefaultValue = false)]
-        public string Description { get; set; }
+        //[DataMember(Name = "description", EmitDefaultValue = false)]
+        //public string Description { get; set; }
 
         /// <summary>
         /// Gets or Sets EndPointUrl
@@ -71,21 +71,21 @@ namespace AssetsService.Core.Entities
 
         /// <summary>
         /// Gets or Sets IsDeviceExists
-        /// </summary>
-        [DataMember(Name = "isDeviceExists", EmitDefaultValue = false)]
-        public bool IsDeviceExists { get; set; }
+        ///// </summary>
+        //[DataMember(Name = "isDeviceExists", EmitDefaultValue = false)]
+        //public bool IsDeviceExists { get; set; }
 
         /// <summary>
         /// Gets or Sets Latitude
-        /// </summary>
-        [DataMember(Name = "latitude", EmitDefaultValue = false)]
-        public double Latitude { get; set; }
+        ///// </summary>
+        //[DataMember(Name = "latitude", EmitDefaultValue = false)]
+        //public double Latitude { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Longitude
-        /// </summary>
-        [DataMember(Name = "longitude", EmitDefaultValue = false)]
-        public double Longitude { get; set; }
+        ///// <summary>
+        ///// Gets or Sets Longitude
+        ///// </summary>
+        //[DataMember(Name = "longitude", EmitDefaultValue = false)]
+        //public double Longitude { get; set; }
 
         /// <summary>
         /// Gets or Sets Make
@@ -106,7 +106,7 @@ namespace AssetsService.Core.Entities
         // / Gets or Sets Model
         // / </summary>
         [DataMember(Name = "modelId", EmitDefaultValue = false)]
-        public long ModelId { get; set; }
+        public long? ModelId { get; set; }
         public virtual Model Model { get; set; }
 
         /// <summary>
@@ -161,8 +161,8 @@ namespace AssetsService.Core.Entities
         /// <summary>
         /// Gets or Sets StationId
         /// </summary>
-        [DataMember(Name = "stationId", EmitDefaultValue = false)]
-        public long StationId { get; set; }
+        //[DataMember(Name = "stationId", EmitDefaultValue = false)]
+        //public long StationId { get; set; }
 
         [DataMember(Name = "chargeBoxId", EmitDefaultValue = false)]
         public string ChargeBoxId { get; set; }
@@ -170,8 +170,8 @@ namespace AssetsService.Core.Entities
         /// <summary>
         /// Gets or Sets StationName
         /// </summary>
-        [DataMember(Name = "stationName", EmitDefaultValue = false)]
-        public string StationName { get; set; }
+        //[DataMember(Name = "stationName", EmitDefaultValue = false)]
+        //public string StationName { get; set; }
 
         /// <summary>
         /// Gets or Sets SubnetworkId
@@ -185,13 +185,50 @@ namespace AssetsService.Core.Entities
         // [DataMember(Name = "subnetworkName", EmitDefaultValue = false)]
         // public string SubnetworkName { get; set; }
 
-        [DataMember(Name = "vendorId", EmitDefaultValue = false)]
-        public long vendorId { get; set; }
-        public Vendor Vendor { get; set; }
+        //[DataMember(Name = "vendorId", EmitDefaultValue = false)]
+        //public long vendorId { get; set; }
+        //public Vendor Vendor { get; set; }
 
+        [DataMember(Name = "rFIDReader", EmitDefaultValue = false)]
+        public long? RFIDReaderId { get; set; }
+        public virtual RFIDReader RFIDReader { get; set; }
 
-        public virtual ICollection<Port> Ports { get; set; }
+        [DataMember(Name = "powerCabinetId", EmitDefaultValue = false)]
+        public long? PowerCabinetId { get; set; }
+        public virtual PowerCabinet PowerCabinet { get; set; }
 
-        
+        [DataMember(Name = "padId", EmitDefaultValue = false)]
+        public long? PadId { get; set; }
+
+        [DataMember(Name = "modemId", EmitDefaultValue = false)]
+        public long? ModemId { get; set; }
+        public virtual Modem Modem { get; set; }
+        public virtual Pad Pad { get; set; }
+        [DataMember(Name = "protocolName", EmitDefaultValue = false)]
+        public string ProtocolName { get; set; }
+        /// <summary>
+        /// Gets or Sets CreatedBy
+        /// </summary>
+        [DataMember(Name = "createdBy", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string? CreatedBy { get; set; }
+
+        /// <summary>
+        /// Gets or Sets CreatedOn
+        /// </summary>
+        [DataMember(Name = "createdOn", EmitDefaultValue = false)]
+        public DateTime? CreatedOn { get; set; }
+        /// <summary>
+        /// Gets or Sets ModifiedBy
+        /// </summary>
+        [DataMember(Name = "modifiedBy", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string? ModifiedBy { get; set; }
+        /// <summary>
+        /// Gets or Sets ModifiedOn
+        /// </summary>
+        [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
+        public DateTime? ModifiedOn { get; set; }
+        public virtual ICollection<Port> Ports { get; set; }        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories.Assets.Base;
+using AssetsService.Core.Responses.Assets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace AssetsService.Core.Repositories
     {
         Task<List<VehicleMake>> GetAllVehicleMake();
         Task<VehicleMake> GetByIdVehicleMake(long id);
+
     }
 }

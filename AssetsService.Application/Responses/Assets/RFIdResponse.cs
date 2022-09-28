@@ -18,12 +18,12 @@ namespace AssetsService.Application.Responses.Assets
         public long ModelId { get; set; }
         public string ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
-        public long NetworkId { get; set; }
-        public string NetworkName { get; set; }
-        public long SerialNumber { get; set; }
+       //public long NetworkId { get; set; }
+       // public string NetworkName { get; set; }
+        public string SerialNumber { get; set; }
         public long StatusId { get; set; }
-        public long SubNetworkId { get; set; }
-        public string SubNetworkName { get; set; }
+       // public long SubNetworkId { get; set; }
+       // public string SubNetworkName { get; set; }
         public long WarrantyDuration { get; set; }
         public DateTime WarrantyExpiryDate { get; set; }
         public long LocationId { get; set; }

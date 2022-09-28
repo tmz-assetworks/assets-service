@@ -1,21 +1,23 @@
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Application.Queries;
+using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
-using AssetsService.Application.Commands.Assets;
-using AssetsService.Core.Entities;
-using AssetsService.Core.Queries;
-using AssetsService.Core.Responses;
+using AssetsService.Core.Repositories.Assets;
+using AssetsService.Core.Response;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using Serilog;
+using System.Dynamic;
 using System.Net;
 using System.Text.Json;
-using AssetsService.Application.Responses.Assets;
 
 namespace AssetsService.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PowerCabinetController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -25,7 +27,7 @@ namespace AssetsService.Api
         public PowerCabinetController(IMediator mediator, ILogger<PowerCabinetController> logger)
         {
             _mediator = mediator;
-            _logger = logger;
+            //_logger = logger;
         }
 
         string getjson(object res)
@@ -47,86 +49,164 @@ namespace AssetsService.Api
 
         [HttpGet("getpowercabinetbyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetPowerCabinetById(long Id)
+        public async Task<ActionResult<PowerCabinetById>>  GetPowerCabinetById(long Id)
         {
+            PowerCabinetById powerCabinetById = new PowerCabinetById();
 
             try
             {
-                PowerCabinet powerCabinet = await _mediator.Send(new GetPowerCabinetByIdQuery(Id));
-                _logger.LogInformation("Get the data of Power Cabinet by Id");
-                return getjson(powerCabinet);
+                GetPowerCabinetResponse powerCabinet = await _mediator.Send(new GetPowerCabinetByIdQuery(Id));
+                powerCabinetById.StatusCode = (int)HttpStatusCode.OK;
+                powerCabinetById.StatusMessage = "Record found";
+                powerCabinetById.data = powerCabinet;
+                if (powerCabinet == null)
+                    powerCabinetById.StatusMessage = "Record not found";
+
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
+                powerCabinetById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                powerCabinetById.StatusCode = (int)HttpStatusCode.NotFound;
+                powerCabinetById.data = null;
+                Log.Information("error occurred :" + ex.Message);
+                //_logger.LogError(ex.ToString());
             }
-            return JSONString;
+            return powerCabinetById;
 
         }
 
         [HttpGet("getallpowerCabinet")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetAllPowerCabinet()
+        public async Task<ActionResult<AllPowerCabinet>> GetAllPowerCabinet()
         {
-            
+            AllPowerCabinet allPowerCabinet = new AllPowerCabinet();
             try
             {
                 List<PowerCabinet> res = await _mediator.Send(new GetAllPowerCabinetQuery());
-                _logger.LogInformation("Get all the data of Power Cabinet");
-                return getjson(res);
+                allPowerCabinet.StatusCode = (int)HttpStatusCode.OK;
+                allPowerCabinet.StatusMessage = "Record found";
+                allPowerCabinet.data = res;
+                //_logger.LogInformation("Get all the data of Power Cabinet");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
+                allPowerCabinet.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allPowerCabinet.StatusCode = (int)HttpStatusCode.NotFound;
+                allPowerCabinet.data = null;
+                Log.Information("error occurred :" + ex.Message);
+                //_logger.LogError(ex.ToString());
 
             }
-            return JSONString;
+            return allPowerCabinet;
         }
-
-        [HttpPost("createpowerCabinet")]
+        [HttpGet("GetPowerCabinetData")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PowerCabinet>> CreatePowerCabinet([FromBody] CreatePowerCabinetCommand command)
+        public async Task<ActionResult<AllPowerCabinetData>> GetPowerCabinetData()
         {
+            AllPowerCabinetData allPowerCabinetData = new AllPowerCabinetData();
             try
             {
-                var result = await _mediator.Send(command);
-                _logger.LogInformation("Create Power Cabinet successfully");
-                return Ok(result);
+                List<GetPowerCabinetResponse> powerCabinets = await _mediator.Send(new GetPowerCabinetDataQuery());
+                allPowerCabinetData.StatusMessage = "Record found";
+                allPowerCabinetData.StatusCode = (int)HttpStatusCode.OK;
+                allPowerCabinetData.Data = powerCabinets.Select(x => new PowerCabinetResults { Id = x.Id, SerialNumber = x.SerialNumber }).Where(m => m.SerialNumber != "").OrderBy(m => m.SerialNumber).ToList();
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.StackTrace.ToString());
-                return new ContentResult()
-                {
-                    ContentType = "Exception",
-                    StatusCode = 404,
-                    Content = "PowerCabinet not Created "
-                };
+                allPowerCabinetData.StatusMessage = ex.Message.ToString();
+                allPowerCabinetData.StatusCode = (int)HttpStatusCode.NotFound;
+                allPowerCabinetData.Data = null;
+                Log.Information("error occurred :" + ex.Message);
             }
+            return allPowerCabinetData;
+        }
+        [HttpPost("createpowerCabinet")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ExpandoObject>> CreatePowerCabinet([FromBody] CreatePowerCabinetCommand command)
+        {
+            dynamic expendo = new ExpandoObject();
+
+            try
+            {
+
+                var result = await _mediator.Send(command);
+                if (result.Id > 0)
+                {
+
+                    expendo.statusCode = 200;
+                    expendo.Id = result.Id;
+                    expendo.statusMessage = "Record Saved Successfully";
+                }
+                else
+                {
+
+                    if (result.Id == -1)
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        return BadRequest(expendo);
+                    }
+                    else
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Record not saved";
+                    }
+                }
+
+               
+            }
+            catch (Exception ex)
+            {
+                expendo = new ExpandoObject();
+                //_logger.LogError(ex.ToString());
+                expendo.StatusCode = (int)HttpStatusCode.BadRequest;
+                expendo.StatusMessage = "Operation Failed!";
+                Log.Information("error occurred :" + ex.Message);
+
+            }
+            return (expendo);
         }
 
         [HttpPut("updatepowerCabinet")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PowerCabinetResponse>> UpdatePowerCabinet([FromBody] UpdatePowerCabinetCommand command)
+        public async Task<ActionResult<ExpandoObject>> UpdatePowerCabinet([FromBody] UpdatePowerCabinetCommand command)
         {
+            dynamic expandoObject = new ExpandoObject();
             try
             {
-                var result = await _mediator.Send(command);
-                _logger.LogInformation("Update Power Cabinet successfully");
-                return Ok(result);
+                expandoObject.statusCode = 200;
+                if (command.Id < 0)
+                {
+                    expandoObject.statusMessage = "Please provide PowerCabinet Id value.";
+                    return expandoObject;
+                }
+                else
+                    if (string.IsNullOrEmpty(command.ModifiedBy))
+                {
+                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    return expandoObject;
+                }
+                var data = await _mediator.Send(command);
+                if (data is not null && data.Id > 0)
+                {
+                    expandoObject.statusMessage = "Record updated successfully.";
+                }
+                else
+                {
+                    expandoObject.statusMessage = "Record not found.";
+                }
+                return expandoObject;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                return new ContentResult()
-                {
-                    ContentType = "Exception",
-                    StatusCode = 404,
-                    Content = "Dispenser not Update "
-                };
+                expandoObject = new ExpandoObject();
+                //_logger.LogError(ex.ToString());
+                expandoObject.StatusCode = (int)HttpStatusCode.BadRequest;
+                expandoObject.StatusMessage = "Operation Failed!";
+                Log.Information("error occurred :" + ex.Message);
             }
+            return expandoObject;
         }
 
 

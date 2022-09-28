@@ -3,6 +3,7 @@ using AssetsService.Core.Responses;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,48 +12,65 @@ namespace AssetsService.Application.Commands.Assets
 {
     public class UpdatePowerCabinetCommand : IRequest<PowerCabinetResponse>
     {
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Id")]
         public long Id { get; set; }
 
+        [StringLength(50, MinimumLength = 0, ErrorMessage = "AssetId must be fewer than 50 characters.")]
+        [Required]
         public string AssetId { get; set; }
 
+        [Range(1, double.MaxValue, ErrorMessage = "BreakerRating must be fewer than 20 characters.")]
+        [Required]
         public double BreakerRating { get; set; }
 
-        public string CreatedBy { get; set; }
 
-        public DateTime CreatedOn { get; set; }
-
+        [Range(1, int.MaxValue, ErrorMessage = "DcPortQuantityRating must be fewer than 20 characters.")]
+        [Required]
         public int DcPortQuantityRating { get; set; }
 
+        [Required]
         public DateTime InstallationDate { get; set; }
 
-        public long MakeId { get; set; }
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid MakeMasterId")]
+        public long MakeMasterId { get; set; }
 
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModelId")]
         public long ModelId { get; set; }
 
+        [Required]
         public string ModifiedBy { get; set; }
 
-        public DateTime ModifiedOn { get; set; }
-
-        public long NetworkId { get; set; }
-
-        public string NetworkName { get; set; }
-
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "PeakCurrent Can only be between 1 to 20 characters")]
         public int PeakCurrent { get; set; }
 
-        public long SerialNumber { get; set; }
+        [Required]
+        [StringLength(20, MinimumLength = 0, ErrorMessage = "SerialNumber must be fewer than 20 characters.")]
+        public string SerialNumber { get; set; }
 
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "ServiceVolts Can only be between 1 to 20 characters")]
         public long ServiceVolts { get; set; }
 
-        public long StatusId { get; set; }
-        
-        public long SubNetworkId { get; set; }
+        public bool IsActive { get; set; }
 
-        public string SubNetworkName { get; set; }
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid StatusId")]
+        public long StatusId { get; set; }
+
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid LocationId")]
+        public long LocationId { get; set; }
 
         public long WarrantyDuration { get; set; }
 
+        [Required]
         public DateTime WarrantyExpiryDate { get; set; }
 
+        [Required]
         public DateTime WarrantyStartDate { get; set; }
     }
 }

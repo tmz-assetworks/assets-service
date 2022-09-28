@@ -13,8 +13,6 @@ using System.Threading.Tasks;
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
 
-    
-
     public class GetDispensersDetailHandler : IRequestHandler<GetDispensersDetailQuery, PagedList<DispensersDetail>>
     {
         private readonly IDispenserRepository _dispenserRepo;

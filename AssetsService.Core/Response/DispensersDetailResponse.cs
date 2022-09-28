@@ -40,7 +40,10 @@ namespace AssetsService.Core.Response
     {
         public string operatorId { get; set; }
     }
-
+    public class LocationDispensersRequest : QueryStringParameters
+    {
+        public List<long> locationIds { get; set; }
+    }
     public class ValidateChargerIdRequest
     {
         public string ChargeBoxId {get; set;}
@@ -61,5 +64,34 @@ namespace AssetsService.Core.Response
         public string ChargeBoxId {get;set;}
         public bool status {get; set;}
     }
-
+    public class PlugTypeRequest
+    {
+        public string userId { get; set; }
+    }
+    public class PlugTypeResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public List<PlugTypeResponseData> Data { get; set; }
+    }
+    public class PlugTypeResponseData
+    {
+        public long Id { get; set; }
+        public string PlugTypeName { get; set; }
+    }
+    public class ConnectorTypeRequest
+    {
+        public string userId { get; set; }
+    }
+    public class ConnectorTypeResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public List<ConnectorTypeResponseData> Data { get; set; }
+    }
+    public class ConnectorTypeResponseData
+    {
+        public long Id { get; set; }
+        public string ConnectorTypeName { get; set; }
+    }
 }

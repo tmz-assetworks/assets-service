@@ -1,5 +1,7 @@
-﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Response;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,143 +12,114 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
-    public class RFIdRepository : Repository<AssetsService.Core.Entities.RFIDReader>, IRFIdRepository
+
+
+    public class RFIdRepository : Repository<RFIDReader>, IRFIdRepository
     {
         public RFIdRepository(AssetsService.Infrastructure.DBContext.DBContextCore _dbContext) : base(_dbContext)
         {
 
         }
-        public async Task<List<RFIDReader>> GetAllRfIdReader()
+
+        public async Task<PagedList<RFIDReaderDetails>> GetAllRfIdReader(RfIdReaderRequest rFIDReaderRequest)
         {
-            return await _dbContext.RFIDReaders
-                 .Select(m => new RFIDReader
-                 {
-                     Id = m.Id,
-                     AssetId = m.AssetId,
-                     CardReader = m.CardReader,
-                     CreatedBy = m.CreatedBy,
-                     CreatedOn = m.CreatedOn,
-                     IsActive = m.IsActive,
-                     MakeId = m.MakeId,
-                     ModelId = m.ModelId,
-                     ModifiedBy = m.ModifiedBy,
-                     ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
-                     SerialNumber = m.SerialNumber,
-                     StatusId = m.StatusId,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
-                     WarrantyDuration = m.WarrantyDuration,
-                     WarrantyExpiryDate = m.WarrantyExpiryDate,
-                     LocationId = m.LocationId,
-                     WarrantyStartDate = m.WarrantyStartDate,
-                     Location = (from obls in _dbContext.Locations.Where(x => x.Id == m.LocationId)
-                                           select new Location
-                                           {
-                                               Id = obls.Id,
-                                               LocationAddressId = obls.LocationAddressId,
-                                               LocationStatusId = obls.LocationStatusId,
-                                            
-                                               ContactPersonName = obls.ContactPersonName,
-                                               GlobalTax = obls.GlobalTax,
-                                               TotalCapacity = obls.TotalCapacity,
-                                               UtilityService = obls.UtilityService,
-                                               CreatedBy = m.CreatedBy,
-                                               Description = obls.Description,
-                                               IsActive = obls.IsActive,
-                                               ModifiedBy = obls.ModifiedBy,
-                                               ModifiedOn = obls.ModifiedOn,
-                                               
-                                               
-                                               LocationName = obls.LocationName,
-                                               LocationNumber = obls.LocationNumber,
-                                               
-                                               
-                                               TimeZone = obls.TimeZone,
-                                               CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-
-                                           }).FirstOrDefault(),
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
-                               select new Status
+            var rfIdReaders = (from RFIDReaders in _dbContext.RFIDReaders
+                               join Models in _dbContext.Model
+                                       on RFIDReaders.ModelId equals Models.Id
+                               join MakeMasters in _dbContext.MakeMaster
+                               on RFIDReaders.MakeMasterId equals MakeMasters.Id
+                               join Locations in _dbContext.Locations
+                                   on RFIDReaders.LocationId equals Locations.Id
+                               join LocationStatus in _dbContext.LocationStatus
+                               on Locations.LocationStatusId equals LocationStatus.Id
+                               select new RFIDReaderDetails
                                {
-                                   Id = obls.Id,
-                                   StatusName = obls.StatusName,
-                                   IsActive = obls.IsActive,
-                                   CreatedBy = obls.CreatedBy,
-                                   CreatedOn = obls.CreatedOn,
-                                   ModifiedBy = obls.ModifiedBy,
-                                   ModifiedOn = obls.ModifiedOn,
+                                   Id = RFIDReaders.Id,
+                                   AssetId = RFIDReaders.AssetId,
+                                   CardReader = RFIDReaders.CardReader,
+                                   CreatedBy = RFIDReaders.CreatedBy,
+                                   CreatedOn = RFIDReaders.CreatedOn,
+                                   IsActive = RFIDReaders.IsActive,
+                                   MakeMasterId = RFIDReaders.MakeMasterId,
+                                   ModelId = RFIDReaders != null ? (long)RFIDReaders.ModelId : 0,
+                                   ModifiedBy = RFIDReaders.ModifiedBy != null ? RFIDReaders.ModifiedBy : "",
+                                   ModifiedOn = RFIDReaders.ModifiedOn,
+                                   SerialNumber = RFIDReaders.SerialNumber,
+                                   StatusId = RFIDReaders.StatusId,
+                                   MakeMasterName = MakeMasters.Name != null ? MakeMasters.Name : "",
+                                   ModelName = Models.ModelName != null ? Models.ModelName : "",
+                                   WarrantyDuration = RFIDReaders.WarrantyDuration,
+                                   WarrantyExpiryDate = RFIDReaders.WarrantyExpiryDate,
+                                   LocationId = RFIDReaders.LocationId,
+                                   WarrantyStartDate = RFIDReaders.WarrantyStartDate,
+                                   LocationName = Locations.LocationName,
+                                   StatusName = LocationStatus.LocationStatusName
+                               }).Where(m => m.CardReader.ToLower().Contains(rFIDReaderRequest.SearchParam.ToLower())).ToList();
+            rfIdReaders = rfIdReaders != null ? rfIdReaders.OrderByDescending(a => a.ModifiedOn).ToList() : rfIdReaders;
 
-                               }).FirstOrDefault(),
-                 })
-                 .ToListAsync();
+            //Paging on Records        
+            var dataResult = PagedList<RFIDReaderDetails>.ToPagedList(rfIdReaders,
+              rFIDReaderRequest.PageNumber,
+              rFIDReaderRequest.PageSize);
+            return await Task.FromResult(dataResult);
         }
-
-        public async Task<RFIDReader> GetByIdRfIdReader(long id)
+        public async Task<List<RFIDReader>> GetAllRfIdReaderData(RfIdReaderDataRequest rFIDReaderRequest)
         {
-            return  _dbContext.RFIDReaders
+            return _dbContext.RFIDReaders
                  .Select(m => new RFIDReader
                  {
                      Id = m.Id,
-                     AssetId = m.AssetId,
                      CardReader = m.CardReader,
-                     CreatedBy = m.CreatedBy,
-                     CreatedOn = m.CreatedOn,
-                     IsActive = m.IsActive,
-                     MakeId = m.MakeId,
-                     ModelId = m.ModelId,
-                     ModifiedBy = m.ModifiedBy,
-                     ModifiedOn = m.ModifiedOn,
-                     NetworkId = m.NetworkId,
-                     NetworkName = m.NetworkName,
-                     SerialNumber = m.SerialNumber,
-                     StatusId = m.StatusId,
-                     SubNetworkId = m.SubNetworkId,
-                     SubNetworkName = m.SubNetworkName,
-                     WarrantyDuration = m.WarrantyDuration,
-                     WarrantyExpiryDate = m.WarrantyExpiryDate,
-                     LocationId = m.LocationId,
-                     WarrantyStartDate = m.WarrantyStartDate,
-                     Location = (from obls in _dbContext.Locations.Where(x => x.Id == m.LocationId)
-                                 select new Location
-                                 {
-                                     Id = obls.Id,
-                                     LocationAddressId = obls.LocationAddressId,
-                                     LocationStatusId = obls.LocationStatusId,
-                                     
-                                     ContactPersonName = obls.ContactPersonName,
-                                     GlobalTax = obls.GlobalTax,
-                                     TotalCapacity = obls.TotalCapacity,
-                                     UtilityService = obls.UtilityService,
-                                     CreatedBy = m.CreatedBy,
-                                     Description = obls.Description,
-                                     IsActive = obls.IsActive,
-                                     ModifiedBy = obls.ModifiedBy,
-                                     ModifiedOn = obls.ModifiedOn,
-                                     
-                                     
-                                     LocationName = obls.LocationName,
-                                     LocationNumber = obls.LocationNumber,
-                                     
-                                     
-                                     TimeZone = obls.TimeZone,
-                                     CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
+                 }).Where(m => m.CardReader != "").OrderBy(m => m.CardReader).ToList();
+        }
+        public async Task<RFIDReaderDetails> GetByIdRfIdReader(long id)
+        {
+            RFIDReaderDetails data = new RFIDReaderDetails();
+            try
+            {
 
-                                 }).FirstOrDefault(),
-                     Status = (from obls in _dbContext.Status.Where(x => x.Id == m.StatusId)
-                               select new Status
-                               {
-                                   Id = obls.Id,
-                                   StatusName = obls.StatusName,
-                                   IsActive = obls.IsActive,
-                                   CreatedBy = obls.CreatedBy,
-                                   CreatedOn = obls.CreatedOn,
-                                   ModifiedBy = obls.ModifiedBy,
-                                   ModifiedOn = obls.ModifiedOn,
-
-                               }).FirstOrDefault(),
-                 }).Where(x => x.Id == id).FirstOrDefault();
+                data = (from RFIDReaders in _dbContext.RFIDReaders
+                        join Models in _dbContext.Model
+                                on RFIDReaders.ModelId equals Models.Id
+                        join MakeMasters in _dbContext.MakeMaster
+                        on RFIDReaders.MakeMasterId equals MakeMasters.Id
+                        join Locations in _dbContext.Locations
+                            on RFIDReaders.LocationId equals Locations.Id
+                        join LocationStatus in _dbContext.LocationStatus
+                        on Locations.LocationStatusId equals LocationStatus.Id
+                        select new RFIDReaderDetails
+                        {
+                            Id = RFIDReaders.Id,
+                            AssetId = RFIDReaders.AssetId,
+                            CardReader = RFIDReaders.CardReader,
+                            CreatedBy = RFIDReaders.CreatedBy,
+                            CreatedOn = RFIDReaders.CreatedOn,
+                            IsActive = RFIDReaders.IsActive,
+                            MakeMasterId = RFIDReaders.MakeMasterId,
+                            ModelId = RFIDReaders != null ? (long)RFIDReaders.ModelId : 0,
+                            ModifiedBy = RFIDReaders.ModifiedBy != null ? RFIDReaders.ModifiedBy : "",
+                            ModifiedOn = RFIDReaders.ModifiedOn,
+                            SerialNumber = RFIDReaders.SerialNumber,
+                            StatusId = RFIDReaders.StatusId,
+                            MakeMasterName = MakeMasters.Name != null ? MakeMasters.Name : "",
+                            ModelName = Models.ModelName != null ? Models.ModelName : "",
+                            WarrantyDuration = RFIDReaders.WarrantyDuration,
+                            WarrantyExpiryDate = RFIDReaders.WarrantyExpiryDate,
+                            LocationId = RFIDReaders.LocationId,
+                            WarrantyStartDate = RFIDReaders.WarrantyStartDate,
+                            LocationName = Locations.LocationName,
+                            StatusName = LocationStatus.LocationStatusName
+                        }).Where(x => x.Id == id).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+            }
+            return data;
+        }
+        public async Task<RFIDReader> GetByIdRfIdReaderData(long Id)
+        {
+            var data = await _dbContext.RFIDReaders.FindAsync(Id);
+            return data;
         }
     }
 }

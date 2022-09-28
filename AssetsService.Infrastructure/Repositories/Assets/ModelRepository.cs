@@ -1,5 +1,6 @@
 ﻿using AssetsService.Core.Entities;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Response;
 using AssetsService.Infrastructure.Repositories.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static AssetsService.Core.Response.ModelResponse;
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
@@ -92,6 +94,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                  .ToListAsync();
         }
 
+        public async Task<List<Model>> GetAllModelData(ModelDataRequest rFIDReaderRequest)
+        {
+            return _dbContext.Model
+                 .Select(m => new Model
+                 {
+                     Id = m.Id,
+                     ModelName = m.ModelName,
+                 }).Where(m => m.ModelName != "").OrderBy(m => m.ModelName).ToList();
+        }
         public async Task<Model> GetAllModelById(long id)
         {
 
@@ -168,6 +179,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                  })
                  .Where(x => x.Id == id).FirstOrDefault();
 
+        }
+     public async Task<List<ModelList>> GetAllModelList()
+        {
+            return _dbContext.Model
+                 .Select(m => new Core.Response.ModelList
+                 {
+                     Id = m.Id,
+                     ModelName = m.ModelName
+                 }).Where(m => m.ModelName != "").OrderBy(m => m.ModelName).ToList<Core.Response.ModelList>();            
         }
     }
 }

@@ -4,8 +4,11 @@ using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 using System.Net;
 using System.Text.Json;
 
@@ -13,120 +16,174 @@ namespace AssetsService.Api
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ModemController : ControllerBase
     {
         private readonly IMediator _mediator;
-       
+
         private readonly ILogger<ModemController> _logger;
         string JSONString = String.Empty;
         public ModemController(IMediator mediator, ILogger<ModemController> logger)
         {
             _mediator = mediator;
-            _logger = logger;
+            //_logger = logger;
         }
-        string getjson(object res)
-        {
-            string JSONString = String.Empty;
-            if (res != null)
-            {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var data = System.Text.Json.JsonSerializer.Serialize(res, options);
-
-                JSONString = "{\n  \"StatusCode\" : " + (int)HttpStatusCode.OK + ",\n  \"StatusMessage\" : \"Record found\",\n  \"data\" : " + data + " \n}";
-            }
-            else
-            {
-                JSONString = "{\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + ",\n  \"StatusMessage\" : \"Record not found\",\n  \"data\" : " + null + " \n}";
-            }
-            return JSONString;
-        }
-        [HttpGet("GetAllModem")]
+        [HttpPost("GetAllModem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetAllModem()
-        {       
+        public async Task<Core.Entities.ModemResponse> GetAllModem([FromBody] ModemRequest ModemRequest)
+        {
+            Core.Entities.ModemResponse re = new Core.Entities.ModemResponse();
             try
             {
-                List<AssetsService.Core.Entities.Modem> res = await _mediator.Send(new GetAllModemQuery());
-                _logger.LogInformation("Get all the data of Modem");
-                return getjson(res);
+
+                if (ModemRequest.PageSize == 0) ModemRequest.PageSize = 10;
+                if (ModemRequest.PageNumber == 0) ModemRequest.PageNumber = 1;
+                var modems = await _mediator.Send(new GetAllModemQuery(ModemRequest));
+                if (modems != null && modems.Count > 0)
+                    re.StatusMessage = "Record found";
+                else re.StatusMessage = "Record not found";
+                re.StatusCode = (int)HttpStatusCode.OK;
+                re.data = modems;
+
+                re.paginationResponse = new Core.PagingHelper.PaginationResponse
+                {
+                    TotalCount = modems.TotalCount,
+                    PageSize = modems.PageSize,
+                    CurrentPage = modems.CurrentPage,
+                    TotalPages = modems.TotalPages,
+                    HasNext = modems.HasNext,
+                    HasPrevious = modems.HasPrevious
+                };
+                //_logger.LogInformation("Get all the data of Modem");
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
-
+                //_logger.LogInformation("error occurred :" + ex.Message);
+                Log.Information("error occurred :" + ex.Message);
             }
-            return JSONString;
+            
+           
+          return re;
+
         }
         [HttpGet("getModembyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<string> GetModemById(int id)
+        public async  Task<Core.Entities.ModemByIDResponse> GetModemById(int id)
         {
+            Core.Entities.ModemByIDResponse modem = new ModemByIDResponse();
+
             try
             {
-                Modem res = await _mediator.Send(new GetByIdModemsQuery(id));
-                _logger.LogInformation("Get the data of Modem by Id");
-                return getjson(res);
+                modem = await _mediator.Send(new GetByIdModemsQuery(id));
             }
             catch (Exception ex)
             {
-                JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                _logger.LogError(ex.ToString());
-
+                //_logger.LogInformation("Get by id the data of Modem");
+                Log.Information("error occurred :" + ex.Message); 
             }
-            return JSONString;
+               
+            
+            return modem;
 
-
+            
         }
         [HttpPost("CreateModem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ModemResponse>> CreateModem([FromBody] CreateModemCommand command)
+        public async Task<ActionResult<ExpandoObject>> CreateModem([FromBody] CreateModemCommand command)
         {
+            dynamic expendo = new ExpandoObject();
+
             try
             {
+
                 var result = await _mediator.Send(command);
-                _logger.LogInformation("Create Modem successfully");
-                return Ok(result);
+                if (result.Id > 0)
+                {
+
+                    expendo.statusCode = 200;
+                    expendo.Id = result.Id;
+                    expendo.statusMessage = "Record Saved Successfully";
+                }
+                else
+                {                  
+
+                    if (result.Id == -1)
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        return BadRequest(expendo);
+                    }
+                    else
+                    {
+                        expendo.statusCode = 200;
+                        expendo.statusMessage = "Record not saved";
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                return new ContentResult()
-                {
-                    ContentType = "Exception",
-                    StatusCode = 404,
-                    Content = "Modem not Created "
-                };
+                expendo = new ExpandoObject();
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = "Operation Failed!";
+                Log.Information("error occurred :" + ex.Message);
+
             }
+            return (expendo);
         }
         [HttpPut("UpdateModem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ModemResponse>> UpdateModem([FromBody] UpdateModemCommand command)
+        public async Task<ActionResult<ExpandoObject>> UpdateModem([FromBody] UpdateModemCommand command)
         {
+            dynamic expandoObject = new ExpandoObject();
             try
             {
-                var result = await _mediator.Send(command);
-                _logger.LogInformation("Update Modem successfully");
-                return Ok(result);
+                expandoObject.statusCode = 200;
+                if (command.Id < 0)
+                {
+                    expandoObject.statusMessage = "Please provide Modem Id value.";
+                    return expandoObject;
+                }
+                else
+                    if (string.IsNullOrEmpty(command.ModifiedBy))
+                {
+                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    return expandoObject;
+                }
+                var data = await _mediator.Send(command);
+                if (data is not null && data.Id > 0)
+                {
+                    expandoObject.statusMessage = "Record updated successfully.";
+                }
+                else
+                {
+                    expandoObject.statusMessage = "Record not found.";
+                }
+                return expandoObject;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-                return new ContentResult()
-                {
-                    ContentType = "Exception",
-                    StatusCode = 404,
-                    Content = "Modem not Created "
-                };
+                expandoObject = new ExpandoObject();
+                //_logger.LogError(ex.ToString());
+                expandoObject.StatusCode = (int)HttpStatusCode.BadRequest;
+                expandoObject.StatusMessage = "Operation Failed!";
+                Log.Information("error occurred :" + ex.Message);
             }
+            return expandoObject;
         }
     }
+}
 
 
 
 
-        }
 
-     
+
+
+
+
+
+
+
+
 
 

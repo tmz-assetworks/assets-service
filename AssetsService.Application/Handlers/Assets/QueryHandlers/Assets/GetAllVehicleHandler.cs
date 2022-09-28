@@ -1,4 +1,5 @@
 ﻿using AssetsService.Application.Queries;
+using AssetsService.Core.Entities;
 using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories;
 using AssetsService.Core.Responses.Assets;

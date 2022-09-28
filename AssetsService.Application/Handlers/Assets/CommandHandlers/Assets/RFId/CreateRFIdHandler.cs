@@ -1,5 +1,6 @@
 ﻿using AssetsService.Application.Commands.Assets.RFId;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.Entities;
 using AssetsService.Core.Mapper;
 using AssetsService.Core.Repositories;
 using MediatR;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId
 {
-    public class CreateRFIdHandler : IRequestHandler<CreateRFIdCommand, RFIdResponse>
+    public class CreateRFIdHandler : IRequestHandler<CreateRFIdCommand, RFIDReader>
     {
         private readonly IRFIdRepository _iRFIdRepository;
 
@@ -20,16 +21,29 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId
             _iRFIdRepository = iRFIdRepository;
         }
 
-        public async Task<RFIdResponse> Handle(CreateRFIdCommand request, CancellationToken cancellationToken)
+        public async Task<RFIDReader> Handle(CreateRFIdCommand request, CancellationToken cancellationToken)
         {
+            RFIdResponse maprfIdResponse = new RFIdResponse();
+            RFIDReader rfidreader = null;
             var rfIdEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.RFIDReader>(request);
-            if (rfIdEntitiy is null)
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                if (rfIdEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                rfIdEntitiy.IsActive = request.IsActive;
+                rfIdEntitiy.CreatedOn = DateTime.Now;
+                //rfIdEntitiy.ModifiedBy = request.CreatedBy;
+                rfIdEntitiy.ModifiedOn = DateTime.Now;
+                var addrfIdResponse = await _iRFIdRepository.AddAsync(rfIdEntitiy);
+                 rfidreader = Mapper.Mappers.Map<RFIDReader>(addrfIdResponse);
             }
-            var addrfIdResponse = await _iRFIdRepository.AddAsync(rfIdEntitiy);
-            var maprfIdResponse = Mapper.Mappers.Map<RFIdResponse>(addrfIdResponse);
-            return maprfIdResponse;
+            catch (Exception ex)
+            {
+                ;
+            }
+            return rfidreader;
         }
     }
 }

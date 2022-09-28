@@ -23,7 +23,9 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "connectorType", EmitDefaultValue = false)]
         public string ConnectorType { get; set; }
 
-       
+        [DataMember(Name = "color", EmitDefaultValue = false)]
+        public string Color { get; set; }
+
         [DataMember(Name = "createdOn", EmitDefaultValue = false)]
         public DateTime CreatedOn { get; set; }
 

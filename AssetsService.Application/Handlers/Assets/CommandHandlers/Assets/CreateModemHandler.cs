@@ -1,4 +1,5 @@
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Core.Entities;
 using AssetsService.Core.Mapper;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Core.Responses;
@@ -6,7 +7,7 @@ using MediatR;
 
 namespace AssetsService.Application.Handlers.Assets.CommandHandlers
 {
-    public class CreateModemHandler : IRequestHandler<CreateModemCommand, ModemResponse>
+    public class CreateModemHandler : IRequestHandler<CreateModemCommand, Modem>
     {
         private readonly IModemRepository _modemRepo;
 
@@ -14,16 +15,33 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         {
             _modemRepo = modemRepository;
         }
-        public async Task<ModemResponse> Handle(CreateModemCommand request, CancellationToken cancellationToken)
+        public async Task<Modem> Handle(CreateModemCommand request, CancellationToken cancellationToken)
         {
-            var modemEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Modem>(request);
-            if (modemEntitiy is null)
+            Modem modem = null;
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var modemEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Modem>(request);
+                if (modemEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                modemEntitiy.CreatedOn = DateTime.Now;
+                modemEntitiy.ModifiedOn = DateTime.Now;
+                modemEntitiy.ModifiedBy = "";
+                var addModemResponse = await _modemRepo.AddAsync(modemEntitiy);
+                modem = Mapper.Mappers.Map<Modem>(addModemResponse);
+                 
             }
-            var addModemResponse = await _modemRepo.AddAsync(modemEntitiy);
-            var mapModemResponse = Mapper.Mappers.Map<ModemResponse>(addModemResponse);
-            return mapModemResponse;
+            catch (Exception ex)
+            {
+                modem=  new Modem();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    modem.Id = -1;
+                }                
+            }
+            return modem;
+            
         }
     }
 }

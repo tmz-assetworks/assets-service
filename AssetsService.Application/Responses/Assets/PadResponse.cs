@@ -1,4 +1,5 @@
 ﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,11 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Responses.Assets
 {
-    public class PadResponse
+    public class AssetResponse
+    {
+        public long Id { get; set; }
+    }
+        public class PadResponse
     {
         public long Id { get; set; }
 
@@ -17,29 +22,41 @@ namespace AssetsService.Application.Responses.Assets
 
         public DateTime CreatedOn { get; set; }
 
-        public string Description { get; set; }
-
-        public DateTime InsertDate { get; set; }
+        public DateTime InstallationDate { get; set; }
 
         public bool IsActive { get; set; }
-
-        public double Latitude { get; set; }
-
-        public double Longitude { get; set; }
-
         public string ModifiedBy { get; set; }
 
         public DateTime ModifiedOn { get; set; }
-
-        public long NetworkId { get; set; }
-
-        public string NetworkName { get; set; }
-
         public string PadName { get; set; }
         public long StatusId { get; set; }
 
-        public long SubNetworkId { get; set; }
+        public long LocationId { get; set; }
 
-        public string SubNetworkName { get; set; }
     }
+
+    public class AllPad{
+        
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+
+        public List<GetPadResponse> data{get;set;}
+    }
+    public class AllPadData
+    {
+
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+
+        public List<PadResults> data { get; set; }
+    }
+    public class PadById{
+        
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+
+        public GetPadResponse data {get;set;}
+    }
+
+
 }

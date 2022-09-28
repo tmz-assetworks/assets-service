@@ -11,9 +11,7 @@ namespace AssetsService.Core.Entities
 {
     [DataContract]
     public partial class Model
-    {
-
-        /// <summary>
+    {        /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [Key]
@@ -40,7 +38,6 @@ namespace AssetsService.Core.Entities
 
         [DataMember(Name = "manufactureId", EmitDefaultValue = false)]
         public long ManufactureId { get; set; }
-
 
         [DataMember(Name = "modelName", EmitDefaultValue = false)]
         public string ModelName { get; set; }

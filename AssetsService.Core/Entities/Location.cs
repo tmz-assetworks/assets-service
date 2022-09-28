@@ -18,48 +18,40 @@ namespace AssetsService.Core.Entities
     public partial class Location
     {
 
-        // public Location()  
-        // {  
-        //     this.LocationSchedule = newHashSet < LocationSchedule > ();  
-
-        //     this.OperatorUserMapper = newHashSet < OperatorUserMapper > ();  
-        // } 
-        /// <summary>
-        /// Gets or Sets Id
-        /// </summary>
         [DataMember(Name = "id", EmitDefaultValue = false)]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        /// <summary>
-        /// Gets or Sets Address
-        /// </summary>
         [DataMember(Name = "locationAddressId", EmitDefaultValue = false)]
         public long LocationAddressId { get; set; }
         public virtual LocationAddress LocationAddress { get; set; }
 
-        // [DataMember(Name = "locationScheduleId", EmitDefaultValue = false)]
-        // public long LocationScheduleId { get; set; }
-        // public virtual LocationSchedule LocationSchedule { get; set; }
-
-
-
         [DataMember(Name = "locationStatusId", EmitDefaultValue = false)]
         public long LocationStatusId { get; set; }
-        public virtual LocationStatus LocationStatus { get; set; }
+        public virtual LocationStatus? LocationStatus { get; set; }
 
-        public virtual Department Department { get; set; }
+        public virtual Department? Department { get; set; }
 
         [DataMember(Name = "departmentId", EmitDefaultValue = false)]
         public long DepartmentId { get; set; }
 
+        [DataMember(Name = "locationId", EmitDefaultValue = false)]
+        public string LocationId { get; set; }
 
+        [DataMember(Name = "email", EmitDefaultValue = false)]
+        public string Email { get; set; }
 
-
+        [DataMember(Name = "alternateMobileNumber", EmitDefaultValue = false)]
+        public string AlternateMobileNumber { get; set; }
 
         [DataMember(Name = "contactPersonName", EmitDefaultValue = false)]
+        [StringLength(40, MinimumLength = 2)]
         public string ContactPersonName { get; set; }
+
+        [DataMember(Name = "contactPersonNumber", EmitDefaultValue = false)]
+        [StringLength(15, MinimumLength = 10)]
+        public string ContactPersonNumber { get; set; }
 
 
         [DataMember(Name = "globalTax", EmitDefaultValue = false)]
@@ -115,13 +107,8 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets LocationName
         /// </summary>
         [DataMember(Name = "locationName", EmitDefaultValue = false)]
+        [StringLength(40, MinimumLength = 2)]
         public string LocationName { get; set; }
-
-        /// <summary>
-        /// Gets or Sets LocationNumber
-        /// </summary>
-        [DataMember(Name = "locationNumber", EmitDefaultValue = false)]
-        public long LocationNumber { get; set; }
 
         /// <summary>
         /// Gets or Sets TimeZone
@@ -129,14 +116,14 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "timeZone", EmitDefaultValue = false)]
         public string TimeZone { get; set; }
 
-        public string FuelProtectType {get;set;}
+        public string FuelProtectType { get; set; }
 
 
 
         public virtual ICollection<LocationSchedule> LocationSchedule { get; set; }
-        public virtual ICollection<OperatorUserMapper> OperatorUserMapper { get; set; }
+        public virtual ICollection<OperatorUserMapper>? OperatorUserMapper { get; set; }
 
-        
+
 
     }
 }

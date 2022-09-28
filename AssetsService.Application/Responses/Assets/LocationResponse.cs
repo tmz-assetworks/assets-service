@@ -31,9 +31,10 @@ namespace AssetsService.Application.Responses.Assets
 
         public long DepartmentId { get; set; }
 
-        ///  public long LocationId { get; set; }
+        public string LocationId { get; set; }
 
         public string ContactPersonName { get; set; }
+        public string ContactPersonNumber { get; set; }
 
         public string GlobalTax { get; set; }
 
@@ -111,5 +112,5 @@ namespace AssetsService.Application.Responses.Assets
     // }
 
 
-   
+
 }

@@ -57,11 +57,128 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                 Location old = entity as Location;
                 Location u = _dbContext.Set<Location>().Find(id);
                 u.IsActive = old.IsActive;
+                u.ModifiedBy = old.ModifiedBy;
+                u.ModifiedOn = DateTime.Now;
                 _dbContext.Entry(u);
             }
             await _dbContext.SaveChangesAsync();
             return entity;
         }
+
+
+
+        public async Task<T> IsActiveStatusChangeAsync(T entity, long id, string types)
+        {
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "vehicle")
+            {
+                Vehicle old = entity as Vehicle;
+                Vehicle updatingEntity = _dbContext.Set<Vehicle>().Find(id);
+                if (updatingEntity != null)
+                {
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+            }
+            else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "rfidreader")
+            {
+                RFIDReader old = entity as RFIDReader;
+                try
+                {
+                    
+                    RFIDReader updatingEntity = _dbContext.Set<RFIDReader>().Find(id);
+                    if (updatingEntity != null)
+                    {
+                        updatingEntity.IsActive = old.IsActive;
+                        updatingEntity.ModifiedBy = old.ModifiedBy;
+                        updatingEntity.ModifiedOn = DateTime.Now;
+                        _dbContext.Entry(updatingEntity);
+                    }
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+
+            }
+            else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "pad")
+            {
+                Pad old = entity as Pad;
+                try
+                {
+                   
+                    Pad updatingEntity = _dbContext.Set<Pad>().Find(id);
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+            }
+            else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "powercabinet")
+            {
+                PowerCabinet old = entity as PowerCabinet;
+                try
+                {
+
+                    PowerCabinet updatingEntity = _dbContext.Set<PowerCabinet>().Find(id);
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+            }
+            else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "cable")
+            {
+                Cable old = entity as Cable;
+                try
+                {
+
+                    Cable updatingEntity = _dbContext.Set<Cable>().Find(id);
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+            }
+            else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "modem")
+            {
+                Modem old = entity as Modem;
+                try
+                {
+
+                    Modem updatingEntity = _dbContext.Set<Modem>().Find(id);
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+
 
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
@@ -77,14 +194,70 @@ namespace AssetsService.Infrastructure.Repositories.Repository
 
         {
 
-            var entry = _dbContext.Set<T>().Find(id);
-            _dbContext.Entry(entry).CurrentValues.SetValues(entity);
+
+            if (types == "PAD")
+            {
+                Pad newPad = entity as Pad;
+                try
+                { 
+                var entry = _dbContext.Set<Pad>().Find(id);
+                
+                newPad.CreatedBy = entry.CreatedBy;
+                newPad.CreatedOn = entry.CreatedOn;
+
+                _dbContext.Entry(entry).CurrentValues.SetValues(newPad);
+                }
+                catch
+                {
+                    newPad.Id = 0;
+                }
+               
+            }
+            else
+                if (types == "powercabinet")
+            {
+                PowerCabinet newPowerCabinet = entity as PowerCabinet;
+                try
+                {
+                    var entry = _dbContext.Set<PowerCabinet>().Find(id);
+
+                    newPowerCabinet.CreatedBy = entry.CreatedBy;
+                    newPowerCabinet.CreatedOn = entry.CreatedOn;
+
+                    _dbContext.Entry(entry).CurrentValues.SetValues(newPowerCabinet);
+                }
+                catch
+                {
+                    newPowerCabinet.Id = 0;
+                }
+
+            }
+            else
+                if (types == "modem")
+            {
+                Modem newModem = entity as Modem;
+                try
+                {
+                    var entry = _dbContext.Set<Modem>().Find(id);
+
+                    newModem.CreatedBy = entry.CreatedBy;
+                    newModem.CreatedOn = entry.CreatedOn;
+
+                    _dbContext.Entry(entry).CurrentValues.SetValues(newModem);
+                }
+                catch
+                {
+                    newModem.Id = 0;
+                }
+
+            }
             await _dbContext.SaveChangesAsync();
             return entity;
 
 
 
         }
+
         public async Task<T> DeleteActiveAsync(T entity, long id, string types)
         {
             if (types.ToLower() == "CABLE".ToLower())
@@ -99,7 +272,7 @@ namespace AssetsService.Infrastructure.Repositories.Repository
             {
                 Vehicle old = entity as Vehicle;
                 Vehicle u = _dbContext.Set<Vehicle>().Find(id);
-                u.IsActive = old.IsActive;
+                u.IsActive = false;
                 _dbContext.Entry(u);
 
             }
@@ -107,7 +280,7 @@ namespace AssetsService.Infrastructure.Repositories.Repository
             {
                 VehicleMake old = entity as VehicleMake;
                 VehicleMake u = _dbContext.Set<VehicleMake>().Find(id);
-                u.IsActive = old.IsActive;
+                u.IsActive = false;
                 _dbContext.Entry(u);
 
             }
@@ -127,28 +300,29 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                 _dbContext.Entry(u);
 
             }
-            await _dbContext.SaveChangesAsync();
-            return entity;
-
-            
-        }
-        public async Task<T> UpdateAsync(T entity, long id)
+            else if (types.ToLower() == "PAD".ToLower())
             {
-                _dbContext.Set<T>().Update(entity);
-                await _dbContext.SaveChangesAsync();
-
-                {
-                    var entry = _dbContext.Set<T>().Find(id);
-                    _dbContext.Entry(entry).CurrentValues.SetValues(entity);
-                    await _dbContext.SaveChangesAsync();
-                    return entity;
-
-
-                    return entity;
-
-
-                }
+                Pad old = entity as Pad;
+                Pad u = _dbContext.Set<Pad>().Find(id);
+                u.IsActive = old.IsActive;
+                _dbContext.Entry(u);
 
             }
+            await _dbContext.SaveChangesAsync();
+            return entity;
+        }
+        public async Task<T> UpdateAsync(T entity, long id)
+        {
+            _dbContext.Set<T>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+            {
+                var entry = _dbContext.Set<T>().Find(id);
+                _dbContext.Entry(entry).CurrentValues.SetValues(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity;
+            }
+
+        }
+        
     }
 }

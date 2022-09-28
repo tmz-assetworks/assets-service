@@ -1,5 +1,6 @@
 ﻿using AssetsService.Application.Queries;
 using AssetsService.Core.Repositories;
+using AssetsService.Core.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    public class GetByIdPadHandlers : IRequestHandler<GetByIdPadQuery, AssetsService.Core.Entities.Pad>
+    public class GetByIdPadHandlers : IRequestHandler<GetByIdPadQuery, GetPadResponse>
     {
         private readonly IPadRepository _padRepo;
         public GetByIdPadHandlers(IPadRepository padRepository)
         {
             _padRepo = padRepository;
         }
-        public async Task<AssetsService.Core.Entities.Pad> Handle(GetByIdPadQuery request, CancellationToken cancellationToken)
+        public async Task<GetPadResponse> Handle(GetByIdPadQuery request, CancellationToken cancellationToken)
         {
-            return (AssetsService.Core.Entities.Pad)await _padRepo.GetPadById(Convert.ToInt32(request.Id));
+            return (GetPadResponse)await _padRepo.GetPadById(Convert.ToInt32(request.Id));
         }
     }
 }

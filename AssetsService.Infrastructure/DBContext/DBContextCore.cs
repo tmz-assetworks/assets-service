@@ -83,11 +83,43 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.Country> Country {get;set;}
         public DbSet<AssetsService.Core.Entities.State> State {get;set;}
         public DbSet<AssetsService.Core.Entities.City> City {get;set;}
+        public DbSet<AssetsService.Core.Entities.SwitchGear> SwitchGears { get; set; }
+        public DbSet<AssetsService.Core.Entities.Users> Users { get; set; }
+        public DbSet<AssetsService.Core.Entities.Customers> Customers { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<AssetsService.Core.Entities.Cable>()
+                .HasIndex(u => u.AssetId)
+                .IsUnique();
 
+            builder.Entity<AssetsService.Core.Entities.Model>()
+               .HasIndex(u => u.ModelName)
+               .IsUnique();
 
+            builder.Entity<AssetsService.Core.Entities.RFIDReader>()
+               .HasIndex(u => u.AssetId)
+               .IsUnique();
 
+            builder.Entity<AssetsService.Core.Entities.Pad>()
+               .HasIndex(u => u.AssetId)
+               .IsUnique();
 
+            builder.Entity<AssetsService.Core.Entities.PowerCabinet>()
+               .HasIndex(u => u.AssetId)
+               .IsUnique();
+
+            builder.Entity<AssetsService.Core.Entities.Dispenser>()
+              .HasIndex(u => u.AssetId)
+              .IsUnique();
+
+            builder.Entity<AssetsService.Core.Entities.VehicleRFID>()
+              .HasIndex(u => u.Name)
+              .IsUnique();
+
+            builder.Entity<AssetsService.Core.Entities.Modem>()
+             .HasIndex(u => u.AssetId)
+             .IsUnique();
+        }
     }
-
 }
 

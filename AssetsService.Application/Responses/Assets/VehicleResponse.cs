@@ -11,9 +11,7 @@ namespace AssetsService.Application.Responses.Assets
     public class vehicleStatus{
         
         public int StatusCode;
-        public string StatusMessage;
-
-        public Vehicle data{get;set;}
+        public string StatusMessage;       
     }
     public  class VehicleResponse
     {

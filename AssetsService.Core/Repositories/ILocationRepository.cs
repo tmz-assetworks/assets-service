@@ -2,6 +2,7 @@ using AssetsService.Core.Entities;
 using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories.Assets.Base;
 using AssetsService.Core.Response;
+using AssetsService.Core.Responses.Assets;
 
 namespace AssetsService.Core.Repositories.Assets
 {
@@ -14,6 +15,12 @@ namespace AssetsService.Core.Repositories.Assets
         Task<List<Core.Response.LocationsDispenser>> GetLocationsDispenserformap(List<long> Id);
         Task<PagedList<Core.Response.LocationsDispenserDetails>> GetLocationsDispenserDetails(LocationDispenserRequest locationDispenserRequest);
         Task<List<Core.Response.LocationDispenserForLocation>> GetLocationsDispenserForLocation(List<long> Id);
+        Task<Locationalist>GetLocationList(LocationListRequst LocationListRequst);
+        Task<List<AllLocationStatuss>>GetAllLocationStatus();
+
+        Task<Location>CreateLocation(Location location);
+        Task<List<AllDepartmentList>>GetAllDepartmentList();
+        Task<Location>UpdateLocation(Location location);
 
     }
 

@@ -27,7 +27,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             {
                 throw new ApplicationException("Issue with mapper");
             }
-
+            ModelEntitiy.ModifiedOn = DateTime.Now;
             var updateModel = _ModelRepo.UpdateAsync(ModelEntitiy, request.Id, "MODEL");
             var mapModelResponse = Mapper.Mappers.Map<ModelResponse>(updateModel.Result);
             return mapModelResponse;

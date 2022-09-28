@@ -64,6 +64,30 @@ namespace AssetsService.Infrastructure.EnumData
             Medium = 3
         }
 
+        public enum VehicleActiveInActive
+        {
+            [Display(Name = "Inactive")]
+            InActive = 0,
+            [Display(Name = "Active")]
+            Active = 1,
+            [Display(Name = "Total vehicle")]
+            TotalVehicle = 2,
+        }
+    }
+    public enum  VehicleStatusColor
+    {
+        [Display(Name = "#757575")]
+        InActive = 0,
 
+        [Display(Name = "#90993F")]
+        Active = 1,
+
+        [Display(Name = "#E97300")]
+        TotalVehicle = 2,
+    }
+    public enum ConnectorColor
+    {
+        [Display(Name = "#E97300")]
+        TotalPorts = 1,
     }
 }
