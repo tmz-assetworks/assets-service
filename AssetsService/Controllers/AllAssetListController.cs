@@ -1,5 +1,6 @@
 using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Queries;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.PagingHelper;
 using MediatR;
@@ -38,39 +39,42 @@ namespace AssetsService.Api.Controllers
                 if (CombineAssetRequest.PageNumber == 0) CombineAssetRequest.PageNumber = 1;
                 var modems = await _mediator.Send(new GetCombineAssetQuery(CombineAssetRequest));
                 if (modems != null && modems.data.Count > 0)
-                    re.StatusMessage = "Record found";
-                else re.StatusMessage = "Record not found";
+                    re.StatusMessage = RespnoseMessage.Record_found;
+                else re.StatusMessage = RespnoseMessage.Record_not_found;
                 re.StatusCode = (int)HttpStatusCode.OK;
                 List<statusData>  statusDatas = new List<statusData>();
-
-                statusDatas.Add(new statusData() { key = "Total Assets", value = modems.data.Count() });
-                statusDatas.Add(new statusData() { key = "Pads", value = modems.data.Where(s => s.Type.Equals("Pads")).Count() });
-                statusDatas.Add(new statusData() { key = "Power Cabinet", value = modems.data.Where(s => s.Type.Equals("PowerCabinet")).Count() });
-                statusDatas.Add(new statusData() { key = "Modem", value = modems.data.Where(s => s.Type.Equals("Modem")).Count() });
-                statusDatas.Add(new statusData() { key = "Cables", value = modems.data.Where(s => s.Type.Equals("Cables")).Count() });              
-                statusDatas.Add(new statusData() { key = "RFID Readers", value = modems.data.Where(s => s.Type.Equals("RFIDReaders")).Count() });
-
-                  modems.data = modems.data.Where(r => r.Type.ToLower().
-                Contains(string.IsNullOrEmpty(CombineAssetRequest.SearchParam.ToLower()) == true ? r.Type.ToLower() : CombineAssetRequest.SearchParam.ToLower())
-                || r.AssetId.ToLower().
-                Contains(string.IsNullOrEmpty(CombineAssetRequest.SearchParam.ToLower()) == true ? r.AssetId.ToLower() : CombineAssetRequest.SearchParam.ToLower())
-                ).OrderByDescending(a => a.ModifiedAt).ToList();
-
-                var dataResult = PagedList<CombineAsset>.ToPagedList(modems.data,
-                CombineAssetRequest.PageNumber,
-                CombineAssetRequest.PageSize);
-                re.statusData = statusDatas;
-                re.data = dataResult;
-               
-                re.paginationResponse = new Core.PagingHelper.PaginationResponse
+                if(modems!=null)
                 {
-                    TotalCount = dataResult.TotalCount,
-                    PageSize = dataResult.PageSize,
-                    CurrentPage = dataResult.CurrentPage,
-                    TotalPages = dataResult.TotalPages,
-                    HasNext = dataResult.HasNext,
-                    HasPrevious = dataResult.HasPrevious
-                };
+                    statusDatas.Add(new statusData() { key = "Total Assets", value = modems.data.Count() });
+                    statusDatas.Add(new statusData() { key = "Pads", value = modems.data.Where(s => s.Type.Equals("Pads")).Count() });
+                    statusDatas.Add(new statusData() { key = "Power Cabinet", value = modems.data.Where(s => s.Type.Equals("PowerCabinet")).Count() });
+                    statusDatas.Add(new statusData() { key = "Modem", value = modems.data.Where(s => s.Type.Equals("Modem")).Count() });
+                    statusDatas.Add(new statusData() { key = "Cables", value = modems.data.Where(s => s.Type.Equals("Cables")).Count() });
+                    statusDatas.Add(new statusData() { key = "RFID Readers", value = modems.data.Where(s => s.Type.Equals("RFIDReaders")).Count() });
+                    statusDatas.Add(new statusData() { key = "Switch Gears", value = modems.data.Where(s => s.Type.Equals("SwitchGears")).Count() });
+                    modems.data = modems.data.Where(r => r.Type.ToLower().
+                  Contains(string.IsNullOrEmpty(CombineAssetRequest.SearchParam.ToLower()) == true ? r.Type.ToLower() : CombineAssetRequest.SearchParam.ToLower())
+                  || r.AssetId.ToLower().
+                  Contains(string.IsNullOrEmpty(CombineAssetRequest.SearchParam.ToLower()) == true ? r.AssetId.ToLower() : CombineAssetRequest.SearchParam.ToLower())
+                  ).OrderByDescending(a => a.ModifiedAt).ToList();
+
+                    var dataResult = PagedList<CombineAsset>.ToPagedList(modems.data,
+                    CombineAssetRequest.PageNumber,
+                    CombineAssetRequest.PageSize);
+                    re.statusData = statusDatas;
+                    re.data = dataResult;
+
+                    re.paginationResponse = new Core.PagingHelper.PaginationResponse
+                    {
+                        TotalCount = dataResult.TotalCount,
+                        PageSize = dataResult.PageSize,
+                        CurrentPage = dataResult.CurrentPage,
+                        TotalPages = dataResult.TotalPages,
+                        HasNext = dataResult.HasNext,
+                        HasPrevious = dataResult.HasPrevious
+                    };
+                }
+                
                 //_logger.LogInformation("Get all the data of Modem");
             }
             catch (Exception ex)
@@ -94,21 +98,21 @@ namespace AssetsService.Api.Controllers
                 expandoObject.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    expandoObject.statusMessage = "Please provide Pad Id value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Pad_Id_value;
                     return expandoObject;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return expandoObject;
                 }
                 var result = await _mediator.Send(command);
 
                 if (result.Id > 0)
-                    expandoObject.statusMessage = "Record status changed successfully.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_status_changed_successfully;
                 else
-                    expandoObject.statusMessage = "Record not found.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
 
                 return expandoObject;
             }
@@ -116,7 +120,7 @@ namespace AssetsService.Api.Controllers
             {
                 //_logger.LogError(ex.ToString());
                 expandoObject = new ExpandoObject();
-                expandoObject.StatusMessage = "Opeartion failed!";
+                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 expandoObject.statusCode = HttpStatusCode.BadRequest;
                 Log.Information("error occurred :" + ex.Message);
             }

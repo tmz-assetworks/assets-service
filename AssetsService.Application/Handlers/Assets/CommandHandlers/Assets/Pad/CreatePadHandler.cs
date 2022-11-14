@@ -37,7 +37,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             }
             catch (Exception ex)
             {
-
+                padResponse = new PadResponse();
                 if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
                 {
                     padResponse = new PadResponse();

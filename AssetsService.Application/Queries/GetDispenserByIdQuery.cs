@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Core.Queries
 {
-    public class GetDispenserByIdQuery : IRequest<Dispenser>
+    public class GetDispenserByIdQuery : IRequest<Charger>
     {
 
         public long Id{get ; set;}

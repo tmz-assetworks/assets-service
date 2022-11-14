@@ -22,9 +22,13 @@ namespace AssetsService.Core.Response
         
     }
 
-   
 
-    public class LocationsDispenserDetails
+    public class LocationsDispenserStatus
+    {
+        public long Id { get; set; }
+        public string Status { get; set; }
+    }
+        public class LocationsDispenserDetails
     {
         public long locationId { get; set; }
         public string LocationName { get; set; }

@@ -14,6 +14,7 @@ using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using AssetsService.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authentication;
+using AssetsService.Core.ConstantResponse;
 
 namespace AssetsService.Api
 {
@@ -55,20 +56,19 @@ namespace AssetsService.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<TotalLocationAndChargerResponse> GetTotalLocationAndCharger()
         {
-            TotalLocationAndChargerResponse totalLocationAndChargerResponse = null;
+            TotalLocationAndChargerResponse totalLocationAndChargerResponse = new TotalLocationAndChargerResponse();
             try
             {
                 _token.acces_token = await HttpContext.GetTokenAsync("access_token");
-                totalLocationAndChargerResponse = new TotalLocationAndChargerResponse();
                  totalLocationAndChargerResponse = await _mediator.Send(new GetTotalLocationAndChargerQuery());
                 totalLocationAndChargerResponse.StatusCode = (int)HttpStatusCode.OK;
-                totalLocationAndChargerResponse.StatusMessage = "Record found";
+                totalLocationAndChargerResponse.StatusMessage = RespnoseMessage.Record_found;
                 ////_logger.LogInformation("Get all data of Location");
                 return totalLocationAndChargerResponse;
             }
             catch (Exception ex)
             {
-                totalLocationAndChargerResponse.StatusMessage = "Faild!";
+                totalLocationAndChargerResponse.StatusMessage = RespnoseMessage.Faild;
                 totalLocationAndChargerResponse.StatusCode = (int)HttpStatusCode.NotFound;
                // //_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);

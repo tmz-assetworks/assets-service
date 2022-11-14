@@ -49,12 +49,17 @@ namespace AssetsService.Infrastructure.Repositories.Assets
  }
         public async Task<List<MakeMasterList>> GetAllMakeMasterList()
         {
+
+            List<Charger> dsipnser = _dbContext.Charger.ToList();
+            var data = _dbContext.Modem.ToList();
+
             return _dbContext.MakeMaster
                  .Select(m => new Core.Response.MakeMasterList
                  {
                      Id = m.Id,
-                     Name = m.Name
-                 }).Where(m => m.Name!= "").OrderBy(m => m.Name).ToList<Core.Response.MakeMasterList>();
+                     Name = m.Name,
+                     IsActive = m.IsActive
+                 }).Where(m => m.Name!= "").Where(x => dsipnser.All(p2 => p2.MakeMasterId != x.Id)).OrderBy(m => m.Name).ToList<Core.Response.MakeMasterList>();
         }
     }
 }

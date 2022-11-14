@@ -31,8 +31,6 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 var addPowerCabinetResponse = await _powerCabinetRepo.AddAsync(PowerCabinetEntitiy);
                  powerCabinetResponse = Mapper.Mappers.Map<PowerCabinetResponse>(addPowerCabinetResponse);
                 return powerCabinetResponse;
-
-
             }
             catch (Exception ex)
             {

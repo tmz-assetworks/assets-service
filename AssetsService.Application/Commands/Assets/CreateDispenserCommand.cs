@@ -35,9 +35,8 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Model Id")]
         public long ModelId { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Modem Id")]
-        public long ModemId { get; set; }
+
+        public long? ModemId { get; set; } = 0;    // 07/11/2022
         [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "MeterType must be fewer than 20 characters.")]
         public string MeterType { get; set; }
@@ -47,25 +46,23 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(20, MinimumLength = 0, ErrorMessage = "PingSchedule must be fewer than 20 characters.")]
         public string PingSchedule { get; set; }
         [Required]
-        public bool PrivateStation { get; set; }
+        public bool FleetStation { get; set; }        // PrivateStation changed to FleetStation  07/11/2022
         [Required]
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "HardwareSerialNumber must be fewer than 20 characters.")]
+        [StringLength(20, MinimumLength = 0, ErrorMessage = "ReadingSchedule must be fewer than 20 characters.")]
         public string ReadingSchedule { get; set; }
-        [Required]
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "SerialNumber must be fewer than 20 characters.")]
-        public string SerialNumber { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid RFIdReader Id")]
-        public long RFIdReaderId { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid PowerCabinet Id")]
-        public long PowerCabinetId { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Pad Id")]
-        public long PadId { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid DispenserStatus Id")]
-        public long DispenserStatusId { get; set; }
+        //[Required]
+        //[StringLength(20, MinimumLength = 0, ErrorMessage = "SerialNumber must be fewer than 20 characters.")]
+        //public string SerialNumber { get; set; }              // SerialNumber Removed 07/11/2022
+        public long? RFIdReaderId { get; set; } = 0;
+
+        public long? PowerCabinetId { get; set; } = 0;
+
+        public long? PadId { get; set; } = 0;
+
+        public long? CableId { get; set; } = 0;
+        
+        public long? SwitchGearId { get; set; } = 0;
+
         [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "ProtocolName must be fewer than 20 characters.")]
         public string ProtocolName { get; set; }
@@ -75,11 +72,13 @@ namespace AssetsService.Application.Commands.Assets
         public bool IsActive { get; set; }
         [Required]
         public bool IsAutomatic { get; set; }
+        public DateTime InstallationDate { get; set; }
+
         [Required]
         public List<PortCommand>? PortCommand { get; set; }
     }
     public class PortCommand
-    {        
+    {
         public long? Id { get; set; }
 
         [Required]
@@ -88,7 +87,7 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ConnectorType Id")]
         public long ConnectorType { get; set; }
-        
+
         //[Required]
         //public string CreatedBy { get; set; }
 

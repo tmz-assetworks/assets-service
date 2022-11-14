@@ -16,7 +16,6 @@ using System.Reflection;
 using AssetsService.Core.Repositories;
 using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets;
 using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.Pad;
-using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.SubscriptionPlan;
 using AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId;
 using AssetsService.Application.Handlers.Assets.QueryHandlers.Assets;
 using AssetsService.Api.Service;
@@ -26,6 +25,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AssetsService.Infrastructure.Helpers;
+using Microsoft.Identity;
+using Microsoft.Identity.Web;
 
 namespace AssetsService.Api
 {
@@ -39,27 +40,40 @@ namespace AssetsService.Api
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            Dictionary<string, string> myConfiguration = new Dictionary<string, string>
+                {
+                    {"AzureAd:Instance",Environment.GetEnvironmentVariable("AZUREAD_INSTANCE")},
+                    {"AzureAd:Domain",Environment.GetEnvironmentVariable("AZUREAD_DOMAIN")},
+                    {"AzureAd:clientId", Environment.GetEnvironmentVariable("AZUREAD_CID")},
+                    {"AzureAd:TenantId", Environment.GetEnvironmentVariable("AZUREAD_TID")},
+                    {"AzureAd:audience",Environment.GetEnvironmentVariable("AZUREAD_AUD")},
+                };
+            IConfiguration configurationENV= new ConfigurationBuilder().AddInMemoryCollection(myConfiguration).Build();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-           .AddJwtBearer(options =>
-           {
-               options.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateIssuer = true,
-                   ValidateAudience = true,
-                   ValidateLifetime = true,
-                   ValidateIssuerSigningKey = true,
-                   ValidIssuer = Configuration["Jwt:Issuer"],
-                   ValidAudience = Configuration["Jwt:Audience"],
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-               };
-           });
+             .AddMicrosoftIdentityWebApi(configurationENV.GetSection("AzureAd"));
+             //.AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+            // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddJwtBearer(options =>
+            //{
+            //    options.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuer = true,
+            //        ValidateAudience = true,
+            //        ValidateLifetime = true,
+            //        ValidateIssuerSigningKey = true,
+            //        ValidIssuer = Configuration["Jwt:Issuer"],
+            //        ValidAudience = Configuration["Jwt:Audience"],
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            //    };
+            //});
             services.AddControllers();
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
             var dbName = Environment.GetEnvironmentVariable("DB_NAME");
             var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
-            var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
+            var dbUserName = Environment.GetEnvironmentVariable("DB_LOGIN_USERNAME");
+            var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID={dbUserName};Password={dbPassword}";
             services.AddDbContext<AssetsService.Infrastructure.DBContext.DBContextCore>(
-            //m => m.UseSqlServer(Configuration.GetConnectionString("AssetsDB")), ServiceLifetime.Transient);
+           // m => m.UseSqlServer(Configuration.GetConnectionString("AssetsDB")), ServiceLifetime.Transient);
             m => m.UseSqlServer(connectionString), ServiceLifetime.Transient);
             services.AddSwaggerGen(c =>
             {
@@ -97,14 +111,10 @@ namespace AssetsService.Api
             services.AddMediatR(typeof(CreatePadHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdatePadHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(IsActivePadHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateSubscriptionPlanHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateSubscriptionPlanHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(CreateRFIdHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateRFIdHandler).GetTypeInfo().Assembly);
-            ///services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICableRepository, CableRepository>();
             services.AddScoped<IPadRepository, PadRepository>();
-            services.AddScoped<ISubscriptionPlanRepository, SubscriptionRepository>();
             services.AddScoped<IRFIdRepository, RFIdRepository>();
 
             services.AddTransient<ITotalLocationAndChargerRepository, TotalLocationAndChargerRepository>();
@@ -152,13 +162,12 @@ namespace AssetsService.Api
             services.AddMediatR(typeof(UpdatePosHandler).GetTypeInfo().Assembly);
             services.AddTransient<IPosRepository, PosRepository>();
 
-            services.AddMediatR(typeof(CreatePricePlanHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdatePricePlanHandler).GetTypeInfo().Assembly);
-            services.AddTransient<IPricePlanRepository, PricePlanRepository>();
             services.AddTransient<ICombineAssetRepository, CombineAssetRepository>();
 
             services.AddTransient<ICountryRepository, CountryRepository>();
-
+            services.AddMediatR(typeof(CreateSwitchGearHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(UpdateSwitchGearHandler).GetTypeInfo().Assembly);
+            services.AddTransient<ISwitchGearRepository, SwitchGearRepository>();
             services.AddMediatR(typeof(IsActiveAssetHandler).GetTypeInfo().Assembly);
             services.AddScoped<TokenBase>();
             services.AddHealthChecks()

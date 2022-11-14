@@ -22,7 +22,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
            TotalLocationAndChargerResponse totalLocationAndChargerResponse = new TotalLocationAndChargerResponse();
 
             totalLocationAndChargerResponse.TotalLocations = _dbContext.Locations.Join(_dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_Token.getObjectId())).FirstOrDefault().Id)),p=> p.Id,n=> n.LocationId, (p, n)=>new { p.LocationId}).Count();
-            totalLocationAndChargerResponse.TotalDispenser = _dbContext.Dispenser.Join(_dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_Token.getObjectId())).FirstOrDefault().Id)), p => p.LocationId, n => n.LocationId, (p, n) => new { p.LocationId }).Count();
+            totalLocationAndChargerResponse.TotalDispenser = _dbContext.Charger.Join(_dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_Token.getObjectId())).FirstOrDefault().Id)), p => p.LocationId, n => n.LocationId, (p, n) => new { p.LocationId }).Count();
             return  Task.FromResult(totalLocationAndChargerResponse);
         }
     }

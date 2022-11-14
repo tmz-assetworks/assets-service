@@ -20,7 +20,6 @@ namespace AssetsService.Infrastructure.Repositories.Repository
         }
         public async Task<T> AddAsync(T entity)
         {
-
             await _dbContext.Set<T>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
             return entity;
@@ -40,8 +39,8 @@ namespace AssetsService.Infrastructure.Repositories.Repository
         {
             if (types == "Dispenser")
             {
-                Dispenser old = entity as Dispenser;
-                Dispenser u = _dbContext.Set<Dispenser>().Find(id);
+                Charger old = entity as Charger;
+                Charger u = _dbContext.Set<Charger>().Find(id);
                 u.IsActive = old.IsActive;
                 _dbContext.Entry(u);
 
@@ -87,7 +86,7 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                 RFIDReader old = entity as RFIDReader;
                 try
                 {
-                    
+
                     RFIDReader updatingEntity = _dbContext.Set<RFIDReader>().Find(id);
                     if (updatingEntity != null)
                     {
@@ -109,8 +108,26 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                 Pad old = entity as Pad;
                 try
                 {
-                   
+
                     Pad updatingEntity = _dbContext.Set<Pad>().Find(id);
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+            }
+            else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "subscription")
+            {
+                SubscriptionPlan old = entity as SubscriptionPlan;
+                try
+                {
+
+                    SubscriptionPlan updatingEntity = _dbContext.Set<SubscriptionPlan>().Find(id);
                     updatingEntity.IsActive = old.IsActive;
                     updatingEntity.ModifiedBy = old.ModifiedBy;
                     updatingEntity.ModifiedOn = DateTime.Now;
@@ -158,6 +175,24 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                 }
             }
             else
+            if (!string.IsNullOrEmpty(types) && types.ToLower() == "switchgears")
+            {
+                SwitchGear old = entity as SwitchGear;
+                try
+                {
+
+                    SwitchGear updatingEntity = _dbContext.Set<SwitchGear>().Find(id);
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.Now;
+                    _dbContext.Entry(updatingEntity);
+                }
+                catch
+                {
+                    old.Id = 0;
+                }
+            }
+            else
             if (!string.IsNullOrEmpty(types) && types.ToLower() == "modem")
             {
                 Modem old = entity as Modem;
@@ -190,28 +225,62 @@ namespace AssetsService.Infrastructure.Repositories.Repository
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> UpdateAsync(T entity, long id, string types)
-
+        public async Task<T> GetByIdAsync(int id)
         {
+            return await _dbContext.Set<T>().FindAsync(id);
+        }
 
-
+        public async Task<T> UpdateAsync(T entity, long id, string types)
+        {
             if (types == "PAD")
             {
                 Pad newPad = entity as Pad;
                 try
-                { 
-                var entry = _dbContext.Set<Pad>().Find(id);
-                
-                newPad.CreatedBy = entry.CreatedBy;
-                newPad.CreatedOn = entry.CreatedOn;
-
-                _dbContext.Entry(entry).CurrentValues.SetValues(newPad);
-                }
-                catch
                 {
-                    newPad.Id = 0;
+                    var entry = _dbContext.Set<Pad>().Find(id);
+
+                    newPad.CreatedBy = entry.CreatedBy;
+                    newPad.CreatedOn = entry.CreatedOn;
+
+                    _dbContext.Entry(entry).CurrentValues.SetValues(newPad);
                 }
-               
+                catch (Exception ex)
+                {
+                    if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                    {
+                        newPad.Id = -1;
+                    }
+                    else
+                    {
+                        newPad.Id = 0;
+                    }
+                }
+
+            }
+            if (types == "SwitchGear")
+            {
+                SwitchGear newSwitchGear = entity as SwitchGear;
+                try
+                {
+                    var entry = _dbContext.Set<SwitchGear>().Find(id);
+
+                    newSwitchGear.CreatedBy = entry.CreatedBy;
+                    newSwitchGear.CreatedOn = entry.CreatedOn;
+
+                    _dbContext.Entry(entry).CurrentValues.SetValues(newSwitchGear);
+                }
+                catch (Exception ex)
+                {
+                    if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                    {
+                        newSwitchGear.Id = -1;
+                    }
+                    else
+                    {
+                        newSwitchGear.Id = 0;
+                    }
+                }
+
             }
             else
                 if (types == "powercabinet")
@@ -323,6 +392,6 @@ namespace AssetsService.Infrastructure.Repositories.Repository
             }
 
         }
-        
+
     }
 }

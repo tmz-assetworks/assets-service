@@ -1,4 +1,4 @@
-﻿using AssetsService.Core.Entities;
+﻿using AssetsService.Core.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Queries
 {
-    public class GetSubscriptionByIdQuery : IRequest<SubscriptionPlan>
+    public class GetByIdSwitchGearQuery : IRequest<GetSwitchGearResponse>
     {
+
         public long Id { get; set; }
-        public GetSubscriptionByIdQuery(int id)
+        public GetByIdSwitchGearQuery(long id)
         {
             Id = id;
         }

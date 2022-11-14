@@ -1,6 +1,7 @@
 ﻿using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Responses.Assets;
 using MediatR;
@@ -59,9 +60,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Vehicle not Created "
+                    Content = RespnoseMessage.VehicleMake_Not_Created
                 };
             }
         }
@@ -70,18 +71,18 @@ namespace AssetsService.Api.Controllers
         public async Task<ActionResult<AllVehicleMake>> GetAllVehicleMake()
         {
             AllVehicleMake allVehicleMake = new AllVehicleMake();
-            
+
             try
             {
                 List<AssetsService.Core.Entities.VehicleMake> res = await _mediator.Send(new GetAllVehicleMakeQuery());
                 allVehicleMake.StatusCode = (int)HttpStatusCode.OK;
-                allVehicleMake.StatusMessage = "Record found";
+                allVehicleMake.StatusMessage = RespnoseMessage.Record_found;
                 allVehicleMake.data = res;
                 //_logger.LogInformation("Get all the data of Vehicle Make");
             }
             catch (Exception ex)
             {
-                allVehicleMake.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allVehicleMake.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 allVehicleMake.StatusCode = (int)HttpStatusCode.NotFound;
                 allVehicleMake.data = null;
                 //_logger.LogError(ex.ToString());
@@ -99,13 +100,13 @@ namespace AssetsService.Api.Controllers
             {
                 VehicleMake res = await _mediator.Send(new GetByIdVehicleMakeQuery(id));
                 vehicleMakeById.StatusCode = (int)HttpStatusCode.OK;
-                vehicleMakeById.StatusMessage = "Record found";
+                vehicleMakeById.StatusMessage = RespnoseMessage.Record_found;
                 vehicleMakeById.data = res;
                 //_logger.LogInformation("Get the data of Vehicle Make by Id");
             }
             catch (Exception ex)
             {
-                vehicleMakeById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                vehicleMakeById.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 vehicleMakeById.StatusCode = (int)HttpStatusCode.NotFound;
                 vehicleMakeById.data = null;
                 //_logger.LogError(ex.ToString());
@@ -131,9 +132,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Vehicle not Update "
+                    Content = RespnoseMessage.Record_Not_Updated
                 };
             }
         }
@@ -153,9 +154,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Vehicle Make not Deleted "
+                    Content = RespnoseMessage.Not_Deleted
                 };
             }
         }
@@ -171,7 +172,7 @@ namespace AssetsService.Api.Controllers
         //         vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.OK;
         //         vehicleMakeDDLResponse.statusMessage = "Record found.";
         //         List<ListDropDown> res = await _mediator.Send(new GetVechicleMakeDDLQuery());
-               
+
         //         vehicleMakeDDLResponse.data = res;
         //         //_logger.LogInformation("Get all the data of Vehicle Make.");
         //         return vehicleMakeDDLResponse;

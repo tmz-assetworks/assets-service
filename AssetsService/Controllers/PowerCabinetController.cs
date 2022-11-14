@@ -1,11 +1,14 @@
 using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Core.Response;
+using AssetsService.Infrastructure.Helpers;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -24,9 +27,11 @@ namespace AssetsService.Api
 
         private readonly ILogger<PowerCabinetController> _logger;
         string JSONString = string.Empty;
-        public PowerCabinetController(IMediator mediator, ILogger<PowerCabinetController> logger)
+        TokenBase _token;
+        public PowerCabinetController(IMediator mediator, ILogger<PowerCabinetController> logger, TokenBase token)
         {
             _mediator = mediator;
+            _token = token;
             //_logger = logger;
         }
 
@@ -49,7 +54,7 @@ namespace AssetsService.Api
 
         [HttpGet("getpowercabinetbyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PowerCabinetById>>  GetPowerCabinetById(long Id)
+        public async Task<ActionResult<PowerCabinetById>> GetPowerCabinetById(long Id)
         {
             PowerCabinetById powerCabinetById = new PowerCabinetById();
 
@@ -57,15 +62,15 @@ namespace AssetsService.Api
             {
                 GetPowerCabinetResponse powerCabinet = await _mediator.Send(new GetPowerCabinetByIdQuery(Id));
                 powerCabinetById.StatusCode = (int)HttpStatusCode.OK;
-                powerCabinetById.StatusMessage = "Record found";
+                powerCabinetById.StatusMessage = RespnoseMessage.Record_found;
                 powerCabinetById.data = powerCabinet;
                 if (powerCabinet == null)
-                    powerCabinetById.StatusMessage = "Record not found";
+                    powerCabinetById.StatusMessage = RespnoseMessage.Record_not_found;
 
             }
             catch (Exception ex)
             {
-                powerCabinetById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                powerCabinetById.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 powerCabinetById.StatusCode = (int)HttpStatusCode.NotFound;
                 powerCabinetById.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -84,13 +89,13 @@ namespace AssetsService.Api
             {
                 List<PowerCabinet> res = await _mediator.Send(new GetAllPowerCabinetQuery());
                 allPowerCabinet.StatusCode = (int)HttpStatusCode.OK;
-                allPowerCabinet.StatusMessage = "Record found";
+                allPowerCabinet.StatusMessage = RespnoseMessage.Record_found;
                 allPowerCabinet.data = res;
                 //_logger.LogInformation("Get all the data of Power Cabinet");
             }
             catch (Exception ex)
             {
-                allPowerCabinet.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allPowerCabinet.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 allPowerCabinet.StatusCode = (int)HttpStatusCode.NotFound;
                 allPowerCabinet.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -101,16 +106,17 @@ namespace AssetsService.Api
         }
         [HttpGet("GetPowerCabinetData")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AllPowerCabinetData>> GetPowerCabinetData()
+        public async Task<ActionResult<AllPowerCabinetData>> GetPowerCabinetData(int? dispenserId=0)
         {
+            _token.acces_token = await HttpContext.GetTokenAsync("access_token");
             AllPowerCabinetData allPowerCabinetData = new AllPowerCabinetData();
             try
             {
-                List<GetPowerCabinetResponse> powerCabinets = await _mediator.Send(new GetPowerCabinetDataQuery());
-                allPowerCabinetData.StatusMessage = "Record found";
-                allPowerCabinetData.StatusCode = (int)HttpStatusCode.OK;
-                allPowerCabinetData.Data = powerCabinets.Select(x => new PowerCabinetResults { Id = x.Id, SerialNumber = x.SerialNumber }).Where(m => m.SerialNumber != "").OrderBy(m => m.SerialNumber).ToList();
-
+                List<GetPowerCabinetResponse> powerCabinets = await _mediator.Send(new GetPowerCabinetDataQuery(dispenserId.Value));
+                allPowerCabinetData.StatusMessage = RespnoseMessage.Record_found;
+                allPowerCabinetData.StatusCode = (int)HttpStatusCode.OK;                
+                allPowerCabinetData.Data = powerCabinets.Select(x => new PowerCabinetResults { Id = x.Id, SerialNumber = x.SerialNumber, IsActive = x.IsActive })
+                    .Where(m => m.SerialNumber != "").OrderBy(m => m.SerialNumber).ToList();
             }
             catch (Exception ex)
             {
@@ -129,39 +135,34 @@ namespace AssetsService.Api
 
             try
             {
-
                 var result = await _mediator.Send(command);
                 if (result.Id > 0)
                 {
-
                     expendo.statusCode = 200;
                     expendo.Id = result.Id;
-                    expendo.statusMessage = "Record Saved Successfully";
+                    expendo.statusMessage = RespnoseMessage.Record_Save_Successfully;
                 }
                 else
                 {
-
                     if (result.Id == -1)
                     {
                         expendo.statusCode = 200;
-                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
                         return BadRequest(expendo);
                     }
                     else
                     {
                         expendo.statusCode = 200;
-                        expendo.statusMessage = "Record not saved";
+                        expendo.statusMessage = RespnoseMessage.Record_Not_Saved;
                     }
                 }
-
-               
             }
             catch (Exception ex)
             {
                 expendo = new ExpandoObject();
                 //_logger.LogError(ex.ToString());
                 expendo.StatusCode = (int)HttpStatusCode.BadRequest;
-                expendo.StatusMessage = "Operation Failed!";
+                expendo.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -178,23 +179,29 @@ namespace AssetsService.Api
                 expandoObject.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    expandoObject.statusMessage = "Please provide PowerCabinet Id value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_PowerCabinet_Id_value;
                     return expandoObject;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return expandoObject;
                 }
                 var data = await _mediator.Send(command);
                 if (data is not null && data.Id > 0)
                 {
-                    expandoObject.statusMessage = "Record updated successfully.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_Updated_Successfully;
+                }
+                if (data.Id == -1)
+                {
+                    expandoObject.statusCode = 200;
+                    expandoObject.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
+                    return BadRequest(expandoObject);
                 }
                 else
                 {
-                    expandoObject.statusMessage = "Record not found.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
                 }
                 return expandoObject;
             }
@@ -203,7 +210,7 @@ namespace AssetsService.Api
                 expandoObject = new ExpandoObject();
                 //_logger.LogError(ex.ToString());
                 expandoObject.StatusCode = (int)HttpStatusCode.BadRequest;
-                expandoObject.StatusMessage = "Operation Failed!";
+                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
             }
             return expandoObject;

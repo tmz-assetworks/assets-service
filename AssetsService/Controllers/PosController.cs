@@ -1,4 +1,5 @@
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Responses;
@@ -51,13 +52,13 @@ namespace AssetsService.Api
             {
                 List<AssetsService.Core.Entities.Pos> res = await _mediator.Send(new GetAllPosQuery());
                 allPos.StatusCode = (int)HttpStatusCode.OK;
-                allPos.StatusMessage = "Record found";
+                allPos.StatusMessage = RespnoseMessage.Record_found;
                 allPos.data = res;
                 //_logger.LogInformation("Get all the data of Pos");
             }
             catch (Exception ex)
             {
-                allPos.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allPos.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 allPos.StatusCode = (int)HttpStatusCode.NotFound;
                 allPos.data = null;
                 //_logger.LogError(ex.ToString());
@@ -76,14 +77,14 @@ namespace AssetsService.Api
             {
                 Pos res = await _mediator.Send(new GetByIdPosQuery(id));
                 posById.StatusCode = (int)HttpStatusCode.OK;
-                posById.StatusMessage = "Record found";
+                posById.StatusMessage = RespnoseMessage.Record_found;
                 posById.data = res;
                 //_logger.LogInformation("Get the data of Pos by Id");
 
             }
             catch (Exception ex)
             {
-                posById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                posById.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 posById.StatusCode = (int)HttpStatusCode.NotFound;
                 posById.data = null;
                 //_logger.LogError(ex.ToString());
@@ -110,9 +111,9 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Pos not Created "
+                    Content = RespnoseMessage.Pos_Not_Created
                 };
             }
         }
@@ -132,9 +133,9 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Pos not Created "
+                    Content = RespnoseMessage.Pos_Not_Created
                 };
             }
         }

@@ -22,7 +22,7 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         }
         public async Task<List<ListDropDown>> Handle(GetModemDDLQuery request, CancellationToken cancellationToken)
         {
-            return (List<ListDropDown>)await _dispenserRepo.GetModemDDLList(request.userId);
+            return (List<ListDropDown>)await _dispenserRepo.GetModemDDLList(request.userId, request.dispenserId);
         }
     }
 }

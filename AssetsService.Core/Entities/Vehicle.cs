@@ -1,4 +1,6 @@
 ﻿
+
+using AssetsService.Core.Responses.Assets;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -62,10 +64,10 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
 
 
-        [DataMember(Name = "VehicleModelYear", EmitDefaultValue = false)]
         [Required]
-        public long VehicleModelYearid { get; set; }
-        public virtual VehicleModelYear VehicleModelYear { get; set; }
+        [DataMember(Name = "ModelYear", EmitDefaultValue = false)]       
+        public long ModelYear { get; set; }           // i.e 2022,2023,2024
+                                                      
         [Required]
         [DataMember(Name = "vehicleModelId", EmitDefaultValue = false)]
         public long VehicleModelId { get; set; }
@@ -75,17 +77,12 @@ namespace AssetsService.Core.Entities
         [Required]
         public long VehicleMakeId { get; set; }
         public virtual VehicleMake VehicleMake { get; set; }
-
-        [DataMember(Name = "SubscriptionPlanCustomerId", EmitDefaultValue = false)]
-
-        public long SubscriptionPlanCustomerId { get; set; }
-        public virtual SubscriptionPlan SubscriptionPlan { get; set; }
-
         public virtual ICollection<VehicleRFID> vehicleRFID { get; set; }
 
-
+        [NotMapped]
+        public List<ApplicableSubscriptionPlan> applicableSubscriptionPlans { get; set; }
+      
     }
-
 
 
 }

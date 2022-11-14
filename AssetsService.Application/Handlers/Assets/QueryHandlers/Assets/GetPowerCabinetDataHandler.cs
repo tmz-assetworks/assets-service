@@ -20,7 +20,7 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         }
         public async Task<List<GetPowerCabinetResponse>> Handle(GetPowerCabinetDataQuery request, CancellationToken cancellationToken)
         {
-            return (List<GetPowerCabinetResponse>)await _powerCabinetRepo.GetPowerCabinetData();
+            return (List<GetPowerCabinetResponse>)await _powerCabinetRepo.GetPowerCabinetData(request.disenserId.Value);
         }
     }
 }

@@ -41,7 +41,10 @@ namespace AssetsService.Core.Entities
         [ForeignKey("StateID")]
         public virtual State State { get; set; }
         public long? StateID { get; set; }
-        public long? CityID { get; set; }
+
+        [DataMember(Name = "CityName", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(200)")]
+        public string CityName { get; set; }
 
         //[DataMember(Name = "city", EmitDefaultValue = false)]
         //[Column(TypeName = "nvarchar(100)")]

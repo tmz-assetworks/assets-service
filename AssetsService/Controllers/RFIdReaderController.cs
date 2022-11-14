@@ -1,10 +1,13 @@
 ﻿using AssetsService.Application.Commands.Assets.RFId;
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Mapper;
 using AssetsService.Core.Response;
+using AssetsService.Infrastructure.Helpers;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +26,11 @@ namespace AssetsService.Api.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<RFIDReader> _logger;
         string JSONString = String.Empty;
-        public RFIdReaderController(IMediator mediator, ILogger<RFIDReader> logger)
+        TokenBase _token;
+        public RFIdReaderController(IMediator mediator, ILogger<RFIDReader> logger, TokenBase token)
         {
             _mediator = mediator;
+            _token = token;
             //_logger = logger;
         }
 
@@ -48,13 +53,20 @@ namespace AssetsService.Api.Controllers
                     var data = await _mediator.Send(createRFIdCommand);
                     if (data is not null && data.Id > 0)
                     {
-                        createCommonResponse.statusMessage = "Record Saved successfully.";
+                        createCommonResponse.statusMessage = RespnoseMessage.Record_Save_Successfully;
                         createCommonResponse.Id = data.Id;
                     }
                     else
+                    if (data.Id == -1)
+                    {                       
+                        createCommonResponse.statusMessage = RespnoseMessage.Duplicate_AssetId_can_notbe_created;
+                        return  BadRequest(createCommonResponse);
+                    }
+                    else
                     {
-                        createCommonResponse.statusCode = (int)HttpStatusCode.BadRequest;
-                        createCommonResponse.statusMessage = "Record not Saved.";
+
+                        createCommonResponse.statusMessage = RespnoseMessage.Record_Not_Saved;
+                        return BadRequest(createCommonResponse);
                     }
                 }
                 else
@@ -63,16 +75,13 @@ namespace AssetsService.Api.Controllers
                     createCommonResponse.statusMessage = ModelState.Where(m => m.Value.Errors.Any()).Select(x => new { x.Key, x.Value.Errors }).ToString();
 
                 }
-
                 return createCommonResponse;
             }
             catch (Exception ex)
-            {
-                //_logger.LogError(ex.ToString());
+            {               
                 Log.Information("error occurred :" + ex.Message);
-                createCommonResponse.statusMessage = "Failed! Record not save.";
+                createCommonResponse.statusMessage = RespnoseMessage.Faild+RespnoseMessage.Record_Not_Saved;
             }
-
             return createCommonResponse;
         }
 
@@ -105,17 +114,16 @@ namespace AssetsService.Api.Controllers
                         HasNext = rfidreaders.HasNext,
                         HasPrevious = rfidreaders.HasPrevious
                     };
-                    rfIdReaderRespnse.StatusMessage = "Record found";
+                    rfIdReaderRespnse.StatusMessage = RespnoseMessage.Record_found;
                 }
                 else
                 {
-                    rfIdReaderRespnse.StatusMessage = "Record not found";
+                    rfIdReaderRespnse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
-
             }
             catch (Exception ex)
             {
-                rfIdReaderRespnse.StatusMessage = "Operaion failed!" + ex.Message;
+                rfIdReaderRespnse.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message;
                 rfIdReaderRespnse.data = null;
                 //_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
@@ -126,12 +134,14 @@ namespace AssetsService.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<RfIdReaderDataRespnse> GetAllRFIdReaderData(RfIdReaderDataRequest rfIdReaderDataRequest)
         {
-            RfIdReaderDataRespnse rfIdReaderDataRespnse = new RfIdReaderDataRespnse();
+            _token.acces_token = await HttpContext.GetTokenAsync("access_token");
+            RfIdReaderDataRespnse rfIdReaderDataRespnse = new RfIdReaderDataRespnse();            
             try
             {
                 List<AssetsService.Core.Entities.RFIDReader> rFIDReaders = await _mediator.Send(new GetRFIdReaderDataQuery(rfIdReaderDataRequest));
-                List<RFIDReaderResult> rFIDReadersData = rFIDReaders.Select(x => new RFIDReaderResult { Id = x.Id, CardReader = x.CardReader }).Where(m => m.CardReader != "").OrderBy(m => m.CardReader).ToList();
-                rfIdReaderDataRespnse.StatusMessage = "Record found";
+                List<RFIDReaderResult> rFIDReadersData = rFIDReaders.Select(x => new RFIDReaderResult { Id = x.Id, CardReader = x.CardReader, IsActive = x.IsActive })
+                    .Where(m => m.CardReader != "").OrderBy(m => m.CardReader).ToList();
+                rfIdReaderDataRespnse.StatusMessage = RespnoseMessage.Record_found;
                 rfIdReaderDataRespnse.StatusCode = (int)HttpStatusCode.OK;
                 rfIdReaderDataRespnse.Data = rFIDReadersData;
             }
@@ -145,7 +155,6 @@ namespace AssetsService.Api.Controllers
             }
             return rfIdReaderDataRespnse;
         }
-
         /// <summary>
         /// 
         /// </summary>
@@ -162,19 +171,19 @@ namespace AssetsService.Api.Controllers
                 rfIdReaderRespnse.StatusCode = (int)HttpStatusCode.OK;
                 if (rFIDReaderDetails is not null)
                 {
-                    rfIdReaderRespnse.StatusMessage = "Record found";
+                    rfIdReaderRespnse.StatusMessage = RespnoseMessage.Record_found;
                     rfIdReaderRespnse.data = new RFIDReaderDetails();
                     rfIdReaderRespnse.data = rFIDReaderDetails;
                 }
                 else
                 {
-                    rfIdReaderRespnse.StatusMessage = "Record not found.";
+                    rfIdReaderRespnse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
             }
             catch (Exception ex)
             {
                 rfIdReaderRespnse.StatusCode = (int)HttpStatusCode.BadRequest;
-                rfIdReaderRespnse.StatusMessage = "Operaion failed!";
+                rfIdReaderRespnse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 rfIdReaderRespnse.data = null;
                 _logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
@@ -199,23 +208,23 @@ namespace AssetsService.Api.Controllers
                     updateCommonResponse.statusCode = 200;
                     if (command.Id < 0)
                     {
-                        updateCommonResponse.statusMessage = "Please provide RfId Reader Id value.";
+                        updateCommonResponse.statusMessage = RespnoseMessage.Please_provide_RfId_Reader_Id_value;
                         return updateCommonResponse;
                     }
                     else
                         if (string.IsNullOrEmpty(command.ModifiedBy))
                     {
-                        updateCommonResponse.statusMessage = "Please provide ModifiedBy value.";
+                        updateCommonResponse.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                         return updateCommonResponse;
                     }
                     var data = await _mediator.Send(command);
                     if (data is not null && data.Id > 0)
                     {
-                        updateCommonResponse.statusMessage = "Record updated successfully.";
+                        updateCommonResponse.statusMessage = RespnoseMessage.Record_Updated_Successfully;
                     }
                     else
                     {
-                        updateCommonResponse.statusMessage = "Record did not updated.";
+                        updateCommonResponse.statusMessage = RespnoseMessage.Record_Not_Updated;
                     }
                 }
                 else
@@ -230,12 +239,11 @@ namespace AssetsService.Api.Controllers
             {
                 //_logger.LogError(ex.ToString());
                 updateCommonResponse.statusCode = (int)HttpStatusCode.BadRequest;
-                updateCommonResponse.statusMessage = "Operation Failed!";
+                updateCommonResponse.statusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
             }
             return updateCommonResponse;
         }
-
 
         /// <summary>        
         /// we  update the IsActive to true and false in  RfIdReader
@@ -254,28 +262,28 @@ namespace AssetsService.Api.Controllers
                 updateCommonResponse.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    updateCommonResponse.statusMessage = "Please provide RfId Reader Id value.";
+                    updateCommonResponse.statusMessage = RespnoseMessage.Please_provide_RfId_Reader_Id_value;
                     return updateCommonResponse;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    updateCommonResponse.statusMessage = "Please provide ModifiedBy value.";
+                    updateCommonResponse.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return updateCommonResponse;
                 }
                 var result = await _mediator.Send(command);
 
                 if (result is not null && result.Id > 0)
-                    updateCommonResponse.statusMessage = "Record status changed successfully.";
+                    updateCommonResponse.statusMessage = RespnoseMessage.Record_status_changed_successfully;
                 else
-                    updateCommonResponse.statusMessage = "Record not found.";
+                    updateCommonResponse.statusMessage = RespnoseMessage.Record_not_found;
 
                 return updateCommonResponse;
             }
             catch (Exception ex)
             {
                 //_logger.LogError(ex.ToString());
-                updateCommonResponse.statusMessage = "Opeartion failed!";
+                updateCommonResponse.statusMessage = RespnoseMessage.Opeartion_Failed;
                 updateCommonResponse.statusCode = (int)HttpStatusCode.BadRequest;
                 Log.Information("error occurred :" + ex.Message);
             }

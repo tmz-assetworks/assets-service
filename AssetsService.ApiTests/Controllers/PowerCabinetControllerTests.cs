@@ -6,6 +6,7 @@ using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Response;
+using AssetsService.Infrastructure.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -21,23 +22,21 @@ namespace AssetsService.Api.Tests
     public class PowerCabinetControllerTest
     {
         private readonly PowerCabinetController _powerCabinetController;
-
         private readonly Mock<IHtmlHelper> _mockHttpHelper;
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<ILogger<PowerCabinetController>> _logger;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<TokenBase> _token;
         public PowerCabinetControllerTest()
         {
             _mediator = new Mock<IMediator>();
             _mockHttpHelper = new Mock<IHtmlHelper>();
             _configuration = new Mock<IConfiguration>();
             _logger = new Mock<ILogger<PowerCabinetController>>();
-            _powerCabinetController = new PowerCabinetController(_mediator.Object, _logger.Object);
+            _powerCabinetController = new PowerCabinetController(_mediator.Object, _logger.Object, _token.Object)
             {
-            }
-
+            };
         }
-
 
         [TestMethod()]
         public void GetPowerCabinetByIdTest()
@@ -70,15 +69,11 @@ namespace AssetsService.Api.Tests
                 WarrantyStartDate = DateTime.Now,
                 LocationId = 4,
                 LocationName = "New York"
-
-
             };
-
             _mediator.Setup(md => md.Send(It.IsAny<GetPowerCabinetByIdQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(getPowerCabinetResponse);
             var actionResult = _powerCabinetController.GetPowerCabinetById(PowerCabinetId).Result;
             Assert.IsNotNull(actionResult);
-            Assert.AreEqual(actionResult, 200);
-
+            Assert.AreEqual(200, actionResult.Value.StatusCode);
         }
 
 

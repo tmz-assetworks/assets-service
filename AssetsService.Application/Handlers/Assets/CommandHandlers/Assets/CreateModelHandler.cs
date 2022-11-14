@@ -21,17 +21,31 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
         }
         public async Task<ModelResponse> Handle(CreateModelCommand request, CancellationToken cancellationToken)
         {
-            var ModelEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Model>(request);
-            if (ModelEntitiy is null)
+
+            ModelResponse modelResponse = null;
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var ModelEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Model>(request);
+                if (ModelEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                ModelEntitiy.CreatedOn = DateTime.Now;
+                ModelEntitiy.ModifiedOn = DateTime.Now;
+                ModelEntitiy.IsActive = true;
+                var addModelResponse = await _ModelRepo.AddAsync(ModelEntitiy);
+                modelResponse = Mapper.Mappers.Map<ModelResponse>(addModelResponse);
             }
-            ModelEntitiy.CreatedOn = DateTime.Now;
-            ModelEntitiy.ModifiedOn = DateTime.Now;
-            ModelEntitiy.IsActive = true;
-            var addModelResponse = await _ModelRepo.AddAsync(ModelEntitiy);
-            var mapModelResponse = Mapper.Mappers.Map<ModelResponse>(addModelResponse);
-            return mapModelResponse;
+            catch (Exception ex)
+            {
+                modelResponse = new ModelResponse();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    modelResponse.Id = -1;
+                }
+            }
+            return modelResponse;
+
         }
     }
 }

@@ -13,9 +13,11 @@ namespace AssetsService.Application.Queries
     public class GetModemDDLQuery : IRequest<List<ListDropDown>>
     {
         public string userId { get; set; }
-        public GetModemDDLQuery(string userId)
+        public int? dispenserId { get; set; }
+        public GetModemDDLQuery(string userId, int? dispenserId)
         {
             this.userId = userId;
+            this.dispenserId = dispenserId; 
         }
     }
 

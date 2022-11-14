@@ -13,6 +13,7 @@ using AssetsService.Core.Responses.Assets;
 using Serilog;
 using System.Dynamic;
 using Microsoft.AspNetCore.Authorization;
+using AssetsService.Core.ConstantResponse;
 
 namespace AssetsService.Api
 {
@@ -43,7 +44,7 @@ namespace AssetsService.Api
                 var res = await _mediator.Send(new GetAllCableQuery(getAllCableRequest));
                 if (res != null && res.Count > 0)
                 {
-                    cableQueryResponse.StatusMessage = "Record found";
+                    cableQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                     cableQueryResponse.data = res;
                     cableQueryResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
                     {
@@ -59,7 +60,7 @@ namespace AssetsService.Api
                 }
                 else
                 {
-                    cableQueryResponse.StatusMessage = "Record not found";
+                    cableQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                     cableQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
                     cableQueryResponse.data = null;
                     ////_logger.LogInformation("Data not found");
@@ -86,7 +87,7 @@ namespace AssetsService.Api
             {
                 CableData res = await _mediator.Send(new GetByIdCablesQuery(id));
                 cableByIdResponse.StatusCode = (int)HttpStatusCode.OK;
-                cableByIdResponse.StatusMessage = "Record found";
+                cableByIdResponse.StatusMessage = RespnoseMessage.Record_found;
                 cableByIdResponse.data = res;
                 // //_logger.LogInformation("Get the data of Cable reader by Id");
             }
@@ -109,13 +110,12 @@ namespace AssetsService.Api
             try
             {
                 if (ModelState.IsValid)
-                {
-                    ////_logger.LogInformation("Request Body of Cable controller is :" + command);
+                {                    
                     var result = await _mediator.Send(command);                  
                     if (result.Id > 0)
                     {
                         createCableResponse.StatusCode = 200;
-                        createCableResponse.StatusMessage = "Cable Created Successfully";
+                        createCableResponse.StatusMessage = RespnoseMessage.Cable_Created_Successfully;
                         createCableResponse.Id = result.Id;
                     }
                     else
@@ -123,13 +123,13 @@ namespace AssetsService.Api
                         if (result.Id == -1)
                         {
                             createCableResponse.StatusCode = 200;
-                            createCableResponse.StatusMessage = "Duplicate AssetId can not be created.";
+                            createCableResponse.StatusMessage = RespnoseMessage.Duplicate_AssetId_can;
                             return BadRequest(createCableResponse);
                         }
                         else
                         {
                             createCableResponse.StatusCode = 200;
-                            createCableResponse.StatusMessage = "Record not saved";
+                            createCableResponse.StatusMessage = RespnoseMessage.Record_not_found;
                         }
                     }
                 }
@@ -137,7 +137,7 @@ namespace AssetsService.Api
                 {
                     dynamic expendo = new ExpandoObject();
                     expendo.statusCode = 400;
-                    expendo.statusMessage = "Invalid data";
+                    expendo.statusMessage = RespnoseMessage.Invalid_Data;
 
                     expendo.errors = ModelState.Select(x => x.Value.Errors)
                            .Where(y => y.Count > 0)
@@ -152,7 +152,7 @@ namespace AssetsService.Api
                 ////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
                 createCableResponse.StatusCode = 404;
-                createCableResponse.StatusMessage = "Cable not Created";
+                createCableResponse.StatusMessage = RespnoseMessage.Cable_Not_Created;
 
             }
             return (createCableResponse);
@@ -170,13 +170,13 @@ namespace AssetsService.Api
 
                 if (result is not null && result.Id > 0)
                 {
-                    updateCableResponse.StatusMessage = "Record updated successfully.";
+                    updateCableResponse.StatusMessage = RespnoseMessage.Record_Updated_Successfully;
                     updateCableResponse.StatusCode = 200;
                     updateCableResponse.Id = result.Id;
                 }
                 else
                 {
-                    updateCableResponse.StatusMessage = "Record not updated";
+                    updateCableResponse.StatusMessage = RespnoseMessage.Record_Not_Updated;
                     updateCableResponse.StatusCode = 200;
                     updateCableResponse.Id = result.Id;
                 }
@@ -187,9 +187,9 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Cable not Created "
+                    Content = RespnoseMessage.Cable_Not_Created
                 };
             }
             return (updateCableResponse);
@@ -204,7 +204,7 @@ namespace AssetsService.Api
                 var result = await _mediator.Send(command);
                 ////_logger.LogInformation("Cable data deleted successfully");
                 deleteCableResponse.StatusCode = 200;
-                deleteCableResponse.StatusMessage = "Deleted";
+                deleteCableResponse.StatusMessage = RespnoseMessage.Deleted;
                 deleteCableResponse.Id = result.Id;
                 deleteCableResponse.IsActive = result.IsActive;
 
@@ -218,6 +218,33 @@ namespace AssetsService.Api
             }
             return deleteCableResponse;
         }
-
+        [HttpPost("GetCableDropDown")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ExpandoObject>> GetCableDropDown(GetAllCableDropDownRequest getAllCableDropDown)
+        {
+            dynamic expendo = new ExpandoObject();          
+            var result = await _mediator.Send(new GetCableDropDownQuery(getAllCableDropDown.userId, getAllCableDropDown.dispenserId));
+           
+            try
+            {
+                expendo.statusCode = 200;
+                if (result is not null)
+                {
+                    expendo.statusMessage = RespnoseMessage.Record_found;
+                    expendo.data = result;
+                }
+                else
+                {
+                    expendo.statusMessage = RespnoseMessage.Record_not_found;
+                }
+            }
+            catch (Exception ex)
+            {
+                expendo.statusCode = (int)HttpStatusCode.BadRequest;
+                expendo.statusMessage = RespnoseMessage.Faild;
+                Log.Information("error occurred :" + ex.Message);
+            }
+            return (expendo);
+        }
     }
 }

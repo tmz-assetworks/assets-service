@@ -3,6 +3,7 @@ using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
+using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Responses.Assets;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -52,18 +53,28 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "haryana",
                 IsActive = true,
                 ModifiedOn = DateTime.Now,
-                VehicleModelYearid = 11,
-                VehicleModelYear = "2012",
                 VehicleModelName = "2014",
                 VehicleMakeName = "2019",
                 vehicleRFIDName = "12345,12345",
                 VehicleModelId = 13,
                 VehicleMakeId = 13,
                 vehicleRFIDIds = new List<VehicleRFIDId>()
+                {
+                   new VehicleRFIDId()
+                   {
+                        Id = 1,
+                        Name="Name",
+                        IsActive=true,
+                   }
+                }
             };
 
             _mediator.Setup(md => md.Send(It.IsAny<GetByIdVehicleQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(vehicleDTOResponse);
+
+            // Act
             var actionResult = _vehicleController.GetVehicleDetailsById(VehicleId).Result;
+
+            // Assert
             Assert.IsNotNull(actionResult);
             Assert.AreEqual(200, ((actionResult) as VehicleDetailsResponse).StatusCode);
 
@@ -72,16 +83,16 @@ namespace AssetsService.Api.Tests
         [TestMethod()]
         public void CreateVehicleTest()
         {
+            // Arrange
             CreateVehicleCommand command = new CreateVehicleCommand()
             {
-                Id = 0,
+                //Id = 1,
                 VIN = "AFbr156ss",
                 LicencePlate = "lp1987",
                 Department = "34324df",
                 DomicileLocation = "34234",
                 VehicleMacAddress = "343",
                 CreatedBy = "343",
-                VehicleModelYearid = 13,
                 VehicleModelId = 13,
                 VehicleMakeId = 13,
                 RfIdCardsAssigneds = new List<RfIdCardsAssigneds>()
@@ -89,7 +100,7 @@ namespace AssetsService.Api.Tests
             };
             CreateVehicleResponse vehicleResponse = new CreateVehicleResponse()
             {
-                id = 0,
+                id = 1,
                 VIN = "AFbr15621",
                 LicencePlate = "lp1987",
                 Department = "automation",
@@ -97,14 +108,17 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "vma123",
                 CreatedBy = "ak4",
                 CreatedOn = DateTime.Now,
-                VehicleModelYearid = 13,
                 VehicleModelId = 11,
                 VehicleMakeId = 13,
                 rfids = new List<Rfids>() { new Rfids() { Id = 0, Name = "card1", IsActive = true } },
 
             };
             _mediator.Setup(md => md.Send(It.IsAny<CreateVehicleCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(vehicleResponse);
+
+            // Act
             var actionResult = _vehicleController.CreateVehicle(command).Result;
+
+            // Assert
             Assert.IsNotNull(actionResult);
             Assert.AreEqual(200, ((actionResult.Value) as CreateCommonResponse).statusCode);
         }
@@ -121,7 +135,6 @@ namespace AssetsService.Api.Tests
                 DomicileLocation = "string",
                 VehicleMacAddress = "string",
                 ModifiedBy = "string",
-                VehicleModelYearid = 13,
                 VehicleModelId = 13,
                 VehicleMakeId = 13,
                 RfIdCardsAssigneds = new List<RfIdCardsAssigned>() { new RfIdCardsAssigned() { Id = 0, Name = "card1", IsActive = true } },
@@ -137,7 +150,6 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "vma123",
                 CreatedBy = "ak4",
                 CreatedOn = DateTime.Now,
-                VehicleModelYearid = 13,
                 VehicleModelId = 11,
                 VehicleMakeId = 13,
                 rfids = new List<Rfids>()
@@ -159,15 +171,14 @@ namespace AssetsService.Api.Tests
         [TestMethod()]
         public void IsActiveVehicleTest()
         {
+            // Arrange
             IsActiveVehicleCommand isActiveCommand = new IsActiveVehicleCommand()
             {
                 Id = 3,
                 IsActive = true,
                 ModifiedBy = "1"
             };
-            dynamic expandoObject = new ExpandoObject();
-            expandoObject.StatusCode = 200;
-            expandoObject.StatusMessage = "Record status changed successfully.";
+
 
             VehicleResponse vehicleResponse = new VehicleResponse()
             {
@@ -178,21 +189,27 @@ namespace AssetsService.Api.Tests
                 DomicileLocation = "patna",
                 VehicleMacAddress = "vma123",
                 CreatedBy = "ak4",
-                CreatedOn = DateTime.Now,
-                VehicleModelYearid = 13,
+                CreatedOn = DateTime.Now,               
                 VehicleModelId = 11,
                 VehicleMakeId = 13,
             };
 
+            // Act
             _mediator.Setup(md => md.Send(It.IsAny<IsActiveVehicleCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(vehicleResponse);
             var actionResult = _vehicleController.IsActiveVehicleById(isActiveCommand).Result.Where(m => m.Key.ToLower() == "statuscode").FirstOrDefault();
+            dynamic expandoObject = new ExpandoObject();
+            expandoObject.StatusCode = 200;
+            expandoObject.StatusMessage = "Record status changed successfully.";
+
+            // Assert
             Assert.IsNotNull(actionResult);
             Assert.AreEqual(200, actionResult.Value);
         }
 
         [TestMethod()]
-        public void GetallvehicleListTest()
+        public void GetAllvehicleListTest()
         {
+            // Arrange
             GetAllVehicleRequest getAllVehicleRequest = new GetAllVehicleRequest()
             {
                 opratorid = "1",
@@ -202,38 +219,54 @@ namespace AssetsService.Api.Tests
                 OrderBy = "",
 
             };
-            //VehicleDTO vehicledto = new VehicleDTO()
-            //{
+            VehicleDTO vehicledto = new VehicleDTO()
+            {
+                Id = 1,
+                VIN = "cvADF",
+                LicencePlate = "asdfasd",
+                Department = "asdfsad",
+                DomicileLocation = "asdfasd",
+                VehicleMacAddress = "sdfds",
+                IsActive = false,
+                ModifiedOn = DateTime.Now,              
+                VehicleModelName = "2012",
+                VehicleMakeName = "2223",
+                vehicleRFIDName = "SAF",
+                VehicleModelId = 1,
+                VehicleMakeId = 1,
+                vehicleRFIDIds = new List<VehicleRFIDId>()
+                 {
+                      new VehicleRFIDId()
+                      {
+                           Id = 1,
+                           Name = "Name",
+                           IsActive = false,
+                      }
+                 }
+            };
+            List<VehicleDTO> vehicleDTOList = new List<VehicleDTO>();
+            vehicleDTOList.Add(vehicledto);
+            vehicleDTOList = PagedList<VehicleDTO>.ToPagedList(vehicleDTOList,
+             getAllVehicleRequest.PageNumber,
+             getAllVehicleRequest.PageSize);
 
-            //    Id = 1,
-            //    VIN = "cvADF",
-            //    LicencePlate = "asdfasd",
-            //    Department = "asdfsad",
-            //    DomicileLocation = "asdfasd",
-            //    VehicleMacAddress = "sdfds",
-            //    IsActive = false,
-            //    ModifiedOn = DateTime.Now,
-            //    VehicleModelYearid = 1,
-            //    VehicleModelYear = "2022",
-            //    VehicleModelName = "2012",
-            //    VehicleMakeName = "2223",
-            //    vehicleRFIDName = "SAF",
-            //    VehicleModelId = 1,
-            //    VehicleMakeId = 1,
-            //};
-
+            vehicleDTOList.Add(vehicledto);
             statusData statusDatas = new statusData() { key = "count", value = 1 };
 
             VehicleListData vehicleListResponse = new VehicleListData()
             {
                 Active = 1,
                 InActive = 3,
-                 //data = new PagedList<VehicleDTO>(),
+                data = (PagedList<VehicleDTO>)vehicleDTOList,
             };
-            VehicleListData vehicleListData = new VehicleListData();
+
+            // Act
             _mediator.Setup(md => md.Send(It.IsAny<GetVechicleListQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(vehicleListResponse);
-            var actionResult = _vehicleController.GetVechicleList(getAllVehicleRequest).Result;
+            var actionResult = _vehicleController.GetVechicleList(getAllVehicleRequest).Result.Value;
+
+            // Assert
             Assert.IsNotNull(actionResult);
+            Assert.AreEqual(200, (actionResult).StatusCode);
         }
     }
 }

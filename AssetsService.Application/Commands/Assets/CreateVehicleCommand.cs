@@ -6,29 +6,29 @@ namespace AssetsService.Application.Commands.Assets
     public class CreateVehicleCommand : IRequest<AssetsService.Core.Responses.Assets.CreateVehicleResponse>
     {
 
-        public long Id { get; set; }
+        //public long Id { get; set; }              // 12/Oct/2022
         [RegularExpression("^[a-zA-Z0-9]{1,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [StringLength(50, MinimumLength = 0, ErrorMessage = "Vin must be fewer than 50 characters.")]
         [Required]
         public string VIN { get; set; }
-        [RegularExpression("^[a-zA-Z0-9]{0,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [RegularExpression("^[a-zA-Z0-9-_ ]{0,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "LicencePlate must be fewer than 50 characters.")]
 
         public string LicencePlate { get; set; }
         [StringLength(255,MinimumLength = 0 ,ErrorMessage = "Department must be fewer than 255 characters." )]
         public string Department { get; set; }
-        [RegularExpression("^[a-zA-Z0-9]{0,25}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [RegularExpression("^[a-zA-Z0-9 ]{0,25}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [StringLength(25, MinimumLength = 0, ErrorMessage = "DomicileLocation must be fewer than 50 characters.")]
         public string DomicileLocation { get; set; }
         
         [StringLength(25, MinimumLength = 0, ErrorMessage = "VehicleMacAddress must be fewer than 25 characters.")]
         public string VehicleMacAddress { get; set; }
         public string CreatedBy { get; set; }
-        
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid VehicleMOdelYearIdId")]
 
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModelYear")]
         [Required]
-        public long VehicleModelYearid { get; set; }
+        public long ModelYear { get; set; }
+
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid MakeModelId")]
         [Required]
         public long VehicleModelId { get; set; }

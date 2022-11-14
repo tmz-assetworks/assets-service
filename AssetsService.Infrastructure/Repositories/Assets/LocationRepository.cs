@@ -39,7 +39,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      Email = m.Email,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     DepartmentId = m.DepartmentId,
+                     DepartmentName = m.DepartmentName,
                      LocationStatusId = m.LocationStatusId,
                      LocationAddressId = m.LocationAddressId,
                      FuelProtectType = m.FuelProtectType,
@@ -54,7 +54,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                             Id = obls.Id,
                                             AddressLine1 = obls.AddressLine1,
                                             AddressLine2 = obls.AddressLine2,
-                                            CityId = obls.CityId,
+                                            //CityId = obls.CityId,
                                             CityName = obls.CityName,
                                             CountryId = obls.CountryId,
                                             CountryName = obls.CountryName,
@@ -84,20 +84,20 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                                        }).FirstOrDefault(),
 
-                     Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                                   select new Department
-                                   {
-                                       Id = obls.Id,
-                                       DepartmentName = obls.DepartmentName,
-                                       ContactPersonName = obls.ContactPersonName,
-                                       Address = obls.Address,
-                                       CreatedBy = obls.CreatedBy,
-                                       CreatedOn = obls.CreatedOn,
-                                       IsActive = obls.IsActive,
-                                       ModifiedBy = obls.ModifiedBy,
-                                       ModifiedOn = obls.ModifiedOn,
+                     //Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
+                     //              select new Department
+                     //              {
+                     //                  Id = obls.Id,
+                     //                  DepartmentName = obls.DepartmentName,
+                     //                  ContactPersonName = obls.ContactPersonName,
+                     //                  Address = obls.Address,
+                     //                  CreatedBy = obls.CreatedBy,
+                     //                  CreatedOn = obls.CreatedOn,
+                     //                  IsActive = obls.IsActive,
+                     //                  ModifiedBy = obls.ModifiedBy,
+                     //                  ModifiedOn = obls.ModifiedOn,
 
-                                   }).FirstOrDefault(),
+                     //              }).FirstOrDefault(),
 
                      LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                          select new LocationSchedule
@@ -112,6 +112,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                              IsActive = obls.IsActive,
                                              ModifiedBy = obls.ModifiedBy,
                                              ModifiedOn = obls.ModifiedOn,
+                                             IsOpenAlldays=obls.IsOpenAlldays
                                          }).ToList(),
                      OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                            select new OperatorUserMapper
@@ -149,7 +150,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                    Email = m.Email,
                    ModifiedBy = m.ModifiedBy,
                    ModifiedOn = m.ModifiedOn,
-                   DepartmentId = m.DepartmentId,
+                   DepartmentName = m.DepartmentName,
                    LocationStatusId = m.LocationStatusId,
                    LocationAddressId = m.LocationAddressId,
                    FuelProtectType = m.FuelProtectType,
@@ -165,7 +166,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                           AddressLine1 = obls.AddressLine1,
                                           AddressLine2 = obls.AddressLine2,
 
-                                          CityId = obls.CityId,
+                                          //CityId = obls.CityId,
                                           CityName = obls.CityName,
                                           CountryId = obls.CountryId,
                                           CountryName = obls.CountryName,
@@ -195,20 +196,20 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                                      }).FirstOrDefault(),
 
-                   Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                                 select new Department
-                                 {
-                                     Id = obls.Id,
-                                     DepartmentName = obls.DepartmentName,
-                                     ContactPersonName = obls.ContactPersonName,
-                                     Address = obls.Address,
-                                     CreatedBy = obls.CreatedBy,
-                                     CreatedOn = obls.CreatedOn,
-                                     IsActive = obls.IsActive,
-                                     ModifiedBy = obls.ModifiedBy,
-                                     ModifiedOn = obls.ModifiedOn,
+                   //Department = (from obls in _dbContext.Department.Where(x => x.DepartmentName == m.DepartmentName)
+                   //              select new Department
+                   //              {
+                   //                  Id = obls.Id,
+                   //                  DepartmentName = obls.DepartmentName,
+                   //                  ContactPersonName = obls.ContactPersonName,
+                   //                  Address = obls.Address,
+                   //                  CreatedBy = obls.CreatedBy,
+                   //                  CreatedOn = obls.CreatedOn,
+                   //                  IsActive = obls.IsActive,
+                   //                  ModifiedBy = obls.ModifiedBy,
+                   //                  ModifiedOn = obls.ModifiedOn,
 
-                                 }).FirstOrDefault(),
+                   //              }).FirstOrDefault(),
 
                    LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                        select new LocationSchedule
@@ -223,6 +224,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                            IsActive = obls.IsActive,
                                            ModifiedBy = obls.ModifiedBy,
                                            ModifiedOn = obls.ModifiedOn,
+                                           IsOpenAlldays = obls.IsOpenAlldays,
                                        }).ToList(),
                    OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                          select new OperatorUserMapper
@@ -257,7 +259,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                          Email = m.Email,
                          ModifiedBy = m.ModifiedBy,
                          ModifiedOn = m.ModifiedOn,
-                         DepartmentId = m.DepartmentId,
+                         DepartmentName = m.DepartmentName,
                          LocationStatusId = m.LocationStatusId,
                          LocationAddressId = m.LocationAddressId,
                          FuelProtectType = m.FuelProtectType,
@@ -273,7 +275,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                                 AddressLine1 = obls.AddressLine1,
                                                 AddressLine2 = obls.AddressLine2,
 
-                                                CityId = obls.CityId,
+                                                //CityId = obls.CityId,
                                                 CityName = obls.CityName,
                                                 CountryId = obls.CountryId,
                                                 CountryName = obls.CountryName,
@@ -303,20 +305,20 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                                            }).FirstOrDefault(),
 
-                         Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                                       select new Department
-                                       {
-                                           Id = obls.Id,
-                                           DepartmentName = obls.DepartmentName,
-                                           ContactPersonName = obls.ContactPersonName,
-                                           Address = obls.Address,
-                                           CreatedBy = obls.CreatedBy,
-                                           CreatedOn = obls.CreatedOn,
-                                           IsActive = obls.IsActive,
-                                           ModifiedBy = obls.ModifiedBy,
-                                           ModifiedOn = obls.ModifiedOn,
+                         //Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
+                         //              select new Department
+                         //              {
+                         //                  Id = obls.Id,
+                         //                  DepartmentName = obls.DepartmentName,
+                         //                  ContactPersonName = obls.ContactPersonName,
+                         //                  Address = obls.Address,
+                         //                  CreatedBy = obls.CreatedBy,
+                         //                  CreatedOn = obls.CreatedOn,
+                         //                  IsActive = obls.IsActive,
+                         //                  ModifiedBy = obls.ModifiedBy,
+                         //                  ModifiedOn = obls.ModifiedOn,
 
-                                       }).FirstOrDefault(),
+                         //              }).FirstOrDefault(),
 
                          LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                              select new LocationSchedule
@@ -331,6 +333,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                                  IsActive = obls.IsActive,
                                                  ModifiedBy = obls.ModifiedBy,
                                                  ModifiedOn = obls.ModifiedOn,
+                                                 IsOpenAlldays = obls.IsOpenAlldays,
                                              }).ToList(),
                          OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                                select new OperatorUserMapper
@@ -369,7 +372,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      IsActive = m.IsActive,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     DepartmentId = m.DepartmentId,
+                     DepartmentName = m.DepartmentName,
                      LocationStatusId = m.LocationStatusId,
                      LocationAddressId = m.LocationAddressId,
                      FuelProtectType = m.FuelProtectType,
@@ -384,7 +387,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                             Id = obls.Id,
                                             AddressLine1 = obls.AddressLine1,
                                             AddressLine2 = obls.AddressLine2,
-                                            CityId = obls.CityId,
+                                            //CityId = obls.CityId,
                                             CityName = obls.CityName,
                                             CountryId = obls.CountryId,
                                             CountryName = obls.CountryName,
@@ -414,20 +417,20 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                                        }).FirstOrDefault(),
 
-                     Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                                   select new Department
-                                   {
-                                       Id = obls.Id,
-                                       DepartmentName = obls.DepartmentName,
-                                       ContactPersonName = obls.ContactPersonName,
-                                       Address = obls.Address,
-                                       CreatedBy = obls.CreatedBy,
-                                       CreatedOn = obls.CreatedOn,
-                                       IsActive = obls.IsActive,
-                                       ModifiedBy = obls.ModifiedBy,
-                                       ModifiedOn = obls.ModifiedOn,
+                     //Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
+                     //              select new Department
+                     //              {
+                     //                  Id = obls.Id,
+                     //                  DepartmentName = obls.DepartmentName,
+                     //                  ContactPersonName = obls.ContactPersonName,
+                     //                  Address = obls.Address,
+                     //                  CreatedBy = obls.CreatedBy,
+                     //                  CreatedOn = obls.CreatedOn,
+                     //                  IsActive = obls.IsActive,
+                     //                  ModifiedBy = obls.ModifiedBy,
+                     //                  ModifiedOn = obls.ModifiedOn,
 
-                                   }).FirstOrDefault(),
+                     //              }).FirstOrDefault(),
 
                      LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                          select new LocationSchedule
@@ -442,6 +445,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                              IsActive = obls.IsActive,
                                              ModifiedBy = obls.ModifiedBy,
                                              ModifiedOn = obls.ModifiedOn,
+                                             IsOpenAlldays= obls.IsOpenAlldays
                                          }).ToList(),
                      OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                            select new OperatorUserMapper
@@ -471,7 +475,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             if (Id.Count <= 0 || Id == null)
             {
                 result = (from location in _dbContext.Locations
-                          join charger in _dbContext.Dispenser
+                          join charger in _dbContext.Charger
                           on location.Id equals charger.LocationId
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                           on location.Id equals userMap.LocationId
@@ -486,13 +490,16 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               LocationName = location.LocationName,
                               DispenserId = charger.Id,
                               ChargeBoxid = charger.ChargeBoxId,
-                              status = charger.DispenserStatus.DispenserStatusName
+                              status = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
+                              charger.ChargerStatuses.ToList().Where(x=> x.ConnectorStatus=="Faulted").ToList().Count>0? "Faulted" : 
+                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" : charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+
                           }).ToList<LocationsDispenser>();
             }
             else
             {
                 result = (from location in _dbContext.Locations.Where(x => Id.Contains(x.Id))
-                          join charger in _dbContext.Dispenser
+                          join charger in _dbContext.Charger
                           on location.Id equals charger.LocationId
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                          on location.Id equals userMap.LocationId
@@ -506,7 +513,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               Longitude = location.LocationAddress.Longitude,
                               LocationName = location.LocationName,
                               DispenserId = charger.Id,
-                              status = charger.DispenserStatus.DispenserStatusName,
+                              status = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
+                              charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus == "Faulted").ToList().Count > 0 ? "Faulted" :
+                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" : charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                               ChargeBoxid = charger.ChargeBoxId
                           }).ToList<LocationsDispenser>();
             }
@@ -534,29 +543,43 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               LocationName = location.LocationName,
 
                               status = location.LocationStatus.LocationStatusName,
-                              NoofPort = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id)
+                              NoofPort = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id)
                                           join port in _dbContext.Port
-                              on charger.Id equals port.DispenserId
+                              on charger.Id equals port.ChargerId
                                           select new Port
                                           {
-                                              DispenserId = charger.Id
+                                              ChargerId = charger.Id
                                           }).ToList<Port>().Count.ToString(),
-                              Available = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Available.GetEnumDisplayName())) //"Available")
-                                           select new DispenserStatus
+                              Available = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id && x.ChargerStatuses != null && x.ChargerStatuses.ToList().Count > 0)
+                                           join Status in _dbContext.ChargerStatuses.Where(s => s.ConnectorStatus== "Available")
+                              on charger.Id equals Status.ChargerId   //"Available")
+                                           select new LocationsDispenserStatus
                                            {
-                                               Id = charger.DispenserStatusId,
+                                               Id = charger.Id,
+                                               Status= charger.ChargerStatuses.ToList()[0].ConnectorStatus
                                            }
-                                           ).ToList<DispenserStatus>().Count.ToString(),
-                              Connected = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Connected.GetEnumDisplayName())) //== "Connected")
-                                           select new DispenserStatus
+                                           ).ToList()
+                                           .Count.ToString(),
+                              Connected = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id && x.ChargerStatuses != null && x.ChargerStatuses.ToList().Count > 0)
+                                           join Status in _dbContext.ChargerStatuses.Where(s => s.ConnectorStatus == "Unavailable")
+                                            on charger.Id equals Status.ChargerId
+                                           select new LocationsDispenserStatus
                                            {
-                                               Id = charger.DispenserStatusId,
-                                           }).ToList<DispenserStatus>().Count.ToString(),
-                              Faulted = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Faulted.GetEnumDisplayName()))  // == "Faulted")
-                                         select new DispenserStatus
+                                               Id = charger.Id,
+                                               Status = charger.ChargerStatuses.ToList()[0].ConnectorStatus
+                                           }
+                                           ).ToList()
+                                           .Count.ToString(),
+                              Faulted = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id && x.ChargerStatuses != null && x.ChargerStatuses.ToList().Count > 0)
+                                         join Status in _dbContext.ChargerStatuses.Where(s => s.ConnectorStatus == "Faulted")
+                                          on charger.Id equals Status.ChargerId
+                                         select new LocationsDispenserStatus
                                          {
-                                             Id = charger.DispenserStatusId,
-                                         }).ToList<DispenserStatus>().Count.ToString(),
+                                             Id = charger.Id,
+                                             Status = charger.ChargerStatuses.ToList()[0].ConnectorStatus
+                                         }
+                                           ).ToList()
+                                           .Count.ToString(),
                               ContactNo = location.ContactPersonNumber.ToString(),
                               ContactName = location.ContactPersonName.ToString(),
 
@@ -577,29 +600,43 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               CreatedOn = location.CreatedOn,
 
                               status = location.LocationStatus.LocationStatusName,
-                              NoofPort = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id)
+                              NoofPort = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id)
                                           join port in _dbContext.Port
-                              on charger.Id equals port.DispenserId
+                              on charger.Id equals port.ChargerId
                                           select new Port
                                           {
-                                              DispenserId = charger.Id
+                                              ChargerId = charger.Id
                                           }).ToList<Port>().Count.ToString(),
-                              Available = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Available.GetEnumDisplayName()))
-                                           select new DispenserStatus
+                              Available = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id && x.ChargerStatuses != null && x.ChargerStatuses.ToList().Count > 0)
+                                           join Status in _dbContext.ChargerStatuses.Where(s => s.ConnectorStatus == "Available")
+                              on charger.Id equals Status.ChargerId   //"Available")
+                                           select new LocationsDispenserStatus
                                            {
-                                               Id = charger.DispenserStatusId,
+                                               Id = charger.Id,
+                                               Status = charger.ChargerStatuses.ToList()[0].ConnectorStatus
                                            }
-                                           ).ToList<DispenserStatus>().Count.ToString(),
-                              Connected = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Connected.GetEnumDisplayName()))
-                                           select new DispenserStatus
+                                           ).ToList()
+                                           .Count.ToString(),
+                              Connected = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id && x.ChargerStatuses != null && x.ChargerStatuses.ToList().Count > 0)
+                                           join Status in _dbContext.ChargerStatuses.Where(s => s.ConnectorStatus == "Unavailable")
+                                            on charger.Id equals Status.ChargerId
+                                           select new LocationsDispenserStatus
                                            {
-                                               Id = charger.DispenserStatusId,
-                                           }).ToList<DispenserStatus>().Count.ToString(),
-                              Faulted = (from charger in _dbContext.Dispenser.Where(x => x.LocationId == location.Id && x.DispenserStatus.DispenserStatusName.Equals(Status_Indication.ChargerStatus.Faulted.GetEnumDisplayName()))
-                                         select new DispenserStatus
+                                               Id = charger.Id,
+                                               Status = charger.ChargerStatuses.ToList()[0].ConnectorStatus
+                                           }
+                                           ).ToList()
+                                           .Count.ToString(),
+                              Faulted = (from charger in _dbContext.Charger.Where(x => x.LocationId == location.Id && x.ChargerStatuses != null && x.ChargerStatuses.ToList().Count > 0)
+                                         join Status in _dbContext.ChargerStatuses.Where(s => s.ConnectorStatus == "Faulted")
+                                          on charger.Id equals Status.ChargerId
+                                         select new LocationsDispenserStatus
                                          {
-                                             Id = charger.DispenserStatusId,
-                                         }).ToList<DispenserStatus>().Count.ToString(),
+                                             Id = charger.Id,
+                                             Status = charger.ChargerStatuses.ToList()[0].ConnectorStatus
+                                         }
+                                           ).ToList()
+                                           .Count.ToString(),
                               ContactNo = location.ContactPersonNumber.ToString(),
                               ContactName = location.ContactPersonName.ToString(),
 
@@ -633,7 +670,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             if (Id.Count <= 0)
             {
                 result = (from location in _dbContext.Locations
-                          join charger in _dbContext.Dispenser
+                          join charger in _dbContext.Charger
                           on location.Id equals charger.LocationId
                           join model in _dbContext.Model
                           on charger.ModelId equals model.Id
@@ -641,29 +678,29 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           on charger.MakeMasterId equals make.Id
                           join protocol in _dbContext.Protocol
                           on model.ProtocolId equals protocol.Id
-                          join status in _dbContext.DispenserStatus
-                          on charger.DispenserStatusId equals status.Id
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                           on location.Id equals userMap.LocationId
                           select new LocationDispenserForLocation
                           {
                               locationId = location.Id,
                               DispenserId = charger.Id,
-                              ChargeBoxId = charger.ChargeBoxId,
-                              SerialNumber = charger.SerialNumber,
+                              ChargeBoxId = charger.ChargeBoxId,                              
                               ProtocolName = protocol.ProtocolName,
-                              ChargerStatus = status.DispenserStatusName,
-                              NoofPort = charger.Ports.Where(t => t.DispenserId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.DispenserId.Equals(charger.Id)).ToList().Count.ToString(),
+                              ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
+                              charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
+                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
+                              charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                              NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = make.Name,
                               DispenserModel = model.ModelName,
-                              ConnectorType = _dbContext.Port.FirstOrDefault(p => p.DispenserId == charger.Id).Connector.ConnectorType,
-                              DispenserStatusId = charger.DispenserStatusId
+                              ConnectorType = _dbContext.Port.FirstOrDefault(p => p.ChargerId == charger.Id).Connector.ConnectorType,
+                              
                           }).ToList<LocationDispenserForLocation>();
             }
             else
             {
                 result = (from location in _dbContext.Locations.Where(x => Id.Contains(x.Id))
-                          join charger in _dbContext.Dispenser
+                          join charger in _dbContext.Charger
                           on location.Id equals charger.LocationId
                           join model in _dbContext.Model
                           on charger.ModelId equals model.Id
@@ -671,23 +708,23 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           on charger.MakeMasterId equals make.Id
                           join protocol in _dbContext.Protocol
                           on model.ProtocolId equals protocol.Id
-                          join status in _dbContext.DispenserStatus
-                          on charger.DispenserStatusId equals status.Id
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                           on location.Id equals userMap.LocationId
                           select new LocationDispenserForLocation
                           {
                               locationId = location.Id,
                               DispenserId = charger.Id,
-                              ChargeBoxId = charger.ChargeBoxId,
-                              SerialNumber = charger.SerialNumber,
+                              ChargeBoxId = charger.ChargeBoxId,                              
                               ProtocolName = protocol.ProtocolName,
-                              ChargerStatus = status.DispenserStatusName,
-                              NoofPort = charger.Ports.Where(t => t.DispenserId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.DispenserId.Equals(charger.Id)).ToList().Count.ToString(),
+                              ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
+                              charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
+                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
+                              charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                              NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = make.Name,
                               DispenserModel = model.ModelName,
-                              ConnectorType = _dbContext.Port.FirstOrDefault(p => p.DispenserId == charger.Id).Connector.ConnectorType,
-                              DispenserStatusId = charger.DispenserStatusId
+                              ConnectorType = _dbContext.Port.FirstOrDefault(p => p.ChargerId == charger.Id).Connector.ConnectorType,
+                             
                           }).ToList<LocationDispenserForLocation>();
             }
             return Task.FromResult(result);
@@ -720,7 +757,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                 CityName = address.CityName,
                                 CountryName = address.CountryName,
                                 StateName = address.StateName,
-                                NumberOfCharger = _dbContext.Dispenser.Where(x => x.LocationId == location.Id).AsQueryable().Count(),
+                                NumberOfCharger = _dbContext.Charger.Where(x => x.LocationId == location.Id).AsQueryable().Count(),
                                 PinCode = address.PinCode,
                                 ModifiedOn = location.ModifiedOn,
                                 IsActive = location.IsActive,
@@ -737,6 +774,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                                         IsActive = obls.IsActive,
                                                         ModifiedBy = obls.ModifiedBy,
                                                         ModifiedOn = obls.ModifiedOn,
+                                                        IsOpenAlldays = obls.IsOpenAlldays
                                                     }).ToList(),
                             }).OrderByDescending(a => a.ModifiedOn).ToListAsync();
             locationalist.data = PagedList<LocationsData>.ToPagedList(result,
@@ -800,13 +838,14 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                 Location oldLocation = _dbContext.Locations.Find(location.Id);
                 oldLocation.LocationAddress = _dbContext.LocationAddress.Where(x => x.Id == oldLocation.LocationAddressId).FirstOrDefault();
-                oldLocation.DepartmentId = location.DepartmentId;
+                oldLocation.DepartmentName = location.DepartmentName;
                 oldLocation.LocationStatusId = location.LocationStatusId;
                 oldLocation.ContactPersonName = location.ContactPersonName;
                 oldLocation.ContactPersonNumber = location.ContactPersonNumber;
                 // oldLocation.Department = location.Department;
                 oldLocation.Description = location.Description;
                 oldLocation.LocationName = location.LocationName;
+                oldLocation.Email = location.Email;
                 oldLocation.TotalCapacity = location.TotalCapacity;
                 oldLocation.LocationId = location.LocationId;
                 oldLocation.UtilityService = location.UtilityService;
@@ -821,14 +860,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 oldLocation.LocationAddress.CityName = location.LocationAddress.CityName;
                 oldLocation.LocationAddress.StateName = location.LocationAddress.StateName;
                 oldLocation.LocationAddress.CountryName = location.LocationAddress.CountryName;
-                oldLocation.LocationAddress.CityId = location.LocationAddress.CityId;
                 oldLocation.LocationAddress.StateId = location.LocationAddress.StateId;
                 oldLocation.LocationAddress.CountryId = location.LocationAddress.CountryId;
                 oldLocation.LocationAddress.ModifiedBy = location.LocationAddress.ModifiedBy;
-                oldLocation.LocationAddress.CreatedBy = oldLocation.LocationAddress.CreatedBy;
-                oldLocation.LocationAddress.CreatedOn = oldLocation.LocationAddress.CreatedOn;
-                //  oldLocation.LocationAddressId = location.LocationAddressId;
-                oldLocation.LocationAddress.IsActive = oldLocation.LocationAddress.IsActive;
+                
                 oldLocation.LocationAddress.ModifiedOn = DateTime.Now;
                 for (int i = 0; i < location.LocationSchedule.Count(); i++)
                 {
@@ -841,12 +876,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                         oldLocationSchedule.ModifiedOn = DateTime.Now;
                         oldLocationSchedule.StartTime = newls.StartTime;
                         oldLocationSchedule.EndTime = newls.EndTime;
-
+                        oldLocationSchedule.IsOpenAlldays = newls.IsOpenAlldays;
                     }
                 }
-                //  oldLocation.LocationSchedule= _dbContext.LocationSchedule.Where(x=> x.LocationId == oldLocation.Id)){}
-                _dbContext.Update(oldLocation);
-                //  _dbContext.Update(oldLocation.LocationAddress);
+               _dbContext.Update(oldLocation);                
                 _dbContext.SaveChanges();
 
             }

@@ -24,14 +24,26 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.Pad
         public async Task<PadResponse> Handle(UpdatePadCommand request, CancellationToken cancellationToken)
         {
             var padEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Pad>(request);
-            if (padEntitiy is null)
+            PadResponse padResponse = null;
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                if (padEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                padEntitiy.ModifiedOn = DateTime.Now;
+                var updatePad = _padRepo.UpdateAsync(padEntitiy, request.Id, "PAD");
+                padResponse = Mapper.Mappers.Map<PadResponse>(updatePad.Result);
             }
-            padEntitiy.ModifiedOn=DateTime.Now;
-            var updatePad = _padRepo.UpdateAsync(padEntitiy, request.Id, "PAD");
-            var mapPadResponse = Mapper.Mappers.Map<PadResponse>(updatePad.Result);
-            return mapPadResponse;
+            catch (Exception ex)
+            {
+                padResponse = new PadResponse();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    padResponse.Id = -1;
+                }
+            }
+            return padResponse;
         }
     }
 }

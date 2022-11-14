@@ -49,8 +49,17 @@ namespace AssetsService.Core.Responses.Assets
     {
         public string? opratorid { get; set; }
     }
-
-     public class CreateCableResponse
+    public class GetAllCableDropDownRequest
+    {
+        public string userId { get; set; }
+        public int? dispenserId { get; set; } = 0;
+    }
+    public class CableListDropDown
+    {
+        public long Id { get; set; }
+        public string CableSerialNumber { get; set; }
+    }
+    public class CreateCableResponse
     {
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }

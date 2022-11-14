@@ -143,6 +143,6 @@ namespace AssetsService.Core.Entities
     }
     public class ModemRequest : QueryStringParameters
     {
-
+        public int? dispenserId { get; set; } = 0;
     }
 }

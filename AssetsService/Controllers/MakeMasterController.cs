@@ -1,6 +1,7 @@
 ﻿using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Response;
 using MediatR;
@@ -51,14 +52,14 @@ namespace AssetsService.Api.Controllers
             {
                 List<AssetsService.Core.Entities.MakeMaster> res = await _mediator.Send(new GetAllMakeMasterQuery());
                 allMakeMaster.StatusCode = (int)HttpStatusCode.OK;
-                allMakeMaster.StatusMessage = "Record found";
+                allMakeMaster.StatusMessage = RespnoseMessage.Record_found;
                 allMakeMaster.data = res;
                 //_logger.LogInformation("Get all the data of Make master");
             }
             catch (Exception ex)
             {
                 //_logger.LogError(ex.ToString());
-                allMakeMaster.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allMakeMaster.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 allMakeMaster.StatusCode = (int)HttpStatusCode.NotFound;
                 allMakeMaster.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -75,13 +76,13 @@ namespace AssetsService.Api.Controllers
             {
                 MakeMaster res = await _mediator.Send(new GetByIdMakeMastersQuery(id));
                 makeMasterById.StatusCode = (int)HttpStatusCode.OK;
-                makeMasterById.StatusMessage = "Record found";
+                makeMasterById.StatusMessage = RespnoseMessage.Record_found;
                 makeMasterById.data = res;
                 //_logger.LogInformation("Get the data of Make master by Id");
             }
             catch (Exception ex)
             {
-                makeMasterById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                makeMasterById.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 makeMasterById.StatusCode = (int)HttpStatusCode.NotFound;
                 makeMasterById.data = null;
                 //_logger.LogError(ex.ToString());
@@ -107,9 +108,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Make Master not Created "
+                    Content = RespnoseMessage.Make_Master_not_Created
                 };
             }
         }
@@ -129,9 +130,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Make Master not Update "
+                    Content = RespnoseMessage.Make_Master_not_updated
                 };
             }
         }
@@ -151,9 +152,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Make Master not Deleted "
+                    Content = RespnoseMessage.Make_Master_not_deleted
                 };
             }
         }

@@ -10,6 +10,7 @@ using AssetsService.Core.Response;
 using AssetsService.Core.Responses.Assets;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using AssetsService.Core.ConstantResponse;
 
 namespace AssetsService.Api
 {
@@ -39,7 +40,7 @@ namespace AssetsService.Api
             try
             {
                 List<CountryData> country = await _mediator.Send(new GetAllCountryQuery());
-                allCityResponse.StatusMessage = "Record found";
+                allCityResponse.StatusMessage = RespnoseMessage.Record_found;
                 allCityResponse.StatusCode = (int)HttpStatusCode.OK;
                 allCityResponse.data = country;
             }
@@ -63,7 +64,7 @@ namespace AssetsService.Api
             {
                 List<StateData> states = (List<StateData>)await _mediator.Send(new GetStateByCountryIdQuery(Id));
 
-                stateByCountryIdResponse.StatusMessage = "Record found";
+                stateByCountryIdResponse.StatusMessage = RespnoseMessage.Record_found;
                 stateByCountryIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 stateByCountryIdResponse.data = states;
                 ////_logger.LogInformation("Get the all data of State by country Id");
@@ -90,7 +91,7 @@ namespace AssetsService.Api
             {
                 List<CityData> city = (List<CityData>)await _mediator.Send(new GetCityByStateIdQuery(Id));
 
-                cityByStateIdResponse.StatusMessage = "Record found";
+                cityByStateIdResponse.StatusMessage = RespnoseMessage.Record_found;
                 cityByStateIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 cityByStateIdResponse.data = city;
                 ////_logger.LogInformation("Get the all data of City by state Id");

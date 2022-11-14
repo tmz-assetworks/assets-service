@@ -101,6 +101,17 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                     }).FirstOrDefault();
         }
+        async Task<List<CableListDropDown>> ICableRepository.GetAllCableDropDown(string userId, int? dispenserId)
+        {
+            List<CableListDropDown> cables = null;
+            List<Charger> dsipnser = _dbContext.Charger.Where(m => m.Id != dispenserId.Value).ToList();
+            cables = _dbContext.Cables.ToList().Select(m => new CableListDropDown
+            {
+                Id = m.Id,
+                CableSerialNumber = m.SerialNumber,
+            }).Where(m => m.CableSerialNumber != "").Where(x => dsipnser.All(p2 => p2.CableId != x.Id)).OrderBy(m => m.CableSerialNumber).ToList();
+            return cables;
+        }
         public async Task<CreateCableResponse> CreateCable(Cable cable)
         {
             CreateCableResponse createCableResponse = new CreateCableResponse();

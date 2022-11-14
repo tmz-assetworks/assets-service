@@ -1,5 +1,6 @@
 
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Responses;
@@ -39,9 +40,9 @@ namespace AssetsService.Api
                 if (ModemRequest.PageSize == 0) ModemRequest.PageSize = 10;
                 if (ModemRequest.PageNumber == 0) ModemRequest.PageNumber = 1;
                 var modems = await _mediator.Send(new GetAllModemQuery(ModemRequest));
-                if (modems != null && modems.Count > 0)
-                    re.StatusMessage = "Record found";
-                else re.StatusMessage = "Record not found";
+                if (modems.Count > 0)
+                    re.StatusMessage = RespnoseMessage.Record_found;
+                else re.StatusMessage = RespnoseMessage.Record_not_found;
                 re.StatusCode = (int)HttpStatusCode.OK;
                 re.data = modems;
 
@@ -102,21 +103,20 @@ namespace AssetsService.Api
 
                     expendo.statusCode = 200;
                     expendo.Id = result.Id;
-                    expendo.statusMessage = "Record Saved Successfully";
+                    expendo.statusMessage = RespnoseMessage.Record_Save_Successfully;
                 }
                 else
-                {                  
-
+                {
                     if (result.Id == -1)
                     {
                         expendo.statusCode = 200;
-                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
                         return BadRequest(expendo);
                     }
                     else
                     {
                         expendo.statusCode = 200;
-                        expendo.statusMessage = "Record not saved";
+                        expendo.statusMessage = RespnoseMessage.Record_not_found;
                     }
                 }
             }
@@ -124,7 +124,7 @@ namespace AssetsService.Api
             {
                 expendo = new ExpandoObject();
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Operation Failed!";
+                expendo.statusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -140,23 +140,30 @@ namespace AssetsService.Api
                 expandoObject.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    expandoObject.statusMessage = "Please provide Modem Id value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Modem_Id_value;
                     return expandoObject;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return expandoObject;
                 }
                 var data = await _mediator.Send(command);
                 if (data is not null && data.Id > 0)
                 {
-                    expandoObject.statusMessage = "Record updated successfully.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_Updated_Successfully;
                 }
+                if (data.Id == -1)
+                {
+                    expandoObject.statusCode = 200;
+                    expandoObject.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
+                    return BadRequest(expandoObject);
+                }
+
                 else
                 {
-                    expandoObject.statusMessage = "Record not found.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
                 }
                 return expandoObject;
             }
@@ -165,7 +172,7 @@ namespace AssetsService.Api
                 expandoObject = new ExpandoObject();
                 //_logger.LogError(ex.ToString());
                 expandoObject.StatusCode = (int)HttpStatusCode.BadRequest;
-                expandoObject.StatusMessage = "Operation Failed!";
+                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
             }
             return expandoObject;

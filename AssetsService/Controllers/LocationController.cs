@@ -16,6 +16,7 @@ using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using AssetsService.Infrastructure.Helpers;
+using AssetsService.Core.ConstantResponse;
 
 namespace AssetsService.Api
 {
@@ -63,7 +64,7 @@ namespace AssetsService.Api
                 _token.acces_token = await HttpContext.GetTokenAsync("access_token");
                 List<AssetsService.Core.Entities.Location> location = await _mediator.Send(new GetAllLocationQuery());
                 List<LocationStatusData> locationdata = location.Select(x => new LocationStatusData { Id = x.Id, LocationName = x.LocationName, LocationStatus = x.LocationStatus.LocationStatusName }).OrderBy(a => a.LocationName).ToList();
-                allLocationStatusQueryResponse.StatusMessage = "Record found";
+                allLocationStatusQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 allLocationStatusQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 allLocationStatusQueryResponse.data = locationdata;
                 //_logger.LogInformation("Get all Location data");
@@ -89,7 +90,7 @@ namespace AssetsService.Api
             {
                 List<LocationData> location = await _mediator.Send(new GetAllLocationNameQuery());
                 //List<LocationData> locationdata = location.Select(x => new LocationData { Id = x.Id, LocationName = x.LocationName }).ToList();
-                allLocationNameResponse.StatusMessage = "Record found";
+                allLocationNameResponse.StatusMessage = RespnoseMessage.Record_found;
                 allLocationNameResponse.StatusCode = (int)HttpStatusCode.OK;
                 allLocationNameResponse.data = location;
                 //_logger.LogInformation("Get all Location Name data");
@@ -121,11 +122,11 @@ namespace AssetsService.Api
                 Locationalist = await _mediator.Send(new GetLocationListQuery(locationListRequst));
                 if (Locationalist != null && Locationalist.data.Count() > 0)
                 {
-                    locationListResponse.StatusMessage = "Record found";
+                    locationListResponse.StatusMessage = RespnoseMessage.Record_found;
                     locationListResponse.data = Locationalist.data;
                     statusData = new List<StatusData>(){
                             new StatusData () {
-                                Key = "Total Location",
+                                Key = "Total Locations",
                                 Value = Locationalist.TotalLocation,
                                 Color = "#E97300",
                             },
@@ -161,14 +162,14 @@ namespace AssetsService.Api
                 }
                 else
                 {
-                    locationListResponse.StatusMessage = "Record not found";
+                    locationListResponse.StatusMessage = RespnoseMessage.Record_not_found;
                     locationListResponse.StatusCode = (int)HttpStatusCode.OK;
                     locationListResponse.data = null;
                 }
             }
             catch (Exception ex)
             {
-                locationListResponse.StatusMessage = "Operaion failed!";
+                locationListResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 locationListResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 locationListResponse.data = null;
                 //_logger.LogError(ex.ToString());
@@ -190,13 +191,13 @@ namespace AssetsService.Api
 
                 if (location != null)
                 {
-                    locationQueryResponse.StatusMessage = "Record found";
+                    locationQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                     locationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 }
                 else
                 {
 
-                    locationQueryResponse.StatusMessage = "Record not found";
+                    locationQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                     locationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 }
 
@@ -206,7 +207,7 @@ namespace AssetsService.Api
             }
             catch (Exception ex)
             {
-                locationQueryResponse.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                locationQueryResponse.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 locationQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 locationQueryResponse.data = null;
                 //_logger.LogError(ex.ToString());
@@ -225,7 +226,7 @@ namespace AssetsService.Api
             try
             {
                 List<AllLocationStatuss> locationSchedule = await _mediator.Send(new GetAllLocationStatusQuery());
-                locationStatusResponcse.StatusMessage = "Record found";
+                locationStatusResponcse.StatusMessage = RespnoseMessage.Record_found;
                 locationStatusResponcse.StatusCode = (int)HttpStatusCode.OK;
                 locationStatusResponcse.data = locationSchedule;
                 //_logger.LogInformation("Get all Location Status data");
@@ -251,7 +252,7 @@ namespace AssetsService.Api
             {
                 _token.acces_token = await HttpContext.GetTokenAsync("access_token");
                 List<AllDepartmentList> departmentList = await _mediator.Send(new GetAllDepartmentListQuery());
-                departmentListResponcse.StatusMessage = "Record found";
+                departmentListResponcse.StatusMessage = RespnoseMessage.Record_found;
                 departmentListResponcse.StatusCode = (int)HttpStatusCode.OK;
                 departmentListResponcse.data = departmentList;
                 //_logger.LogInformation("Get all Department List data");
@@ -281,20 +282,20 @@ namespace AssetsService.Api
 
                     expendo.StatusCode = 200;
                     expendo.Id = result.Id;
-                    expendo.StatusMessage = "Record Saved Successfully";
+                    expendo.StatusMessage = RespnoseMessage.Record_Save_Successfully;
                     //_logger.LogInformation("New Location created successfully");
                 }
                 else
                 {
                     expendo.StatusCode = 200;
-                    expendo.StatusMessage = "Record not saved";
+                    expendo.StatusMessage = RespnoseMessage.Record_Not_Saved;
 
                 }
             }
             catch (Exception ex)
             {
                 expendo.StatusCode = 200;
-                expendo.StatusMessage = "Record not saved";
+                expendo.StatusMessage = RespnoseMessage.Record_Not_Saved;
                 //_logger.LogError(ex.StackTrace.ToString());
                 Log.Information("error occurred :" + ex.Message);
 
@@ -321,9 +322,9 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Location not Delete "
+                    Content = RespnoseMessage.Not_Deleted
                 };
             }
         }
@@ -346,9 +347,9 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Location not Update "
+                    Content = RespnoseMessage.Record_Not_Updated
                 };
             }
         }
@@ -364,7 +365,7 @@ namespace AssetsService.Api
                 _token.acces_token = await HttpContext.GetTokenAsync("access_token");
                 List<LocationsDispenser> location = await _mediator.Send(new GetLocationsDispenserformapQuery(Id));
 
-                locationQueryResponse.StatusMessage = "Record found";
+                locationQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 locationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 locationQueryResponse.data = location;
                 //_logger.LogInformation("Get Location Dispenser Count");
@@ -405,7 +406,7 @@ namespace AssetsService.Api
                 // Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
                 if (location != null && location.Count > 0)
                 {
-                    locationQueryResponse.StatusMessage = "Record found";
+                    locationQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                     locationQueryResponse.data = location;
                     locationQueryResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
                     {
@@ -420,7 +421,7 @@ namespace AssetsService.Api
                 }
                 else
                 {
-                    locationQueryResponse.StatusMessage = "Record not found";
+                    locationQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                     locationQueryResponse.data = null;
                     locationQueryResponse.paginationResponse = new PaginationResponse();
                 }
@@ -429,7 +430,7 @@ namespace AssetsService.Api
             }
             catch (Exception ex)
             {
-                locationQueryResponse.StatusMessage = "Operation failed!";
+                locationQueryResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 locationQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 locationQueryResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -449,16 +450,16 @@ namespace AssetsService.Api
                 _token.acces_token = await HttpContext.GetTokenAsync("access_token");
                 List<LocationDispenserForLocation> location = await _mediator.Send(new GetLocationsDispenserForLocationQuery(Id));
                 if (location != null && location.Count() > 0)
-                    locationDispenserForLocationResponse.StatusMessage = "Record found";
+                    locationDispenserForLocationResponse.StatusMessage = RespnoseMessage.Record_found;
                 else
-                    locationDispenserForLocationResponse.StatusMessage = "Record not found";
+                    locationDispenserForLocationResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 locationDispenserForLocationResponse.StatusCode = (int)HttpStatusCode.OK;
                 locationDispenserForLocationResponse.data = location;
                 //_logger.LogInformation("Get Location Dispenser Count");
             }
             catch (Exception ex)
             {
-                locationDispenserForLocationResponse.StatusMessage = "Operation failed!";
+                locationDispenserForLocationResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 locationDispenserForLocationResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 locationDispenserForLocationResponse.data = null;
                 //_logger.LogError(ex.ToString());

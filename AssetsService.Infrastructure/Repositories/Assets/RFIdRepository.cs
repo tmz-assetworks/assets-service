@@ -20,7 +20,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         {
 
         }
-
         public async Task<PagedList<RFIDReaderDetails>> GetAllRfIdReader(RfIdReaderRequest rFIDReaderRequest)
         {
             var rfIdReaders = (from RFIDReaders in _dbContext.RFIDReaders
@@ -65,19 +64,21 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         }
         public async Task<List<RFIDReader>> GetAllRfIdReaderData(RfIdReaderDataRequest rFIDReaderRequest)
         {
-            return _dbContext.RFIDReaders
+            var rfIds = _dbContext.Charger.Where(m => m.Id != rFIDReaderRequest.dispenserId.Value).Select(m => m.RFIDReaderId).ToList();
+            var data =  _dbContext.RFIDReaders
                  .Select(m => new RFIDReader
                  {
                      Id = m.Id,
                      CardReader = m.CardReader,
-                 }).Where(m => m.CardReader != "").OrderBy(m => m.CardReader).ToList();
+                     IsActive = m.IsActive                     
+                 }).Where(m => m.CardReader != "").Where(x => rfIds.All(RFIDReaderId => RFIDReaderId != x.Id)).Where(m => m.CardReader != "").OrderBy(m => m.CardReader).ToList();
+            return data;
         }
         public async Task<RFIDReaderDetails> GetByIdRfIdReader(long id)
         {
             RFIDReaderDetails data = new RFIDReaderDetails();
             try
             {
-
                 data = (from RFIDReaders in _dbContext.RFIDReaders
                         join Models in _dbContext.Model
                                 on RFIDReaders.ModelId equals Models.Id

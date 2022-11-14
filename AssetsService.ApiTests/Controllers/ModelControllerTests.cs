@@ -56,7 +56,7 @@ namespace AssetsService.Api.Tests
             ModelResponse modelResponse = new ModelResponse()
             {
 
-                Id = 0,
+                Id = 1,
                 ConnectorCount = 1,
                 CreatedBy = "atul",
                 CreatedOn = DateTime.Now,
@@ -74,7 +74,9 @@ namespace AssetsService.Api.Tests
             _mediator.Setup(md => md.Send(It.IsAny<CreateModelCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(modelResponse);
             var actionResult = _modelController.CreateModel(Command).Result;
             Assert.IsNotNull(actionResult);
-            Assert.AreEqual(actionResult, 200);
+            Assert.AreEqual(200, (actionResult));
+
+         
 
         }
 

@@ -22,13 +22,15 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
         private readonly IRFIdRepository _rfidRepository;
         private readonly IModemRepository _modemRepository;
         private readonly ICableRepository _cableRepository;
-        public IsActiveAssetHandler(IPadRepository padRepository, IPowerCabinetRepository powerCabinet, IRFIdRepository rfidRepository, IModemRepository modemRepository, ICableRepository cableRepository)
+        private readonly ISwitchGearRepository _switchGearRepository;
+        public IsActiveAssetHandler(IPadRepository padRepository, IPowerCabinetRepository powerCabinet, IRFIdRepository rfidRepository, IModemRepository modemRepository, ICableRepository cableRepository, ISwitchGearRepository switchGearRepository)
         {
             _padRepository = padRepository;
             _powerCabinetRepository = powerCabinet;
             _rfidRepository = rfidRepository;
             _modemRepository = modemRepository;
             _cableRepository = cableRepository;
+            _switchGearRepository = switchGearRepository;
         }
         public async Task<AssetResponse> Handle(IsActiveAssetCommand request, CancellationToken cancellationToken)
         {
@@ -91,6 +93,19 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                     throw new ApplicationException("Issue with mapper");
                 }
                 var updateasset = _cableRepository.IsActiveStatusChangeAsync(assetMapper, assetMapper.Id, "cable");
+
+                AssetResponse _padResponse = new AssetResponse();
+                _padResponse.Id = updateasset.Id;
+                return _padResponse;
+            }
+            else if (request.Name.ToLower() == "switchgears")
+            {
+                var assetMapper = Mapper.Mappers.Map<Core.Entities.SwitchGear>(request);
+                if (assetMapper is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                var updateasset = _switchGearRepository.IsActiveStatusChangeAsync(assetMapper, assetMapper.Id, "SwitchGears");
 
                 AssetResponse _padResponse = new AssetResponse();
                 _padResponse.Id = updateasset.Id;

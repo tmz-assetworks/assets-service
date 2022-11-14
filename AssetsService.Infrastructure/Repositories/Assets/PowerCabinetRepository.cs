@@ -14,11 +14,11 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         public PowerCabinetRepository(AssetsService.Infrastructure.DBContext.DBContextCore dbContext) : base(dbContext)
         {
 
-        }
-        
-        public async Task<List<GetPowerCabinetResponse>> GetPowerCabinetData()
+        }        
+        public async Task<List<GetPowerCabinetResponse>> GetPowerCabinetData(int? dispenserId)
         {
-                 return _dbContext.PowerCabinet
+            var powerCabinetIds = _dbContext.Charger.Where(m => m.Id != dispenserId.Value).Select(m => m.PowerCabinetId).ToList();            
+            var data = _dbContext.PowerCabinet
                  .Select(m => new GetPowerCabinetResponse
                  {
                      Id = m.Id,
@@ -44,9 +44,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      MakeMasterName = m.MakeMaster.Name,
                      ModelName = m.Model.ModelName,
                      LocationName = m.Location.LocationName,
-                     StatusId = m.StatusId
-                     
-                 }).ToList();
+                     StatusId = m.StatusId                     
+                 }).Where(x => powerCabinetIds.All(powerCabinetIds => powerCabinetIds != x.Id)).OrderBy(m => m.SerialNumber).ToList();
+            return data;
         }
         public async Task<GetPowerCabinetResponse> GetPowerCabinetById(long powerCabinetId)
         {
@@ -78,8 +78,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      LocationName = m.Location.LocationName,
                      StatusId = m.StatusId
                  }).Where(x => x.Id == powerCabinetId).FirstOrDefault();
-
-
         }
     }
 }

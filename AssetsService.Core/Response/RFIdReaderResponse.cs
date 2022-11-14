@@ -29,6 +29,7 @@ namespace AssetsService.Core.Response
     {
         public long Id { get; set; }
         public string CardReader { get; set; }
+        public bool IsActive { get; set; }
     }
     public  class RFIDReaderDetails
     {
@@ -66,6 +67,7 @@ namespace AssetsService.Core.Response
     public class RfIdReaderDataRequest
     {
         public string userId { get; set; }
+        public int? dispenserId { get; set; } = 0;
     }
     public class RfIdReaderDetailsResponse
     {

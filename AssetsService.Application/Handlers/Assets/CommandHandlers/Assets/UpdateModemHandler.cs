@@ -24,16 +24,27 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
 
         public async Task<Modem> Handle(UpdateModemCommand request, CancellationToken cancellationToken)
         {
-            var modemEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Modem>(request);
-            if (modemEntitiy is null)
+            Modem modem = null;
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var modemEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Modem>(request);
+                if (modemEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                modemEntitiy.CreatedOn = DateTime.Now;
+                modemEntitiy.ModifiedOn = DateTime.Now;
+                var updateModem = _modemRepo.UpdateAsync(modemEntitiy, request.Id, "modem");
+                modem = Mapper.Mappers.Map<Modem>(updateModem.Result);
+            }catch(Exception ex)
+            {
+                modem = new Modem();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    modem.Id = -1;
+                }
             }
-            modemEntitiy.CreatedOn = DateTime.Now;
-            modemEntitiy.ModifiedOn = DateTime.Now;
-            var updateModem = _modemRepo.UpdateAsync(modemEntitiy, request.Id, "modem");
-            var mapModemResponse = Mapper.Mappers.Map<Modem>(updateModem.Result);
-            return mapModemResponse;
+            return modem;
         }
     }
 }

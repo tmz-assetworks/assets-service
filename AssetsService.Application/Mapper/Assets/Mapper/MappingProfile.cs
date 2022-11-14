@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AssetsService.Application.Commands.Assets;
 using AssetsService.Core.Responses;
 using System;
@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Application.Commands.Assets.Pad;
 using AssetsService.Application.Commands.Assets.RFId;
-using AssetsService.Application.Commands.Assets.SubscriptionPlan;
+using AssetsService.Core.Responses.Assets;
+using AssetsService.Core.Response;
 
 namespace AssetsService.Core.Mapper
 {
@@ -38,7 +39,7 @@ namespace AssetsService.Core.Mapper
             CreateMap<AssetsService.Core.Entities.MakeMaster, UpdateMakeMasterCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.MakeMaster, DeleteMakeMasterCommand>().ReverseMap();
 
-            CreateMap<AssetsService.Core.Entities.Model, ModelResponse>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Model, Application.Responses.Assets.ModelResponse>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Model, CreateModelCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Model, UpdateModelCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Model, DeleteModelCommand>().ReverseMap();
@@ -51,9 +52,6 @@ namespace AssetsService.Core.Mapper
             CreateMap<AssetsService.Core.Entities.Pos, PosResponse>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Pos, CreatePosCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Pos, UpdatePosCommand>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.PricePlan, PricePlanResponse>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.PricePlan, CreatePricePlanCommand>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.PricePlan, UpdatePricePlanCommand>().ReverseMap();
 
             CreateMap<AssetsService.Core.Entities.PowerCabinet, PowerCabinetResponse>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.PowerCabinet, IsActiveAssetCommand>().ReverseMap();
@@ -66,10 +64,10 @@ namespace AssetsService.Core.Mapper
             CreateMap<AssetsService.Core.Entities.Location, UpdateLocationCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Location, UpdateLocationCommand>().ReverseMap();
 
-            CreateMap<AssetsService.Core.Entities.Dispenser, DispenserResponse>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.Dispenser, CreateDispenserCommand>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.Dispenser, UpdateDispenserCommand>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.Dispenser, DeleteDispenserCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Charger, DispenserResponse>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Charger, CreateDispenserCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Charger, UpdateDispenserCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Charger, DeleteDispenserCommand>().ReverseMap();
 
             CreateMap<AssetsService.Core.Entities.Pad, PadResponse>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Pad, IsActiveAssetCommand>().ReverseMap();
@@ -81,10 +79,10 @@ namespace AssetsService.Core.Mapper
             CreateMap<AssetsService.Core.Entities.RFIDReader, IsActiveAssetCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.RFIDReader, CreateRFIdCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.RFIDReader, UpdateRFIdCommand>().ReverseMap();
-
-            CreateMap<AssetsService.Core.Entities.SubscriptionPlan, AssetsService.Application.Responses.Assets.SubscriptionPlanResponse>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.SubscriptionPlan, CreateSubscriptionPlanCommand>().ReverseMap();
-            CreateMap<AssetsService.Core.Entities.SubscriptionPlan, UpdateSubscriptionPlanCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.SwitchGear, SwitchGearResponse>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.SwitchGear, CreateSwitchGearCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.SwitchGear, UpdateSwitchGearCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.SwitchGear, IsActiveAssetCommand>().ReverseMap();
 
         }
     }

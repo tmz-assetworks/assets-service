@@ -48,7 +48,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 CountryName = request.CountryName,
                 StateId = request.StateId,
                 StateName = request.StateName,
-                CityId = request.CityId,
+                //CityId = request.CityId,
                 CityName = request.CityName,
                 PinCode = request.PinCode,
                 ModifiedOn = DateTime.Now,
@@ -63,9 +63,10 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     ModifiedOn = DateTime.Now,
                     Day = request.locationScheduleCommand[i].Day,
                     LocationId = 0,
-                    StartTime = request.locationScheduleCommand[i].StartTime,
-                    EndTime = request.locationScheduleCommand[i].EndTime,
-                    ModifiedBy = request.UserId
+                    StartTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].StartTime,
+                    EndTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].EndTime,
+                    ModifiedBy = request.UserId,
+                    IsOpenAlldays= request.locationScheduleCommand[i].IsOpenAlldays
                 });
             }
             LocationEntitiy.LocationSchedule = locationSchedules;

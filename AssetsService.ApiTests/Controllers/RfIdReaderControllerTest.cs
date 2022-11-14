@@ -4,6 +4,7 @@ using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Response;
+using AssetsService.Infrastructure.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,16 +26,17 @@ namespace AssetsService.Api.Tests
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<ILogger<RFIDReader>> _logger;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<TokenBase> _token;
         public RfIdReaderControllerTest()
         {
             _mediator = new Mock<IMediator>();
             _mockHttpHelper = new Mock<IHtmlHelper>();
             _configuration = new Mock<IConfiguration>();
             _logger = new Mock<ILogger<RFIDReader>>();
-            _rfIdReaderController = new RFIdReaderController(_mediator.Object, _logger.Object);
+            _token = new Mock<TokenBase>();
+            _rfIdReaderController = new RFIdReaderController(_mediator.Object, _logger.Object, _token.Object);
             {
             }
-
         }
         //===============================Test case Details page=========================================
 

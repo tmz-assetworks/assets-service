@@ -9,6 +9,7 @@ namespace AssetsService.Core.Response
     public class PadDataRequest
     {
         public string userId { get; set; }
+        public int? dispenserId { get; set; } = 0;
     }
     public class GetPadResponse
     {
@@ -36,5 +37,6 @@ namespace AssetsService.Core.Response
     {
         public long Id { get; set; }
         public string PadName { get; set; }
+        public bool IsActive { get; set; }
     }
 }

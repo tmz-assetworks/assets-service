@@ -1,4 +1,5 @@
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Mapper;
 using AssetsService.Core.Repositories.Assets;
 using AssetsService.Core.Responses;
@@ -17,21 +18,24 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         }
         public async Task<CreateCableResponse> Handle(CreateCableCommand request, CancellationToken cancellationToken)
         {
-            CreateCableResponse createCableResponse = new CreateCableResponse(); 
-            var cableEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Cable>(request);
-            cableEntitiy.CreatedOn = DateTime.Now;
-            cableEntitiy.ModifiedOn = DateTime.Now;
-            if (cableEntitiy is null)
+            CreateCableResponse createCableResponse = new CreateCableResponse();
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var cableEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Cable>(request);
+                cableEntitiy.CreatedOn = DateTime.Now;
+                cableEntitiy.ModifiedOn = DateTime.Now;
+                
+                createCableResponse = await _cableRepo.CreateCable(cableEntitiy);
             }
-           // cableEntitiy.IsActive = true;
-           // cableEntitiy.AssetId = "";
-           // cableEntitiy.ModifiedBy = cableEntitiy.CreatedBy;
-           // cableEntitiy.ModifiedBy = "";
-            //cableEntitiy.CreatedBy = "";
-            createCableResponse = await _cableRepo.CreateCable(cableEntitiy);
-
+            catch (Exception ex)
+            {                
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    createCableResponse.Id = -1;
+                }
+                
+                   
+            }
             return createCableResponse;
         }
     }

@@ -15,6 +15,7 @@ using System.Text.Json;
 using AssetsService.Core.Response;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using AssetsService.Core.ConstantResponse;
 
 namespace AssetsService.Api.Controllers
 {
@@ -44,17 +45,17 @@ namespace AssetsService.Api.Controllers
                 res.StatusCode = (int)HttpStatusCode.OK;
                 if (vehicle != null)
                 {
-                    res.StatusMessage = "Record found";
+                    res.StatusMessage = RespnoseMessage.Record_found;
                 }
                 else
                 {
-                    res.StatusMessage = "Record not found";
+                    res.StatusMessage = RespnoseMessage.Record_not_found;
                 }
                 res.data = vehicle;
             }
             catch (Exception ex)
             {
-                res.StatusMessage = "Operaion failed!";
+                res.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 res.StatusCode = (int)HttpStatusCode.BadRequest;
                 res.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -75,23 +76,18 @@ namespace AssetsService.Api.Controllers
                 createCommonResponse.statusCode = 200;
                 if (command.VehicleModelId <= 0)
                 {
-                    createCommonResponse.statusMessage = "Please provide Vehicle ModelId.";
-                    return createCommonResponse;
-                }
-                if (command.VehicleModelYearid <= 0)
-                {
-                    createCommonResponse.statusMessage = "Please provide Vehicle ModelYearid.";
+                    createCommonResponse.statusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
                     return createCommonResponse;
                 }
                 if (command.VehicleModelId <= 0)
                 {
-                    createCommonResponse.statusMessage = "Please provide Vehicle ModelId.";
+                    createCommonResponse.statusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
                     return createCommonResponse;
                 }
 
                 if (command.RfIdCardsAssigneds is null || command.RfIdCardsAssigneds.Count == 0)
                 {
-                    createCommonResponse.statusMessage = "Please provide Vehicle RfId Card Assigned.";
+                    createCommonResponse.statusMessage = RespnoseMessage.Please_provide_Vehicle_Rfid_card_Assigned;
                     createCommonResponse.statusCode = 400;
                     return createCommonResponse;
                 }
@@ -101,18 +97,18 @@ namespace AssetsService.Api.Controllers
                     if (createresult != null && createresult.id > 0)
                     {
                         createCommonResponse.Id = createresult.id;
-                        createCommonResponse.statusMessage = "Record saved successfully.";
+                        createCommonResponse.statusMessage = RespnoseMessage.Record_Save_Successfully;
                     }
                     else
                     {
                         if (createresult != null && !string.IsNullOrEmpty(createresult.VIN))
                         {
 
-                            createCommonResponse.statusMessage = "Dublicate entry for :" + createresult.VIN;
+                            createCommonResponse.statusMessage = RespnoseMessage.Dublicate_entry_for + createresult.VIN;
                         }
                         else
                         {
-                            createCommonResponse.statusMessage = "Record not saved";
+                            createCommonResponse.statusMessage = RespnoseMessage.Record_Not_Saved;
                         }
                     }
                 }
@@ -127,7 +123,7 @@ namespace AssetsService.Api.Controllers
             catch (Exception ex)
             {
                 Log.Information("error occurred :" + ex.Message);
-                createCommonResponse.statusMessage = "Operation Failed!";
+                createCommonResponse.statusMessage = RespnoseMessage.Opeartion_Failed;
             }
             return createCommonResponse;
         }
@@ -143,50 +139,45 @@ namespace AssetsService.Api.Controllers
                 expandoObject.StatusCode = 200;
                 if (command.VehicleModelId <= 0)
                 {
-                    expandoObject.StatusMessage = "Please provide Vehicle ModelId.";
+                    expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
                     return expandoObject;
-                }
-                if (command.VehicleModelYearid <= 0)
-                {
-                    expandoObject.StatusMessage = "Please provide Vehicle ModelYearid.";
-                    return expandoObject;
-                }
+                }               
                 if (command.VehicleModelId <= 0)
                 {
-                    expandoObject.StatusMessage = "Please provide Vehicle ModelId.";
+                    expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
+                    return expandoObject;
+                }
+                if (command.ModelYear <= 0)
+                {
+                    expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelYear;
                     return expandoObject;
                 }
                 var resultdata = await _mediator.Send(command);
 
                 if (resultdata != null && resultdata.id > 0)
                 {
-                    expandoObject.StatusMessage = "Record update successfully.";
+                    expandoObject.StatusMessage = RespnoseMessage.Record_Updated_Successfully;
                     expandoObject.data = resultdata;
                 }
                 else
                 {
                     if (resultdata != null && !string.IsNullOrEmpty(resultdata.VIN))
                     {
-
-                        expandoObject.statusMessage = "Dublicate entry for :" + resultdata.VIN;
+                        expandoObject.statusMessage = RespnoseMessage.Dublicate_entry_for + resultdata.VIN;
                     }
-
                     else
                     {
-                        expandoObject.StatusMessage = "Record not saved";
-
+                        expandoObject.StatusMessage = RespnoseMessage.Record_Not_Saved;
                     }
                 }
             }
-
             catch (Exception ex)
             {
                 Log.Information("error occurred :" + ex.Message);
-                expandoObject.StatusMessage = "Operation Failed!";
+                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 expandoObject.StatusCode = 404;
             }
             return expandoObject;
-
         }
 
         [HttpPut("IsActiveVehicleById")]
@@ -199,21 +190,21 @@ namespace AssetsService.Api.Controllers
                 expandoObject.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    expandoObject.statusMessage = "Please provide Vehicle Id value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Vehicle_Id_value;
                     return expandoObject;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return expandoObject;
                 }
                 var result = await _mediator.Send(command);
 
                 if (result is not null && result.Id > 0)
-                    expandoObject.statusMessage = "Record status changed successfully.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_status_changed_successfully;
                 else
-                    expandoObject.statusMessage = "Record not found.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
 
                 return expandoObject;
             }
@@ -221,7 +212,7 @@ namespace AssetsService.Api.Controllers
             {
                 //_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
-                expandoObject.statusMessage = "Operation Failed!";
+                expandoObject.statusMessage = RespnoseMessage.Opeartion_Failed;
                 expandoObject.statusCode = (int)HttpStatusCode.BadRequest;
             }
             return expandoObject;
@@ -237,11 +228,12 @@ namespace AssetsService.Api.Controllers
             {
                 if (getAllVehicleRequest.PageSize == 0) getAllVehicleRequest.PageSize = 10;
                 if (getAllVehicleRequest.PageNumber == 0) getAllVehicleRequest.PageNumber = 1;
+                if (getAllVehicleRequest.SearchParam != "") getAllVehicleRequest.PageNumber = 1;
                 statusVehicleresponcse = await _mediator.Send(new GetAllVechicleQuery(getAllVehicleRequest));
 
                 if (statusVehicleresponcse != null && statusVehicleresponcse.data.Count > 0)
                 {
-                    allVehicle.StatusMessage = "Record found";
+                    allVehicle.StatusMessage = RespnoseMessage.Record_found;
                     allVehicle.data = statusVehicleresponcse.data;
                     allVehicle.Active = statusVehicleresponcse.Active;
                     allVehicle.Inactive = statusVehicleresponcse.Inactive;
@@ -259,14 +251,14 @@ namespace AssetsService.Api.Controllers
                 else
                 {
 
-                    allVehicle.StatusMessage = "Record not found";
+                    allVehicle.StatusMessage = RespnoseMessage.Record_not_found;
                     allVehicle.StatusCode = (int)HttpStatusCode.OK;
                     allVehicle.data = null;
                 }
             }
             catch (Exception ex)
             {
-                allVehicle.StatusMessage = "Operaion failed!";
+                allVehicle.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 allVehicle.StatusCode = (int)HttpStatusCode.NotFound;
                 allVehicle.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -284,7 +276,7 @@ namespace AssetsService.Api.Controllers
             try
             {
                 vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.OK;
-                vehicleMakeDDLResponse.statusMessage = "Record found.";
+                vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Record_found;
                 List<ListDropDown> res = await _mediator.Send(new GetVechicleModelDDLQuery());
 
                 vehicleMakeDDLResponse.data = res;
@@ -293,7 +285,7 @@ namespace AssetsService.Api.Controllers
             }
             catch (Exception ex)
             {
-                vehicleMakeDDLResponse.statusMessage = "Operaion failed!";
+                vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Opeartion_Failed;
                 vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.NotFound;
                 vehicleMakeDDLResponse.data = null;
                 //_logger.LogError(ex.ToString());
@@ -315,16 +307,16 @@ namespace AssetsService.Api.Controllers
                 List<ListDropDown> res = await _mediator.Send(new GetVechicleModelYearDDLQuery());
                 if (res != null && res.Count() > 0)
                 {
-                    vehicleMakeDDLResponse.statusMessage = "Record found.";
+                    vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Record_found;
                     vehicleMakeDDLResponse.data = res;
                 }
                 else
-                { vehicleMakeDDLResponse.statusMessage = "Record not found."; }
+                { vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Record_not_found; }
                 return vehicleMakeDDLResponse;
             }
             catch (Exception ex)
             {
-                vehicleMakeDDLResponse.statusMessage = "Operaion failed!";
+                vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Opeartion_Failed;
                 vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.NotFound;
                 vehicleMakeDDLResponse.data = null;
                 //_logger.LogError(ex.ToString());
@@ -364,7 +356,7 @@ namespace AssetsService.Api.Controllers
                 }
                 if (vehicleListData != null && vehicleListData.data != null && vehicleListData.data.Count > 0)
                 {
-                    vehicleResponse.StatusMessage = "Record found";
+                    vehicleResponse.StatusMessage = RespnoseMessage.Record_found;
                     vehicleResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
                     {
                         TotalCount = vehicleListData.data.TotalCount,
@@ -379,14 +371,14 @@ namespace AssetsService.Api.Controllers
                 else
                 {
 
-                    vehicleResponse.StatusMessage = "List Record not found.";
+                    vehicleResponse.StatusMessage = RespnoseMessage.Record_not_found;
                     vehicleResponse.data = null;
                     vehicleResponse.paginationResponse = new PaginationResponse();
                 }
             }
             catch (Exception ex)
             {
-                vehicleResponse.StatusMessage = "Operaion failed!";
+                vehicleResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 vehicleResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 vehicleResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -406,17 +398,17 @@ namespace AssetsService.Api.Controllers
                 if (vehicleDTO != null)
                 {
                     vehicleDetails.data.Add(vehicleDTO);
-                    vehicleDetails.StatusMessage = "Record found";
+                    vehicleDetails.StatusMessage = RespnoseMessage.Record_found;
                 }
                 else
                 {
-                    vehicleDetails.StatusMessage = "Record not found";
+                    vehicleDetails.StatusMessage = RespnoseMessage.Record_not_found;
                 }
                 return vehicleDetails;
             }
             catch (Exception ex)
             {
-                vehicleDetails.StatusMessage = "Operaion failed!";
+                vehicleDetails.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 vehicleDetails.StatusCode = (int)HttpStatusCode.NotFound;
                 Log.Information("error occurred :" + ex.Message);
                 //_logger.LogError(ex.ToString());
@@ -432,14 +424,14 @@ namespace AssetsService.Api.Controllers
             try
             {
                 vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.OK;
-                vehicleMakeDDLResponse.statusMessage = "Record found.";
+                vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Record_found;
                 List<ListDropDown> res = await _mediator.Send(new GetVechicleMakeDDLQuery());
                 vehicleMakeDDLResponse.data = res;
                 return vehicleMakeDDLResponse;
             }
             catch (Exception ex)
             {
-                vehicleMakeDDLResponse.statusMessage = "Operaion failed!";
+                vehicleMakeDDLResponse.statusMessage = RespnoseMessage.Opeartion_Failed;
                 vehicleMakeDDLResponse.statusCode = (int)HttpStatusCode.NotFound;
                 vehicleMakeDDLResponse.data = null;
                 //_logger.LogError(ex.ToString());
