@@ -18,7 +18,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         }
         public async Task<DispenserResponse> Handle(DeleteDispenserCommand request, CancellationToken cancellationToken)
         {
-            var DispenserEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Dispenser>(request);
+            var DispenserEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Charger>(request);
             if (DispenserEntitiy is null)
             {
                 throw new ApplicationException("Issue with mapper");

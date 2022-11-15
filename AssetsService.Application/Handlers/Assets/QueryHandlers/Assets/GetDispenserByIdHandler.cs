@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers
 {
 
-public class GetDispenserByIdHandler : IRequestHandler<GetDispenserByIdQuery, AssetsService.Core.Entities.Dispenser>
+public class GetDispenserByIdHandler : IRequestHandler<GetDispenserByIdQuery, AssetsService.Core.Entities.Charger>
     {
         private readonly IDispenserRepository _dispenserRepository;
         public GetDispenserByIdHandler(IDispenserRepository dispenserRepository)
         {
             _dispenserRepository = dispenserRepository;
         }
-        public async Task<AssetsService.Core.Entities.Dispenser> Handle(GetDispenserByIdQuery request, CancellationToken cancellationToken)
+        public async Task<AssetsService.Core.Entities.Charger> Handle(GetDispenserByIdQuery request, CancellationToken cancellationToken)
         {
-            return (AssetsService.Core.Entities.Dispenser)await _dispenserRepository.GetByIdAsync(Convert.ToInt32(request.Id));
+            return (AssetsService.Core.Entities.Charger)await _dispenserRepository.GetByIdAsync(Convert.ToInt16(request.Id));
         }
     }
 }

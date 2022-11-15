@@ -8,6 +8,7 @@ using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Response;
+using AssetsService.Infrastructure.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
@@ -28,16 +29,18 @@ namespace AssetsService.Api.Tests
         private readonly Mock<IMediator> _mediator;
         private readonly Mock<ILogger<PadController>> _logger;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<TokenBase> _token;
+         
         public PadControllerTest()
         {
             _mediator = new Mock<IMediator>();
             _mockHttpHelper = new Mock<IHtmlHelper>();
             _configuration = new Mock<IConfiguration>();
             _logger = new Mock<ILogger<PadController>>();
-            _padController = new PadController(_mediator.Object, _logger.Object);
+            _token= new Mock<TokenBase>();
+            _padController = new PadController(_mediator.Object, _logger.Object, _token.Object)
             {
-            }
-
+            };
         }
 
         [TestMethod()]

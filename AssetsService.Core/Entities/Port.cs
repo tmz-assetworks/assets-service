@@ -17,9 +17,9 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public long Id { get; set; }
 
-        [DataMember(Name = "dispenserId", EmitDefaultValue = false)]
-        public long DispenserId { get; set; }
-        public virtual Dispenser Dispenser { get; set; }
+        [DataMember(Name = "chargerId", EmitDefaultValue = false)]
+        public int ChargerId { get; set; }
+        public virtual Charger Charger { get; set; }
        
         public int ConnectorId { get; set; }
 

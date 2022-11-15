@@ -45,6 +45,8 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public string LocationName { get; set; }
 
+        public string Email { get; set; }
+
         //[Range(1, double.MaxValue, ErrorMessage = "Longitude Can only be between 1 to 15 character")]
         public double Longitude { get; set; }
 
@@ -58,8 +60,8 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(255, MinimumLength = 0, ErrorMessage = "AddressLine2 must be fewer than 255 characters.")]
         public string AddressLine2 { get; set; }
 
-        [Required]
-        public long CityId { get; set; }
+        //[Required]
+        //public long CityId { get; set; }
 
         [Required]
         public string CityName { get; set; }
@@ -76,7 +78,7 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public string StateName { get; set; }
 
-        [StringLength(6, MinimumLength = 0, ErrorMessage = "PinCode must be fewer than 6 characters.")]
+        [StringLength(9, MinimumLength = 0, ErrorMessage = "PinCode must be fewer than 9 characters.")]
         [Required]
         public string PinCode { get; set; }
 
@@ -84,14 +86,10 @@ namespace AssetsService.Application.Commands.Assets
         // public string LocationStatusName { get; set; }
         [Required]
         public long LocationStatusId { get; set; }
-        public long DepartmentId { get; set; }
-
-        // public LocationStatusCommand locationStatus { get; set; }
-        //  public DepartmentCommand Department { get; set; }
-
-        // public string DepartmentName { get; set; }
-        // public string ContactPersonNameDepartment { get; set; }
-        // public string Address { get; set; }
+        [Required]
+        [StringLength(200, MinimumLength = 1, ErrorMessage = "DepartmentName must be fewer than 200 characters.")]
+        public string DepartmentName { get; set; }
+      
         [StringLength(15, MinimumLength = 0, ErrorMessage = "TotalCapacity must be fewer than 15 characters.")]
         public string TotalCapacity { get; set; }
         public List<LocationScheduleCommand> locationScheduleCommand { get; set; }
@@ -102,8 +100,8 @@ namespace AssetsService.Application.Commands.Assets
     {
         public string Day { get; set; }
         public string StartTime { get; set; }
-
         public string EndTime { get; set; }
+        public bool IsOpenAlldays { get; set; }
 
     }
     public class OperatorUserMapperCommand

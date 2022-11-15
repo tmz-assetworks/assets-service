@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AssetsService.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
 
@@ -55,9 +56,7 @@ namespace AssetsService.Infrastructure.DBContext
 
         public DbSet<AssetsService.Core.Entities.Unit> Unit { get; set; }
 
-        public DbSet<AssetsService.Core.Entities.Dispenser> Dispenser { get; set; }
-
-        public DbSet<AssetsService.Core.Entities.DispenserStatus> DispenserStatus { get; set; }
+        public DbSet<AssetsService.Core.Entities.Charger> Charger { get; set; }
 
 
         public DbSet<AssetsService.Core.Entities.PowerCabinet> PowerCabinet { get; set; }
@@ -86,8 +85,32 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.SwitchGear> SwitchGears { get; set; }
         public DbSet<AssetsService.Core.Entities.Users> Users { get; set; }
         public DbSet<AssetsService.Core.Entities.Customers> Customers { get; set; }
+        public DbSet<AssetsService.Core.Entities.ChargerStatus> ChargerStatuses { get; set; }
+
+        public DbSet<AssetsService.Core.Entities.PricePlanLocationsMapper> PricePlanLocationsMapper { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ChargerStatus>(entity =>
+            {
+                entity.ToTable("ChargerStatus");
+
+                entity.Property(e => e.ChargerStatus1)
+                    .HasMaxLength(255)
+                    .HasColumnName("ChargerStatus");
+
+                entity.Property(e => e.ConnectorStatus).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.IdTag).HasMaxLength(20);
+
+                entity.Property(e => e.ModifiedoN).HasColumnType("datetime");
+
+                entity.Property(e => e.ReservationExpiryDate).HasColumnType("datetime");
+                entity.HasOne(d => d.Charger)
+                    .WithMany(p => p.ChargerStatuses)
+                    .HasForeignKey(d => d.ChargerId);
+            });
             builder.Entity<AssetsService.Core.Entities.Cable>()
                 .HasIndex(u => u.AssetId)
                 .IsUnique();
@@ -108,7 +131,7 @@ namespace AssetsService.Infrastructure.DBContext
                .HasIndex(u => u.AssetId)
                .IsUnique();
 
-            builder.Entity<AssetsService.Core.Entities.Dispenser>()
+            builder.Entity<AssetsService.Core.Entities.Charger>()
               .HasIndex(u => u.AssetId)
               .IsUnique();
 
@@ -122,4 +145,3 @@ namespace AssetsService.Infrastructure.DBContext
         }
     }
 }
-

@@ -10,6 +10,6 @@ namespace AssetsService.Application.Queries
 {
     public class GetAllPadQuery : IRequest<List<GetPadResponse>>
     {
-
+        
     }
 }

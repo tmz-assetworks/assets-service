@@ -29,7 +29,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             LocationEntitiy.CreatedOn = DateTime.Now;
             LocationEntitiy.LocationAddressId = 0;
             LocationEntitiy.LocationStatusId = 0;
-            LocationEntitiy.DepartmentId = 0;
+            LocationEntitiy.DepartmentName = "Manufacturing";
             LocationEntitiy.CreatedBy = "";
             LocationEntitiy.FuelProtectType = "";
             LocationEntitiy.GlobalTax = "";
@@ -38,10 +38,10 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             LocationEntitiy.TimeZone = "";
             LocationEntitiy.CreatedBy = request.UserId;
             LocationEntitiy.ModifiedOn = DateTime.Now;
-            LocationEntitiy.Email = "";
+            LocationEntitiy.Email = request.Email;
             LocationEntitiy.AlternateMobileNumber = "";
             LocationEntitiy.LocationStatusId = request.LocationStatusId;
-            LocationEntitiy.DepartmentId = request.DepartmentId;
+            LocationEntitiy.DepartmentName = request.DepartmentName;
             LocationEntitiy.LocationName = request.LocationName;
             LocationEntitiy.LocationAddress = new Core.Entities.LocationAddress()
             {
@@ -54,7 +54,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 CountryName = request.CountryName,
                 StateId = request.StateId,
                 StateName = request.StateName,
-                CityId = request.CityId,
+                //CityId = request.CityId,
                 CityName = request.CityName,
                 PinCode = request.PinCode,
                 ModifiedOn = DateTime.Now,
@@ -96,10 +96,11 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     ModifiedOn = DateTime.Now,
                     Day = request.locationScheduleCommand[i].Day,
                     LocationId = 0,
-                    StartTime = request.locationScheduleCommand[i].StartTime,
-                    EndTime = request.locationScheduleCommand[i].EndTime,
+                    StartTime = request.locationScheduleCommand[i].IsOpenAlldays==true ? "": request.locationScheduleCommand[i].StartTime,
+                    EndTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].EndTime,
                     IsActive = true,
-                    ModifiedBy = ""
+                    ModifiedBy = "",
+                    IsOpenAlldays=request.locationScheduleCommand[i].IsOpenAlldays,
                 });
             }
             LocationEntitiy.LocationSchedule = locationSchedules;

@@ -28,8 +28,25 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             List<CombineAsset> powercabinetmquery = new List<CombineAsset>();
             List<CombineAsset> RFIDReadersquery = new List<CombineAsset>();
             List<CombineAsset> Padsquery = new List<CombineAsset>();
+            List<CombineAsset> SwitchGearsquery = new List<CombineAsset>();
+            SwitchGearsquery = (from switchGears in _dbContext.SwitchGears
+                                join Locations in _dbContext.Locations
+                                   on switchGears.LocationId equals Locations.Id
+                         join LocationStatus in _dbContext.LocationStatus
+                         on Locations.LocationStatusId equals LocationStatus.Id
+                         select new CombineAsset
+                         {
+                             Id = switchGears.Id,
+                             AssetId = switchGears.AssetId,
+                             LocationName = Locations.LocationName,
+                             SerialNumber = switchGears.SerialNumber.ToString(),
+                             IsActive = switchGears.IsActive,
+                             locationStatus = LocationStatus.LocationStatusName,
+                             Type = "SwitchGears",
+                             ModifiedAt = switchGears.ModifiedOn
+                         }).ToList();
 
-             Padsquery = (from Pads in _dbContext.Pads
+            Padsquery = (from Pads in _dbContext.Pads
                          join Locations in _dbContext.Locations
                                    on Pads.LocationId equals Locations.Id
                          join LocationStatus in _dbContext.LocationStatus
@@ -127,7 +144,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             Finallist.AddRange(powercabinetmquery);
             Finallist.AddRange(RFIDReadersquery);
             Finallist.AddRange(Padsquery);
-
+            Finallist.AddRange(SwitchGearsquery);
             onj.data= Finallist;
 
             return Task.FromResult(onj);

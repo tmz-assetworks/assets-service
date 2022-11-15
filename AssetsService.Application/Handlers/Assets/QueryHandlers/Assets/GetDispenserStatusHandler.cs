@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    public class GetDispenserStatusHandler : IRequestHandler<GetDispenserStatusQuery, List<AssetsService.Core.Entities.DispenserStatus>>
+    public class GetDispenserStatusHandler : IRequestHandler<GetDispenserStatusQuery, List<AssetsService.Core.Entities.ChargerStatus>>
     {
         private readonly IDispenserRepository _DispenserRepo;
 
@@ -17,9 +17,9 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         {
             _DispenserRepo = modelRepository;
         }
-        public async Task<List<AssetsService.Core.Entities.DispenserStatus>> Handle(GetDispenserStatusQuery request, CancellationToken cancellationToken)
+        public async Task<List<AssetsService.Core.Entities.ChargerStatus>> Handle(GetDispenserStatusQuery request, CancellationToken cancellationToken)
         {
-            return (List<AssetsService.Core.Entities.DispenserStatus>)await _DispenserRepo.GetDispenserStatusData(request.statusRequest);
+            return (List<AssetsService.Core.Entities.ChargerStatus>)await _DispenserRepo.GetDispenserStatusData(request.statusRequest);
         }
     }
 }

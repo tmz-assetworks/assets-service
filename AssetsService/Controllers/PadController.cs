@@ -14,6 +14,10 @@ using Newtonsoft.Json;
 using System.Dynamic;
 using AssetsService.Core.Response;
 using Microsoft.AspNetCore.Authorization;
+using AssetsService.Infrastructure.Helpers;
+using Microsoft.AspNetCore.Authentication;
+using AssetsService.Core.ConstantResponse;
+using AssetsService.Core.Responses.Assets;
 
 namespace AssetsService.Api
 {
@@ -25,14 +29,15 @@ namespace AssetsService.Api
         private readonly IMediator _mediator;
         private readonly ILogger<PadController> _logger;
         string JSONString = String.Empty;
-
-        public PadController(IMediator mediator, ILogger<PadController> logger)
+        TokenBase _token;
+        public PadController(IMediator mediator, ILogger<PadController> logger, TokenBase token)
         {
             _mediator = mediator;
+            _token = token;
             //_logger = logger;
         }
         [HttpPost]
-        [Route("/asset/pad")]
+        [Route("CreatePad")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExpandoObject>> CreatePad([FromBody] CreatePadCommand command)
         {
@@ -45,20 +50,20 @@ namespace AssetsService.Api
                 {
                     expendo.statusCode = 200;
                     expendo.Id = result.Id;
-                    expendo.statusMessage = "Record Saved Successfully";
+                    expendo.statusMessage = RespnoseMessage.Record_Save_Successfully;
                 }
                 else
                 {
                     if (result.Id == -1)
                     {
                         expendo.statusCode = 200;
-                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
                         return BadRequest(expendo);
                     }
                     else
                     {
                         expendo.statusCode = 200;
-                        expendo.statusMessage = "Record not saved";
+                        expendo.statusMessage = RespnoseMessage.Record_Not_Saved;
                     }
                 }
             }
@@ -67,7 +72,7 @@ namespace AssetsService.Api
                 expendo = new ExpandoObject();
                 //_logger.LogError(ex.ToString());
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Operation Failed!";
+                expendo.statusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -75,7 +80,7 @@ namespace AssetsService.Api
         }
 
         [HttpGet]
-        [Route("/asset/pad")]
+        [Route("pad")]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
         public async Task<ActionResult<AllPad>> GetAllPad()
@@ -85,13 +90,13 @@ namespace AssetsService.Api
             {
                 List<GetPadResponse> res = await _mediator.Send(new GetAllPadQuery());
                 allPad.StatusCode = (int)HttpStatusCode.OK;
-                allPad.StatusMessage = "Record found";
+                allPad.StatusMessage = RespnoseMessage.Record_found;
                 allPad.data = res;
                 //_logger.LogInformation("Get the all data of Pad");
             }
             catch (Exception ex)
             {
-                allPad.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allPad.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 allPad.StatusCode = (int)HttpStatusCode.NotFound;
                 allPad.data = null;
                 //_logger.LogError(ex.ToString());
@@ -100,7 +105,6 @@ namespace AssetsService.Api
             return allPad;
         }
 
-
         [HttpPost("GetAllPadData")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<AllPadData> GetAllPadData(PadDataRequest padDataRequest)
@@ -108,9 +112,11 @@ namespace AssetsService.Api
             AllPadData allModelDataResponse = new AllPadData();
             try
             {
-                List<GetPadResponse> res = await _mediator.Send(new GetAllPadQuery());
-                List<PadResults> modelResults = res.Select(x => new PadResults { Id = x.Id, PadName = x.PadName }).Where(m => m.PadName != "").OrderBy(m => m.PadName).ToList();
-                allModelDataResponse.StatusMessage = "Record found";
+                _token.acces_token = await HttpContext.GetTokenAsync("access_token");
+                List<ListDropDown> res = await _mediator.Send(new GetAllPadDataQuery(padDataRequest.dispenserId));
+                List<PadResults> modelResults = res.Select(x => new PadResults { Id = x.Id, PadName = x.Name,IsActive=x.IsActive }).Where(m => m.PadName != "")                    
+                    .OrderBy(m => m.PadName).ToList();
+                allModelDataResponse.StatusMessage = RespnoseMessage.Record_found;
                 allModelDataResponse.StatusCode = (int)HttpStatusCode.OK;
                 allModelDataResponse.data = modelResults;
             }
@@ -134,16 +140,16 @@ namespace AssetsService.Api
             {
                 GetPadResponse pad = await _mediator.Send(new GetByIdPadQuery(id));
                 padById.StatusCode = (int)HttpStatusCode.OK;
-                padById.StatusMessage = "Record found";
+                padById.StatusMessage = RespnoseMessage.Record_found;
                 padById.data = pad;
                 if(pad==null)
-                    padById.StatusMessage = "Record not found";
+                    padById.StatusMessage = RespnoseMessage.Record_not_found;
                 //_logger.LogInformation("Get the data of Pad by Id");
 
             }
             catch (Exception ex)
             {
-                padById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                padById.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 padById.StatusCode = (int)HttpStatusCode.NotFound;
                 padById.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -161,23 +167,29 @@ namespace AssetsService.Api
                 expandoObject.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    expandoObject.statusMessage = "Please provide Pad Id value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Pad_Id_value;
                     return expandoObject;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return expandoObject;
                 }
                 var data = await _mediator.Send(command);
                 if (data is not null && data.Id > 0)
                 {
-                    expandoObject.statusMessage = "Record updated successfully.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_Updated_Successfully;
+                    return expandoObject;
+                }
+                if (data.Id == -1)
+                {
+                    expandoObject.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
+                    return BadRequest(expandoObject);
                 }
                 else
                 {
-                    expandoObject.statusMessage = "Record not found.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
                 }
                 return expandoObject;
             }
@@ -186,7 +198,7 @@ namespace AssetsService.Api
                 expandoObject = new ExpandoObject();
                 //_logger.LogError(ex.ToString());
                 expandoObject.StatusCode = (int)HttpStatusCode.BadRequest;
-                expandoObject.StatusMessage = "Operation Failed!";
+                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 Log.Information("error occurred :" + ex.Message);
             }
             return expandoObject;
@@ -217,21 +229,21 @@ namespace AssetsService.Api
                 expandoObject.statusCode = 200;
                 if (command.Id < 0)
                 {
-                    expandoObject.statusMessage = "Please provide Pad Id value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Pad_Id_value;
                     return expandoObject;
                 }
                 else
                     if (string.IsNullOrEmpty(command.ModifiedBy))
                 {
-                    expandoObject.statusMessage = "Please provide ModifiedBy value.";
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
                     return expandoObject;
                 }
                 var result = await _mediator.Send(command);
 
                 if (result is not null && result.Id > 0)
-                    expandoObject.statusMessage = "Record status changed successfully.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_status_changed_successfully;
                 else
-                    expandoObject.statusMessage = "Record not found.";
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
 
                 return expandoObject;
             }
@@ -239,7 +251,7 @@ namespace AssetsService.Api
             {
                 //_logger.LogError(ex.ToString());
                 expandoObject = new ExpandoObject();
-                expandoObject.StatusMessage = "Opeartion failed!";
+                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 expandoObject.statusCode = HttpStatusCode.BadRequest;
                 Log.Information("error occurred :" + ex.Message);
             }

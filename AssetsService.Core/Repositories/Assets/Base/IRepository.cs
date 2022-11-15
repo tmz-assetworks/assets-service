@@ -8,6 +8,7 @@ namespace AssetsService.Core.Repositories.Assets.Base
     {
         Task<IReadOnlyList<T>> GetAllAsync();
         Task<T> GetByIdAsync(long id);
+        Task<T> GetByIdAsync(int id);
         Task<T> AddAsync(T entity);
 
         Task<T> UpdateAsync(T entity, long id,string types);

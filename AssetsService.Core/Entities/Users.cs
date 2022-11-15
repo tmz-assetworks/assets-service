@@ -38,9 +38,6 @@ namespace AssetsService.Core.Entities
         [Column(TypeName = "nvarchar(200)")]
         public string EmailId { get; set; }
 
-        [DataMember(Name = "DOB", EmitDefaultValue = false)]
-        public DateTime DOB { get; set; }
-
         [DataMember(Name = "phoneNumber", EmitDefaultValue = false)]
         public long PhoneNumber { get; set; }
 
@@ -64,7 +61,9 @@ namespace AssetsService.Core.Entities
         public virtual State State { get; set; }
         public long? StateID { get; set; }
 
-        public long? CityID { get; set; }
+        [DataMember(Name = "CityName", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(200)")]
+        public string CityName { get; set; }
 
 
         [DataMember(Name = "zipCode", EmitDefaultValue = false)]

@@ -17,11 +17,28 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public long Id { get; set; }
 
+        [DataMember(Name = "assetId", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string AssetId { get; set; }
+
         [DataMember(Name = "switchGearName", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(100)")]
         public string SwitchGearName { get; set; }
+
+        [DataMember(Name = "serialNumber", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string SerialNumber { get; set; }
 
         [DataMember(Name = "isActive", EmitDefaultValue = false)]
         public bool IsActive { get; set; }
+
+        [DataMember(Name = "statusId", EmitDefaultValue = false)]
+        public long StatusId { get; set; }
+        public Status Status { get; set; }
+
+        [DataMember(Name = "locationId", EmitDefaultValue = false)]
+        public long LocationId { get; set; }
+        public virtual Location Location { get; set; }
 
         [DataMember(Name = "createdBy", EmitDefaultValue = false)]
         [Column(TypeName = "nvarchar(100)")]

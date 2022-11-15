@@ -10,15 +10,14 @@ namespace AssetsService.Core.Entities
     [DataContract]
     public partial class PricePlan
     {
-
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [DataMember(Name = "id", EmitDefaultValue = false)]
         public long Id { get; set; }
 
-        [DataMember(Name = "customerName", EmitDefaultValue = false)]
-        public string CustomerName { get; set; }
+        [DataMember(Name = "customerId", EmitDefaultValue = false)]
+        public long CustomerId { get; set; }
+        public virtual Customers Customer { get; set; }
 
         [DataMember(Name = "pricingPlanName", EmitDefaultValue = false)]
         public string PricingPlanName { get; set; }
@@ -27,7 +26,7 @@ namespace AssetsService.Core.Entities
         public string Description { get; set; }
 
 
-        public Currency Currency { get; set; }
+        public virtual Currency Currency { get; set; }
 
         [DataMember(Name = "Currencyid", EmitDefaultValue = false)]
 
@@ -103,6 +102,7 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "ModifiedOn", EmitDefaultValue = false)]
 
         public DateTime ModifiedOn { get; set; }
+        public virtual ICollection<PricePlanLocationsMapper> PricePlanLocationsMapper { get; set; }
     }
 
 }

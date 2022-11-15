@@ -55,7 +55,7 @@ namespace AssetsService.Core.Response
         public bool MultiplePorts { get; set; }
         public string SerialNumber { get; set; }
         public string PingSchedule { get; set; }
-        public bool PrivateStation { get; set; }
+        public bool FleetStation { get; set; }
         public string ReadingSchedule { get; set; }
         public string PowerCabinetSerialNumber { get; set; }
         public long RFIDReaderId { get; set; }
@@ -64,12 +64,17 @@ namespace AssetsService.Core.Response
         public long DispenserStatusId { get; set; }
         public long PadId { get; set; }
         public string PadName { get; set; }
+        public long CableId { get; set; }
+        public string CableSerialNumber { get; set; }
+        public long SwitchGearId { get; set; }
+        public string SwitchGearName { get; set; }
         public string ProtocolName { get; set; }
         public string Status { get; set; }
         public string PortType { get; set; }
         public DateTime ModifiedOn { get; set; }
         public bool IsActive { get; set; }
         public bool IsAutomatic { get; set; }
+        public DateTime InstallationDate { get; set; }
         public List<PortResponse> PortCommmand { get; set; }
     }
     public class GetAllDispenserResponse
@@ -92,7 +97,7 @@ namespace AssetsService.Core.Response
         public bool MultiplePorts { get; set; }
         public string SerialNumber { get; set; }
         public string PingSchedule { get; set; }
-        public bool PrivateStation { get; set; }
+        public bool FleetStation { get; set; }
         public string ReadingSchedule { get; set; }
         public string PowerCabinetSerialNumber { get; set; }
         public long RFIDReaderId { get; set; }
@@ -101,6 +106,10 @@ namespace AssetsService.Core.Response
         public long DispenserStatusId { get; set; }
         public long PadId { get; set; }
         public string PadName { get; set; }
+        public long CableId { get; set; }
+        public string CableSerialNumber { get; set; }
+        public long SwitchGearId { get; set; }
+        public string SwitchGearName { get; set; }
         public string ProtocolName { get; set; }
         public string Status { get; set; }
         public string PortType { get; set; }

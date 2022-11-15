@@ -23,9 +23,9 @@ namespace AssetsService.Core.Entities
         /// <summary>
         /// Gets or Sets StatusName
         /// </summary>
-        [DataMember(Name = "subscriptionName", EmitDefaultValue = false)]
+        [DataMember(Name = "subscriptionGroupName", EmitDefaultValue = false)]
         [Column(TypeName = "nvarchar(100)")]
-        public string SubscriptionName { get; set; }
+        public string SubscriptionGroupName { get; set; }
 
         /// <summary>
         /// Gets or Sets IsActive

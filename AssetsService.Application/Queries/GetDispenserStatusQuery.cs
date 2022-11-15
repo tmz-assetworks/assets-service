@@ -9,7 +9,7 @@ using static AssetsService.Core.Response.GetDispenserStatusResponse;
 
 namespace AssetsService.Application.Queries
 {
-    public class GetDispenserStatusQuery : IRequest<List<AssetsService.Core.Entities.DispenserStatus>>
+    public class GetDispenserStatusQuery : IRequest<List<AssetsService.Core.Entities.ChargerStatus>>
     {
         public DispenserStatusRequest statusRequest { get; set; }
         public GetDispenserStatusQuery(DispenserStatusRequest _statusRequest)

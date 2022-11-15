@@ -1,4 +1,6 @@
-﻿using AssetsService.Core.Repositories.Assets.Base;
+﻿using AssetsService.Core.Entities;
+using AssetsService.Core.Repositories.Assets.Base;
+using AssetsService.Core.Responses.Assets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,9 @@ namespace AssetsService.Core.Repositories
     public interface ISubscriptionPlanRepository : IRepository<AssetsService.Core.Entities.SubscriptionPlan>
     {
         //custom operations here
-        Task<List<AssetsService.Core.Entities.SubscriptionPlan>> GetAllSubscriptionPlan();
-        Task<AssetsService.Core.Entities.SubscriptionPlan> GetSubscriptionPlanById(long customerId);
+        Task<SubscriptionPlanResponse> GetAllSubscriptionPlans(GetSubscriptionPlanRequest subscriptionPlanRequest);
+        Task<SubscriptionPlansByIdResponse> GetSubscriptionPlanById(long customerId);
+        Task<SubscriptionPlan> UpdateSubscriptionPlan(SubscriptionPlan subscriptionPlan);
+        Task<List<CurrencyListDropDown>> GetCurrencyDDLList(string userId);
     }
 }

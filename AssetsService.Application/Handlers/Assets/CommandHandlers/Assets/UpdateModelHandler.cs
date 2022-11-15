@@ -22,15 +22,27 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
 
         public async Task<ModelResponse> Handle(UpdateModelCommand request, CancellationToken cancellationToken)
         {
-            var ModelEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Model>(request);
-            if (ModelEntitiy is null)
+            ModelResponse modelResponse = null;
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var ModelEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Model>(request);
+                if (ModelEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                ModelEntitiy.ModifiedOn = DateTime.Now;
+                var updateModel = _ModelRepo.UpdateAsync(ModelEntitiy, request.Id, "MODEL");
+                modelResponse = Mapper.Mappers.Map<ModelResponse>(updateModel.Result);
             }
-            ModelEntitiy.ModifiedOn = DateTime.Now;
-            var updateModel = _ModelRepo.UpdateAsync(ModelEntitiy, request.Id, "MODEL");
-            var mapModelResponse = Mapper.Mappers.Map<ModelResponse>(updateModel.Result);
-            return mapModelResponse;
+            catch (Exception ex)
+            {
+                modelResponse = new ModelResponse();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    modelResponse.Id = -1;
+                }
+            }
+            return modelResponse;
         }
     }
 }

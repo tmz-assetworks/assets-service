@@ -27,7 +27,7 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "locationId", EmitDefaultValue = false)]
         public long LocationId { get; set; }
       
-
+        
         
         [DataMember(Name = "startTime", EmitDefaultValue = false)]
         public string StartTime { get; set; }
@@ -49,6 +49,8 @@ namespace AssetsService.Core.Entities
 
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
+        [DataMember(Name = "isOpenAlldays", EmitDefaultValue = false)]
+        public bool IsOpenAlldays { get; set; }
 
 
     }

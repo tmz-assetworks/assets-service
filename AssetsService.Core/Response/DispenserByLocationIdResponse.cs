@@ -24,7 +24,6 @@ namespace AssetsService.Core.Responses.Assets
         public string ChargeBoxId{get; set;}
 
         public long ChargerId { get; set; }
-        public DispenserStatus DispenserStatus { get; set; }
         
         public string SerialNumber{get; set;}
 

@@ -79,7 +79,7 @@ namespace AssetsService.Core.Responses.Assets
     {
         public long id { get; set; }
         public string VIN { get; set; }
-        public long VehicleModelYearid { get; set; }
+        public long ModelYear { get; set; }
         public long VehicleMakeId { get; set; }
         public string CreatedBy { get; set; }
 
@@ -103,9 +103,7 @@ namespace AssetsService.Core.Responses.Assets
         public string VehicleMacAddress { get; set; }
         public bool IsActive { get; set; }
         public DateTime ModifiedOn { get; set; }
-
-        public long VehicleModelYearid { get; set; }
-        public string VehicleModelYear { get; set; }
+        public long ModelYear { get; set; }       
         public string VehicleModelName { get; set; }
         public string VehicleMakeName { get; set; }
         public string vehicleRFIDName { get; set; }
@@ -125,5 +123,16 @@ namespace AssetsService.Core.Responses.Assets
         public long Id{get;set;}
         public string Name{get;set;}
         public bool IsActive { get;set;}
+    }
+
+    public class ApplicableSubscriptionPlan
+    {
+        public string SubscriptionPlanName { get; set; }
+        public string Type { get; set; }
+        public string SubscriptionsValue { get; set; }
+        public DateTime ValidFrom { get; set; }
+        public DateTime ValidTo { get; set; }
+        public string RfIdNumbers { get; set; }
+
     }
 }

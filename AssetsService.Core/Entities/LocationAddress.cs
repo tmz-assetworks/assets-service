@@ -40,8 +40,8 @@ namespace AssetsService.Core.Entities
         /// <summary>
         /// Gets or Sets CityId
         /// </summary>
-        [DataMember(Name = "cityId", EmitDefaultValue = false)]
-        public long CityId { get; set; }
+        //[DataMember(Name = "cityId", EmitDefaultValue = false)]
+        //public long CityId { get; set; }
 
         /// <summary>
         /// Gets or Sets CityName

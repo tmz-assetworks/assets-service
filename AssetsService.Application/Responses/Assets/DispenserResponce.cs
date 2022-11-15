@@ -12,7 +12,7 @@ namespace AssetsService.Application.Responses.Assets
     {
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
-        public List<AssetsService.Core.Entities.Dispenser> data { get; set; }
+        public List<AssetsService.Core.Entities.Charger> data { get; set; }
     }
     /// <summary>
     /// Create Dispenser response class
@@ -24,14 +24,14 @@ namespace AssetsService.Application.Responses.Assets
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
 
-        public List<Dispenser> data { get; set; }
+        public List<Charger> data { get; set; }
 
     }
     public class DispenserByChargeBoxIdResponse
     {
         public int StatusCode { get; set; }
         public string StatusMessage { get; set; }
-        public List<AssetsService.Core.Entities.Dispenser> data { get; set; }
+        public List<AssetsService.Core.Entities.Charger> data { get; set; }
     }
     public class DispenserStatusData
     {
@@ -64,11 +64,14 @@ namespace AssetsService.Application.Responses.Assets
         public long RFIdReaderId { get; set; }
         public long PowerCabinetId { get; set; }
         public long PadId { get; set; }
+        public long CableId { get; set; }
+        public long SwitchGearId { get; set; }
         public long DispenserStatusId { get; set; }
         public string ProtocolName { get; set; }
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
         public bool IsActive { get; set; }
         public bool IsAutomatic { get; set; }
+        public DateTime InstallationDate { get; set; }
     }
 }

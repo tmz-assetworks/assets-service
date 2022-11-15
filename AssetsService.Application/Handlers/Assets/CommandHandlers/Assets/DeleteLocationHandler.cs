@@ -18,18 +18,13 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         }
         public async Task<LocationResponse> Handle(DeleteLocationCommand request, CancellationToken cancellationToken)
         {
-            //var LocationEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Location>(request);
+          
             AssetsService.Core.Entities.Location LocationEntitiy=new Core.Entities.Location(){
                 Id=request.Id,
                 IsActive=request.IsActive,
                 ModifiedBy = request.UserId
             };
-          //  LocationEntitiy.IsActive = request.isActive;
-            if (LocationEntitiy is null)
-            {
-                throw new ApplicationException("Issue with mapper");
-            }
-
+         
             var updatelocation = _LocationRepo.DeleteLocationAsync(LocationEntitiy, LocationEntitiy.Id,"Location");
             var mapLocationResponse = Mapper.Mappers.Map<LocationResponse>(updatelocation.Result);
             return mapLocationResponse;

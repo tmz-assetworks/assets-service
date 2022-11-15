@@ -24,8 +24,8 @@ namespace AssetsService.Application.Commands.Assets
         public long LocationStatusId { get; set; }
 
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid DepartmentId")]
-        public long DepartmentId { get; set; }
+        [StringLength(200, MinimumLength = 1, ErrorMessage = "DepartmentName must be fewer than 200 characters.")]
+        public string DepartmentName { get; set; }                                          // DepartmentId to DepartmentName, Date:09/11/2022
 
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid LocationAddressId")]
@@ -50,6 +50,7 @@ namespace AssetsService.Application.Commands.Assets
 
         [StringLength(15, MinimumLength = 0, ErrorMessage = "TotalCapacity must be fewer than 15 characters.")]
         public string TotalCapacity { get; set; }
+        public string Email { get; set; }
 
         //[Range(1, double.MaxValue, ErrorMessage = "Longitude Can only be between 1 to 15 character")]
         public double Longitude { get; set; }
@@ -71,8 +72,8 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(255, MinimumLength = 0, ErrorMessage = "AddressLine2 must be fewer than 255 characters.")]
         public string AddressLine2 { get; set; }
 
-        [Required]
-        public long CityId { get; set; }
+        //[Required]
+        //public long CityId { get; set; }
 
         [Required]
         public string CityName { get; set; }
@@ -89,7 +90,7 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public string StateName { get; set; }
 
-        [StringLength(6, MinimumLength = 0, ErrorMessage = "PinCode must be fewer than 6 characters.")]
+        [StringLength(9, MinimumLength = 0, ErrorMessage = "PinCode must be fewer than 9 characters.")]
         [Required]
         public string PinCode { get; set; }
         public List<LocationScheduleCommands> locationScheduleCommand { get; set; }
@@ -99,8 +100,8 @@ namespace AssetsService.Application.Commands.Assets
             public long Id { get; set; }
             public string Day { get; set; }
             public string StartTime { get; set; }
-
             public string EndTime { get; set; }
+            public bool IsOpenAlldays { get; set; }
 
         }
 

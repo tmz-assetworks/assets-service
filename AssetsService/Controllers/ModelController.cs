@@ -1,6 +1,7 @@
 ﻿using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Queries;
 using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -52,14 +53,14 @@ namespace AssetsService.Api.Controllers
             try
             {
                 var res = await _mediator.Send(new GetAllModelQuery());
-                allModel.StatusMessage = "Record found";
+                allModel.StatusMessage = RespnoseMessage.Record_found;
                 allModel.StatusCode = (int)HttpStatusCode.OK;
                 allModel.data = res;
                 //_logger.LogInformation("Get all the data of Model");
             }
             catch (Exception ex)
             {
-                allModel.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                allModel.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 allModel.StatusCode = (int)HttpStatusCode.NotFound;
                 allModel.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -76,7 +77,7 @@ namespace AssetsService.Api.Controllers
             {
                 List<AssetsService.Core.Entities.Model> models = await _mediator.Send(new GetAllModelDataQuery(modelDataRequest));
                 List<ModelResults> modelResults = models.Select(x => new ModelResults { Id = x.Id,  ModelName = x.ModelName }).Where(m => m.ModelName != "").OrderBy(m => m.ModelName).ToList();
-                allModelDataResponse.StatusMessage = "Record found";
+                allModelDataResponse.StatusMessage = RespnoseMessage.Record_found;
                 allModelDataResponse.StatusCode = (int)HttpStatusCode.OK;
                 allModelDataResponse.Data = modelResults;
             }
@@ -99,14 +100,14 @@ namespace AssetsService.Api.Controllers
             {
                 Model res = await _mediator.Send(new GetByIdModelQuery(id));
                 modelById.StatusCode = (int)HttpStatusCode.OK;
-                modelById.StatusMessage = "Record found";
+                modelById.StatusMessage = RespnoseMessage.Record_found;
                 modelById.data = res;
 
                 //_logger.LogInformation("Get the data of Model by Id");
             }
             catch (Exception ex)
             {
-                modelById.StatusMessage = "Operaion failed!" + ex.Message.ToString();
+                modelById.StatusMessage = RespnoseMessage.Opeartion_Failed + ex.Message.ToString();
                 modelById.StatusCode = (int)HttpStatusCode.NotFound;
                 modelById.data = null;
                 //_logger.LogError(ex.ToString());
@@ -133,9 +134,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Model not Created "
+                    Content = RespnoseMessage.Make_Master_not_Created
                 };
             }
         }
@@ -155,9 +156,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Vehicle not Update "
+                    Content = RespnoseMessage.Vehicle_not_Updated
                 };
             }
         }
@@ -177,9 +178,9 @@ namespace AssetsService.Api.Controllers
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Vehicle not Deleted "
+                    Content = RespnoseMessage.Vehicle_not_deleted
                 };
             }
         }

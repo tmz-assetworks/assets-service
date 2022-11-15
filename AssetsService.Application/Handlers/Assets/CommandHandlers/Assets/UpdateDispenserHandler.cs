@@ -22,37 +22,34 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         private readonly IDispenserRepository _DispenserRepo;
         private readonly IRFIdRepository _RFIdRepository;
         private readonly ILocationRepository _locationRepository;
-        public UpdateDispenserHandler(IDispenserRepository DispenserRepository, IRFIdRepository _rfidrepository, ILocationRepository locationRepository)
+        private readonly ICableRepository _cableRepo;
+        private readonly ISwitchGearRepository _switchGearRepository;
+        public UpdateDispenserHandler(IDispenserRepository DispenserRepository, IRFIdRepository _rfidrepository, ILocationRepository locationRepository, ICableRepository cableRepo, ISwitchGearRepository switchGearRepository)
         {
             _DispenserRepo = DispenserRepository;
             _RFIdRepository = _rfidrepository;
             _locationRepository = locationRepository;   
+            _cableRepo = cableRepo;
+            _switchGearRepository = switchGearRepository;
         }
 
 
         public async Task<DispenserResponse> Handle(UpdateDispenserCommand request, CancellationToken cancellationToken)
         {
             
-            var dispenserEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Dispenser>(request);
+            var dispenserEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Charger>(request);
             if (dispenserEntitiy is null)
             {
                 throw new ApplicationException("Issue with mapper");
             }
             DispenserResponse dataResponse = new DispenserResponse();
-
-            var rfIdReader = _RFIdRepository.GetByIdRfIdReaderData(request.RFIdReaderId);
+           
             var location = _locationRepository.GetByIdLocation(request.LocationId);
             if (location.Result == null)
             {
                 dataResponse.Id = -3;      //  return back becouse the mapped LocationId is not  present in Database.   Bug Issue  AS-1337
                 return dataResponse;
             }
-            if (rfIdReader.Result == null)
-            {
-                dataResponse.Id = -2;      //  return back becouse the mapped RFIdReaderId is not  present in Database.   Bug Issue  AS-1337
-                return dataResponse;
-            }
-           
             dispenserEntitiy.Ports = new List<Port>();
             if (request.UpdatePortCommand != null)
             {
@@ -61,7 +58,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     dispenserEntitiy.Ports.Add(new Port()
                     {
                         Id = request.UpdatePortCommand[i].Id,
-                        DispenserId = request.Id,
+                        ChargerId = (int) request.Id,
                         ConnectorId = request.UpdatePortCommand[i].ConnectorId,
                         ConnectorType = request.UpdatePortCommand[i].ConnectorType,
                         IncrementalPower = request.UpdatePortCommand[i].IncrementalPower,
@@ -76,6 +73,14 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     });
                 }
             }
+
+            dispenserEntitiy.CableId = (dispenserEntitiy.CableId.HasValue && dispenserEntitiy.CableId == 0) ? null : dispenserEntitiy.CableId; 
+            dispenserEntitiy.ModemId = (dispenserEntitiy.ModemId.HasValue && dispenserEntitiy.ModemId == 0) ? null : dispenserEntitiy.ModemId; 
+            dispenserEntitiy.PadId = (dispenserEntitiy.PadId.HasValue && dispenserEntitiy.PadId == 0) ? null : dispenserEntitiy.PadId; 
+            dispenserEntitiy.RFIDReaderId = (dispenserEntitiy.RFIDReaderId.HasValue && dispenserEntitiy.RFIDReaderId == 0) ? null : dispenserEntitiy.RFIDReaderId; 
+            dispenserEntitiy.SwitchGearId = (dispenserEntitiy.SwitchGearId.HasValue && dispenserEntitiy.SwitchGearId == 0) ? null : dispenserEntitiy.SwitchGearId; 
+            dispenserEntitiy.PowerCabinetId = (dispenserEntitiy.PowerCabinetId.HasValue && dispenserEntitiy.PowerCabinetId == 0) ? null : dispenserEntitiy.PowerCabinetId; 
+             
             var updateDispenser = _DispenserRepo.UpdateDispenser(dispenserEntitiy);
             var mapUserResponse = Mapper.Mappers.Map<DispenserResponse>(updateDispenser.Result);
             return mapUserResponse;

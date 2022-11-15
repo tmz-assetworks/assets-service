@@ -23,7 +23,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId
 
         public async Task<RFIDReader> Handle(CreateRFIdCommand request, CancellationToken cancellationToken)
         {
-            RFIdResponse maprfIdResponse = new RFIdResponse();
+           
             RFIDReader rfidreader = null;
             var rfIdEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.RFIDReader>(request);
             try
@@ -34,14 +34,18 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId
                 }
                 rfIdEntitiy.IsActive = request.IsActive;
                 rfIdEntitiy.CreatedOn = DateTime.Now;
-                //rfIdEntitiy.ModifiedBy = request.CreatedBy;
+                rfIdEntitiy.ModifiedBy = "";   
                 rfIdEntitiy.ModifiedOn = DateTime.Now;
                 var addrfIdResponse = await _iRFIdRepository.AddAsync(rfIdEntitiy);
                  rfidreader = Mapper.Mappers.Map<RFIDReader>(addrfIdResponse);
             }
             catch (Exception ex)
             {
-                ;
+                rfidreader = new RFIDReader();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+                    rfidreader.Id = -1;
+                }
             }
             return rfidreader;
         }

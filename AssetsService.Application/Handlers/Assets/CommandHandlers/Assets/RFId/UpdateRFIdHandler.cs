@@ -24,26 +24,38 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets.RFId
         public async Task<RFIDReader> Handle(UpdateRFIdCommand request, CancellationToken cancellationToken)
         {
             RFIDReader rfidreader = null;
-            var rfIdEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.RFIDReader>(request);
-            if (rfIdEntitiy is null)
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var rfIdEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.RFIDReader>(request);
+                if (rfIdEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                var rfIdReader = _rFIdRepository.GetByIdRfIdReader(request.Id);
+                if (rfIdReader is not null && rfIdReader.Result is not null)
+                {
+                    rfIdEntitiy.CreatedOn = rfIdReader.Result.CreatedOn;
+                    rfIdEntitiy.CreatedBy = rfIdReader.Result.CreatedBy;
+                }
+                else
+                {
+                    return rfidreader;
+                }
+                rfIdEntitiy.ModifiedOn = DateTime.Now;
+                rfIdEntitiy.IsActive = request.IsActive;
+                rfIdEntitiy.ModifiedBy = request.ModifiedBy;
+                var updateRfId = _rFIdRepository.UpdateAsync(rfIdEntitiy, request.Id);
+                rfidreader = Mapper.Mappers.Map<RFIDReader>(updateRfId.Result);
             }
-            var rfIdReader = _rFIdRepository.GetByIdRfIdReader(request.Id);
-            if (rfIdReader is not null && rfIdReader.Result is not null)
+            catch (Exception ex)
             {
-                rfIdEntitiy.CreatedOn = rfIdReader.Result.CreatedOn;
-                rfIdEntitiy.CreatedBy = rfIdReader.Result.CreatedBy;
+                rfidreader = new RFIDReader();
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+
+                    rfidreader.Id = -1;
+                }
             }
-            else
-            {
-                return rfidreader;
-            }
-            rfIdEntitiy.ModifiedOn = DateTime.Now;
-            rfIdEntitiy.IsActive = request.IsActive;
-            rfIdEntitiy.ModifiedBy = request.ModifiedBy;
-            var updateRfId = _rFIdRepository.UpdateAsync(rfIdEntitiy, request.Id);
-            rfidreader = Mapper.Mappers.Map<RFIDReader>(updateRfId.Result);
             return rfidreader;
         }
     }

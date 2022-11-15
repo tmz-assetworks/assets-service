@@ -1,10 +1,8 @@
 ﻿using AssetsService.Application.Commands.Assets;
-using AssetsService.Core.Repositories;
-
-using AssetsService.Core.Mapper;
-using MediatR;
-using AssetsService.Core.Responses.Assets;
 using AssetsService.Core.Entities;
+using AssetsService.Core.Repositories;
+using AssetsService.Core.Responses.Assets;
+using MediatR;
 
 namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
 {
@@ -16,12 +14,10 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
         {
             _vehicleRepo = vehicleRepository;
         }
-
         public async Task<CreateVehicleResponse> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
 
         {
             CreateVehicleResponse vehicleResponse = new CreateVehicleResponse();
-
             if (request.Id <= 0)
             {
                 throw new ApplicationException("Invalid Vehicle Id.");
@@ -35,7 +31,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                 vehicledetails.Result.LicencePlate = request.LicencePlate;
                 vehicledetails.Result.DomicileLocation = request.DomicileLocation;
                 vehicledetails.Result.VehicleMacAddress = request.VehicleMacAddress;
-                vehicledetails.Result.VehicleModelYearid = request.VehicleModelYearid;
+                 vehicledetails.Result.ModelYear = request.ModelYear;
                 vehicledetails.Result.VehicleModelId = request.VehicleModelId;
                 vehicledetails.Result.VehicleMakeId = request.VehicleMakeId;
                 vehicledetails.Result.Department = request.Department;
@@ -55,8 +51,6 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                         vehicleResponse.VIN = name.Key.Name + ", " + vehicleResponse.VIN;
                     }
                     return vehicleResponse;
-
-
                 }
                 foreach (var item in request.RfIdCardsAssigneds.Where(m => m.Id == 0))
                 {
@@ -73,11 +67,9 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                 {
                     vehicle = await _vehicleRepo.GetVehicleRFIDDetails(item.Id);
                     vehicle.IsActive = item.IsActive;
+                    vehicle.Name = item.Name;
                     cardsAssigned.Add(vehicle);
                 }
-
-
-
                 vehicledetails.Result.vehicleRFID = cardsAssigned;
             }
             var vehicleResponses = await _vehicleRepo.UpdateVehicle(vehicledetails.Result);

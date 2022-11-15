@@ -27,15 +27,28 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
 
         public async Task<PowerCabinetResponse> Handle(UpdatePowerCabinetCommand request, CancellationToken cancellationToken)
         {
-            var PowerCabinetEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.PowerCabinet>(request);
-            if (PowerCabinetEntitiy is null)
+
+            PowerCabinetResponse powerCabinetResponse = new PowerCabinetResponse();
+            try
             {
-                throw new ApplicationException("Issue with mapper");
+                var PowerCabinetEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.PowerCabinet>(request);
+                if (PowerCabinetEntitiy is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+                PowerCabinetEntitiy.ModifiedOn = DateTime.Now;
+                var updatePowerCabinet = _PowerCabinetRepo.UpdateAsync(PowerCabinetEntitiy, PowerCabinetEntitiy.Id, "powercabinet");
+                powerCabinetResponse = Mapper.Mappers.Map<PowerCabinetResponse>(updatePowerCabinet.Result);
             }
-            PowerCabinetEntitiy.ModifiedOn = DateTime.Now;
-            var updatePowerCabinet = _PowerCabinetRepo.UpdateAsync(PowerCabinetEntitiy, PowerCabinetEntitiy.Id, "powercabinet");
-            var mapUserResponse = Mapper.Mappers.Map<PowerCabinetResponse>(updatePowerCabinet.Result);
-            return mapUserResponse;
+            catch (Exception ex)
+            {
+                if (ex != null && ex.InnerException != null && ex.InnerException.ToString().Contains("UNIQUE KEY constraint"))
+                {
+
+                    powerCabinetResponse.Id = -1;
+                }
+            }
+            return powerCabinetResponse;
         }
 
     }

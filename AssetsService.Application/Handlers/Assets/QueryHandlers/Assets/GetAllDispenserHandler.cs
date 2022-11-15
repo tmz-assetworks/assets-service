@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    public class GetAllDispenserHandler : IRequestHandler<GetAllDispenserQuery, List<AssetsService.Core.Entities.Dispenser>>
+    public class GetAllDispenserHandler : IRequestHandler<GetAllDispenserQuery, List<AssetsService.Core.Entities.Charger>>
     {
         private readonly IDispenserRepository _DispenserRepo;
 
@@ -18,9 +18,9 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         {
             _DispenserRepo = DispenserRepository;
         }
-        public async Task<List<AssetsService.Core.Entities.Dispenser>> Handle(GetAllDispenserQuery request, CancellationToken cancellationToken)
+        public async Task<List<AssetsService.Core.Entities.Charger>> Handle(GetAllDispenserQuery request, CancellationToken cancellationToken)
         {
-            return (List<AssetsService.Core.Entities.Dispenser>)await _DispenserRepo.GetAllDispenser();
+            return (List<AssetsService.Core.Entities.Charger>)await _DispenserRepo.GetAllDispenser();
         }
     }
 }

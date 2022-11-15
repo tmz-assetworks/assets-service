@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Queries
 {
-    public class GetAllDispenserQuery : IRequest<List<AssetsService.Core.Entities.Dispenser>>
+    public class GetAllDispenserQuery : IRequest<List<AssetsService.Core.Entities.Charger>>
     {
     }
 }

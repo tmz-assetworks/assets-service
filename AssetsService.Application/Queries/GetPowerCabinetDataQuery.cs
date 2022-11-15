@@ -11,5 +11,10 @@ namespace AssetsService.Application.Queries
 {
     public class GetPowerCabinetDataQuery : IRequest<List<GetPowerCabinetResponse>>
     {
+        public int? disenserId { get; set; }
+        public GetPowerCabinetDataQuery(int?_dispenserId)
+        {
+            this.disenserId = _dispenserId;
+        }
     }
 }

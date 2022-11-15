@@ -7,9 +7,10 @@ namespace AssetsService.Api
     {
         public static void Main(string[] args)
         {
-            //string connectionString = Environment.GetEnvironmentVariable("logurl");
-            string connectionString = "DefaultEndpointsProtocol=https;AccountName=assetswork;AccountKey=Rk7iyAEtGHdMWfojFlyE23dXYsMDUkH1zvLghSjWW9kZX7Ecv6wuJuvRifNQfOChKmY5d1Hvx7mE+AStxFztQw==;EndpointSuffix=core.windows.net";
-            var containerName = "assets-service-log";
+            string connectionString = Environment.GetEnvironmentVariable("ConnectionStringLogs");
+            //string connectionString = "DefaultEndpointsProtocol=https;AccountName=assetswork;AccountKey=Rk7iyAEtGHdMWfojFlyE23dXYsMDUkH1zvLghSjWW9kZX7Ecv6wuJuvRifNQfOChKmY5d1Hvx7mE+AStxFztQw==;EndpointSuffix=core.windows.net";
+            var containerName = Environment.GetEnvironmentVariable("ContainerName");
+            //var containerName = "assets-service-log";
             Log.Logger = new LoggerConfiguration()
                  .WriteTo.Console().WriteTo.Debug(outputTemplate: DateTime.Now.ToString()).WriteTo.File("./logs/log-.txt", rollingInterval: RollingInterval.Day)
                  .WriteTo.AzureBlobStorage(connectionString, LogEventLevel.Information,

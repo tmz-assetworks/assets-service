@@ -61,6 +61,7 @@ namespace AssetsService.Application.Responses.Assets
     {
         public long Id { get; set; }
         public string SerialNumber { get; set; }
+        public bool IsActive { get; set; }
     }
     public class AllPowerCabinet{
         

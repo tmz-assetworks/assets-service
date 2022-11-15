@@ -13,6 +13,7 @@ namespace AssetsService.Core.Repositories.Assets
         //Task<IEnumerable<AssetsService.Core.Entities.Cable>> GetEmployeeById(int cableId);
 
         Task<PagedList<Cable>> GetAllCable(GetAllCableRequest gtAllCableRequest);
+        Task<List<CableListDropDown>> GetAllCableDropDown(string userId, int? dispenserId);
         Task<CableData> GetByIdCable(long id);
         Task<CreateCableResponse> CreateCable(Cable cable);
         Task<Cable>Updatecable(Cable cable);

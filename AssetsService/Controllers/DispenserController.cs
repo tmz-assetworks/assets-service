@@ -19,6 +19,7 @@ using System.Dynamic;
 using Microsoft.AspNetCore.Authorization;
 using AssetsService.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authentication;
+using AssetsService.Core.ConstantResponse;
 
 namespace AssetsService.Api
 {
@@ -83,8 +84,8 @@ namespace AssetsService.Api
             try
             {
                 _token.acces_token = await HttpContext.GetTokenAsync("access_token");
-                List<AssetsService.Core.Entities.Dispenser> dispenser = await _mediator.Send(new GetAllDispenserQuery());                
-                allDispenserQueryResponse.StatusMessage = "Record found";
+                List<AssetsService.Core.Entities.Charger> dispenser = await _mediator.Send(new GetAllDispenserQuery());                
+                allDispenserQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 allDispenserQueryResponse.data = dispenser;               
             }
@@ -106,9 +107,9 @@ namespace AssetsService.Api
             GetDispenserStatus allModelDataResponse = new GetDispenserStatus();
             try
             {
-                List<AssetsService.Core.Entities.DispenserStatus> dispensers = await _mediator.Send(new GetDispenserStatusQuery(dispenserStatusRequest));
-                List<DispenserStatusList> modelResults = dispensers.Select(x => new DispenserStatusList { Id = x.Id,  Status = x.DispenserStatusName }).Where(m => m.Status != "").OrderBy(m => m.Status).ToList();
-                allModelDataResponse.StatusMessage = "Record found";
+                List<AssetsService.Core.Entities.ChargerStatus> dispensers = await _mediator.Send(new GetDispenserStatusQuery(dispenserStatusRequest));
+                List<DispenserStatusList> modelResults = dispensers.Select(x => new DispenserStatusList { Id = x.Id,  Status = x.ChargerStatus1 }).Where(m => m.Status != "").OrderBy(m => m.Status).ToList();
+                allModelDataResponse.StatusMessage = RespnoseMessage.Record_found;
                 allModelDataResponse.StatusCode = (int)HttpStatusCode.OK;
                 allModelDataResponse.Data = modelResults;
             }
@@ -136,7 +137,7 @@ namespace AssetsService.Api
             catch (Exception ex)
             {
                 allDispenserQueryResponse.StatusMessage = ex.Message.ToString();
-                allDispenserQueryResponse.StatusMessage = "Operation failed!";
+                allDispenserQueryResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 allDispenserQueryResponse.Data = null;
                 _logger.LogError(ex.ToString());
@@ -160,17 +161,17 @@ namespace AssetsService.Api
                 var dispenser = await _mediator.Send(new GetDispenserDetailByIdQuery(dispenserId));
                 if (dispenser != null)
                 {
-                    dispenserQueryResponse.StatusMessage = "Record found";
+                    dispenserQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                     dispenserQueryResponse.Data.Add(dispenser);
                 }
                 else
                 {
-                    dispenserQueryResponse.StatusMessage = "Record not found.";
+                    dispenserQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
             }
             catch (Exception ex)
             {
-                dispenserQueryResponse.StatusMessage = "Operation failed!";
+                dispenserQueryResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 dispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserQueryResponse.Data = null;
                 _logger.LogError(ex.ToString());
@@ -178,18 +179,17 @@ namespace AssetsService.Api
             return dispenserQueryResponse;
         }
 
-        [HttpGet("getdispenserbyid")]
+        [HttpGet("GetDispenserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<DispenserQueryResponse> GetDispenserById(long Id)
         {
             DispenserQueryResponse dispenserQueryResponse = new DispenserQueryResponse();
             try
             {
-                AssetsService.Core.Entities.Dispenser dispenser = await _mediator.Send(new GetDispenserByIdQuery(Id));
-
-                dispenserQueryResponse.StatusMessage = "Record found";
+               var dispenser = await _mediator.Send(new GetDispenserByIdQuery(Id));
+                dispenserQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 dispenserQueryResponse.StatusCode = (int)HttpStatusCode.OK;
-                dispenserQueryResponse.data = new List<Dispenser>();
+                dispenserQueryResponse.data = new List<Charger>();
                 dispenserQueryResponse.data.Add(dispenser);
 
             }
@@ -203,22 +203,9 @@ namespace AssetsService.Api
 
             }
             return dispenserQueryResponse;
-
-            //try
-            //{
-            //    Dispenser dispenser = await _mediator.Send(new GetDispenserByIdQuery(Id));
-            //    return getjson(dispenser);
-            //}
-            //catch (Exception ex)
-            //{
-            //    JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-            //    //////_logger.LogError(ex.ToString());
-            //}
-            //return JSONString;
-
         }
 
-         [HttpGet("getdispenserbylocationid")]
+         [HttpGet("getDispenserByLocationId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<DispenserByLocationQueryResponse> getDispenserByLocationId(long Id)
         {
@@ -228,7 +215,7 @@ namespace AssetsService.Api
                 List<AssetsService.Core.Responses.Assets.DispenserByLocationIdResponse> dispenser = await _mediator.Send(new GetDispenserByLocationIdQuery(Id));
                 if (dispenser != null && dispenser.Count() != 0)
                 {
-                dispenserByLocationQueryResponse.StatusMessage = "Record found";
+                dispenserByLocationQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 dispenserByLocationQueryResponse.data = dispenser;
                // ////_logger.LogInformation("Get the all data of Dispenser location by Id");
@@ -236,7 +223,7 @@ namespace AssetsService.Api
                  else
                 {
                     dispenserByLocationQueryResponse.data = null;
-                    dispenserByLocationQueryResponse.StatusMessage = "Record not found";
+                    dispenserByLocationQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
             }
             catch (Exception ex)
@@ -253,26 +240,26 @@ namespace AssetsService.Api
 
 
 
-        [HttpGet("getdispenserbychargeboxid")]
+        [HttpGet("GetDispenserByChargeBoxId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<DispenserByChargeBoxIdResponse> GetDispenserByChargeBoxId(string ChargeBoxId)
         {
             DispenserByChargeBoxIdResponse dispenserByChargeBoxIdResponse = new DispenserByChargeBoxIdResponse();
             try
             {
-                Dispenser dispenser = await _mediator.Send(new GetDispenserByChargeBoxIdQuery(ChargeBoxId));
+                Charger dispenser = await _mediator.Send(new GetDispenserByChargeBoxIdQuery(ChargeBoxId));
                 dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 if (dispenser != null)
                 {
-                    dispenserByChargeBoxIdResponse.data = new List<Dispenser>();
+                    dispenserByChargeBoxIdResponse.data = new List<Charger>();
                     dispenserByChargeBoxIdResponse.data.Add(dispenser);
-                    dispenserByChargeBoxIdResponse.StatusMessage = "Record found";
+                    dispenserByChargeBoxIdResponse.StatusMessage = RespnoseMessage.Record_found;
                     dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 }
                 else
                 {
                     dispenserByChargeBoxIdResponse.data = null;
-                    dispenserByChargeBoxIdResponse.StatusMessage = "Record not found";
+                    dispenserByChargeBoxIdResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
                 //////_logger.LogInformation("Get the all data of Dispenser location by Id");
             }
@@ -287,13 +274,13 @@ namespace AssetsService.Api
             return dispenserByChargeBoxIdResponse;
         }
 
-        [HttpGet("getdispenserbystationid")]
+        [HttpGet("GetDispenserByStationId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<string> GetDispenserByStationId(long StationId)
         {
             try
             {
-                Dispenser dispenser = await _mediator.Send(new GetDispenserByStationIdQuery(StationId));
+                Charger dispenser = await _mediator.Send(new GetDispenserByStationIdQuery(StationId));
                 ////_logger.LogInformation("Get the Dispenser data by Station Id");
                 return getjson(dispenser);
             }
@@ -306,7 +293,7 @@ namespace AssetsService.Api
             return JSONString;
         }
 
-        [HttpDelete("deletedispenser")]
+        [HttpDelete("Deletedispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DispenserResponse>> Deletedispenser([FromBody] DeleteDispenserCommand command)
         {
@@ -322,9 +309,9 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
-                    ContentType = "Exception",
+                    ContentType = RespnoseMessage.Exception,
                     StatusCode = 404,
-                    Content = "Dispenser not Delete "
+                    Content = RespnoseMessage.Not_Deleted
                 };
             }
         }
@@ -341,45 +328,51 @@ namespace AssetsService.Api
                 {
                     expendo.statusCode = 200;
                     expendo.Id = result.Id;
-                    expendo.statusMessage = "Record Saved Successfully";
+                    expendo.statusMessage = RespnoseMessage.Record_Save_Successfully;
                 }
                 else
                 {
                     if (result.Id == -1)
                     {
-                        expendo.statusCode = 200;
-                        expendo.statusMessage = "Duplicate AssetId can not be created.";
+                        expendo.statusCode = 400;
+                        expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
                         return BadRequest(expendo);
                     }
-                    if (result.Id == -2)
+                   else if (result.Id == -2)
                     {
-                        expendo.statusCode = 200;
-                        expendo.statusMessage = "Mapped RFIdReaderId is not exits.";
+                        expendo.statusCode = 400;
+                        expendo.statusMessage = RespnoseMessage.Mapped_RFIdReaderId_is_not_exits;
                         return BadRequest(expendo);
                     }
-                    if (result.Id == -3)
+                   else if (result.Id == -3)
                     {
-                        expendo.statusCode = 200;
-                        expendo.statusMessage = "Mapped LocationID is not exits.";
+                        expendo.statusCode = 400;
+                        expendo.statusMessage = RespnoseMessage.Mapped_LocationID_is_not_exits;
+                        return BadRequest(expendo);
+                    }
+                    else if (result.Id == -4)
+                    {
+                        expendo.statusCode = 400;
+                        expendo.statusMessage = RespnoseMessage.Mapped_CableID_is_not_exits;
                         return BadRequest(expendo);
                     }
                     else
                     {
-                        expendo.statusCode = 200;
-                        expendo.statusMessage = "Record not saved";
+                        expendo.statusCode = 400;
+                        expendo.statusMessage = RespnoseMessage.Record_Not_Saved;
                     }
                 }           
             }
             catch (Exception ex)
             {
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Record not saved";
+                expendo.statusMessage = RespnoseMessage.Record_Not_Saved;
                 Log.Information("error occurred :" + ex.Message);
             }
             return (expendo);
         }
 
-        [HttpPut("updatedispenser")]
+        [HttpPut("UpdateDispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExpandoObject>> UpdateDispenser([FromBody] UpdateDispenserCommand command)
         {
@@ -391,30 +384,36 @@ namespace AssetsService.Api
                 {
                     expendo.statusCode = 200;
                     expendo.Id = result.Id;
-                    expendo.statusMessage = "Record Updated Successfully";
+                    expendo.statusMessage = RespnoseMessage.Record_Updated_Successfully;
                 }
-                if (result.Id == -2)
+               else if (result.Id == -2)
                 {
-                    expendo.statusCode = 200;
-                    expendo.statusMessage = "Mapped RFIdReaderId is not exits.";
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = RespnoseMessage.Mapped_RFIdReaderId_is_not_exits;
                     return BadRequest(expendo);
                 }
-                if (result.Id == -3)
+                else if (result.Id == -3)
                 {
-                    expendo.statusCode = 200;
-                    expendo.statusMessage = "Mapped LocationId is not exits.";
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = RespnoseMessage.Mapped_LocationID_is_not_exits;
+                    return BadRequest(expendo);
+                }
+                else if (result.Id == -4)
+                {
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = RespnoseMessage.Mapped_CableID_is_not_exits;
                     return BadRequest(expendo);
                 }
                 else
                 {
-                    expendo.statusCode = (int)HttpStatusCode.OK;
-                    expendo.statusMessage = "Record not updated";
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = RespnoseMessage.Record_Not_Updated;
                 }
             }
             catch (Exception ex)
             {
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Record not updated";
+                expendo.statusMessage = RespnoseMessage.Record_Not_Updated;
                 Log.Information("error occurred :" + ex.Message);
             }
             return (expendo);
@@ -434,12 +433,12 @@ namespace AssetsService.Api
                 if (dispenser != null && dispenser.Count > 0)
                 {
                     dispenserByLocationQueryResponse.data = dispenser;
-                    dispenserByLocationQueryResponse.StatusMessage = "Record found";
+                    dispenserByLocationQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 }
                 else
                 {
                     dispenserByLocationQueryResponse.data = null;
-                    dispenserByLocationQueryResponse.StatusMessage = "Record not found";
+                    dispenserByLocationQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
                 ////_logger.LogInformation("Get the all data of Dispenser location by Id");
             }
@@ -468,23 +467,30 @@ namespace AssetsService.Api
                 if (dispensersDetailRequest.PageNumber == 0) dispensersDetailRequest.PageNumber = 1;
                 var dispensers = await _mediator.Send(new GetDispensersDetailQuery(dispensersDetailRequest));
                 if (dispensers != null && dispensers.Count > 0)
-                    dispensersDetailResponse.StatusMessage = "Record found";
-                else dispensersDetailResponse.StatusMessage = "Record not found";
-                dispensersDetailResponse.StatusCode = (int)HttpStatusCode.OK;
-                dispensersDetailResponse.data = dispensers;
-                dispensersDetailResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
                 {
-                    TotalCount = dispensers.TotalCount,
-                    PageSize = dispensers.PageSize,
-                    CurrentPage = dispensers.CurrentPage,
-                    TotalPages = dispensers.TotalPages,
-                    HasNext = dispensers.HasNext,
-                    HasPrevious = dispensers.HasPrevious
-                };
+                    dispensersDetailResponse.StatusMessage = RespnoseMessage.Record_found;
+                    
+                    dispensersDetailResponse.StatusCode = (int)HttpStatusCode.OK;
+                    dispensersDetailResponse.data = dispensers;
+                    dispensersDetailResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
+                    {
+                        TotalCount = dispensers.TotalCount,
+                        PageSize = dispensers.PageSize,
+                        CurrentPage = dispensers.CurrentPage,
+                        TotalPages = dispensers.TotalPages,
+                        HasNext = dispensers.HasNext,
+                        HasPrevious = dispensers.HasPrevious
+                    };
+                }
+                else
+                { 
+                    dispensersDetailResponse.StatusMessage = RespnoseMessage.Record_not_found;
+                    dispensersDetailResponse.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             catch (Exception ex)
             {
-                dispensersDetailResponse.StatusMessage = "Operation failed!";
+                dispensersDetailResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispensersDetailResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);
@@ -506,12 +512,12 @@ namespace AssetsService.Api
                 validateChargerIdResponse.data = charher;
                 validateChargerIdResponse.StatusCode = (int)HttpStatusCode.OK;
                 if(charher.Id != 0){
-                validateChargerIdResponse.StatusMessage = "Record found";
+                validateChargerIdResponse.StatusMessage = RespnoseMessage.Record_found;
                 }
                 else{
                     validateChargerIdResponse.data = null;
                     validateChargerIdResponse.StatusCode = (int)HttpStatusCode.NotFound;
-                    validateChargerIdResponse.StatusMessage = "Record not found";
+                    validateChargerIdResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
 
 
@@ -541,24 +547,24 @@ namespace AssetsService.Api
         public async Task<ActionResult<ExpandoObject>> GetModemDDL(PadDataRequest  userId)
         {
             dynamic expendo = new ExpandoObject();
-            var result = await _mediator.Send(new GetModemDDLQuery(userId.userId));
+            var result = await _mediator.Send(new GetModemDDLQuery(userId.userId, userId.dispenserId));
             try
             {
                 expendo.statusCode = 200;
                 if (result is not null)
                 {
-                    expendo.statusMessage = "Record found";
+                    expendo.statusMessage = RespnoseMessage.Record_found;
                     expendo.data = result;
                 }
                 else
                 {
-                    expendo.statusMessage = "Record not found";
+                    expendo.statusMessage = RespnoseMessage.Record_not_found;
                 }
             }
             catch (Exception ex)
             {
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Failed";
+                expendo.statusMessage = RespnoseMessage.Faild;
                 Log.Information("error occurred :" + ex.Message);
             }
             return (expendo);
@@ -574,18 +580,18 @@ namespace AssetsService.Api
                 expendo.statusCode = 200;
                 if (result is not null)
                 {
-                    expendo.statusMessage = "Record found";
+                    expendo.statusMessage = RespnoseMessage.Record_found;
                     expendo.data = result;
                 }
                 else
                 {
-                    expendo.statusMessage = "Record not found";
+                    expendo.statusMessage = RespnoseMessage.Record_not_found;
                 }
             }
             catch (Exception ex)
             {
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Failed";
+                expendo.statusMessage = RespnoseMessage.Faild;
                 Log.Information("error occurred :" + ex.Message);
             }
             return (expendo);
@@ -601,18 +607,18 @@ namespace AssetsService.Api
                 expendo.statusCode = 200;
                 if (result is not null)
                 {
-                    expendo.statusMessage = "Record found";
+                    expendo.statusMessage = RespnoseMessage.Record_found;
                     expendo.data = result;
                 }
                 else
                 {
-                    expendo.statusMessage = "Record not found";
+                    expendo.statusMessage = RespnoseMessage.Record_not_found;
                 }
             }
             catch (Exception ex)
             {
                 expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = "Failed";
+                expendo.statusMessage = RespnoseMessage.Faild;
                 Log.Information("error occurred :" + ex.Message);
             }
             return (expendo);
@@ -632,9 +638,10 @@ namespace AssetsService.Api
                 if (locationDispenser.PageSize == 0) locationDispenser.PageSize = 10;
                 if (locationDispenser.PageNumber == 0) locationDispenser.PageNumber = 1;
                 var dispensers = await _mediator.Send(new GetLocationDispensersQuery(locationDispenser));
-                if (dispensers != null && dispensers.Count > 0)
-                    dispensersDetailResponse.StatusMessage = "Record found";
-                else dispensersDetailResponse.StatusMessage = "Record not found";
+                if (dispensers.Count > 0)
+                    dispensersDetailResponse.StatusMessage = RespnoseMessage.Record_found;
+                else dispensersDetailResponse.StatusMessage = RespnoseMessage.Record_not_found;
+
                 dispensersDetailResponse.StatusCode = (int)HttpStatusCode.OK;
                 dispensersDetailResponse.data = dispensers;
                 dispensersDetailResponse.paginationResponse = new Core.PagingHelper.PaginationResponse
@@ -649,7 +656,7 @@ namespace AssetsService.Api
             }
             catch (Exception ex)
             {
-                dispensersDetailResponse.StatusMessage = "Operation failed!";
+                dispensersDetailResponse.StatusMessage = RespnoseMessage.Opeartion_Failed;
                 dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispensersDetailResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);

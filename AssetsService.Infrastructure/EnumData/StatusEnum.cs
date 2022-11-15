@@ -70,9 +70,18 @@ namespace AssetsService.Infrastructure.EnumData
             InActive = 0,
             [Display(Name = "Active")]
             Active = 1,
-            [Display(Name = "Total vehicle")]
+            [Display(Name = "Total Vehicles")]
             TotalVehicle = 2,
         }
+        public enum PricePlanActiveInactive{
+         [Display(Name = "Inactive")]
+            Inactive = 0,
+            [Display(Name = "Active")]
+            Active = 1,
+            [Display(Name = "Total Price Plan")]
+            TotalPricePlan = 2,
+
+    }
     }
     public enum  VehicleStatusColor
     {
@@ -84,6 +93,19 @@ namespace AssetsService.Infrastructure.EnumData
 
         [Display(Name = "#E97300")]
         TotalVehicle = 2,
+    }
+
+   
+    public enum PricePlanStatusColur{
+        [Display(Name = "#E97300")]
+        Inactive = 0,
+
+        [Display(Name = "#90993F")]
+        Active = 1,
+
+        [Display(Name = "#757575")]
+        TotalPricePlan = 2,
+
     }
     public enum ConnectorColor
     {
