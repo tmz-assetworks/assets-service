@@ -14,6 +14,8 @@
 #      ...
 #      ...
 #
+# Builds will be tagged with the pipeline start time in yyyyMMddHHmmss and branch name.
+#
 
 trigger:
 - none # manual trigger for dev/testing purposes
@@ -24,6 +26,7 @@ pool:
 # set any pipeline variables
 variables:
   projectName: "AssetsService.Api"
+  runDateTag: $[format('{0:yyyyMMddHHmmss}', pipeline.startTime)]
 
 # setup the pipeline jobs
 jobs: 
@@ -86,6 +89,15 @@ jobs:
         Contents: '**/AssetsService/Dockerfile'
         TargetFolder: '$(Build.ArtifactStagingDirectory)'
         flattenFolders: true # don't create an extra folder when copying this file to the root
+
+    # add build tags
+    - task: PowerShell@2
+      displayName: Add Build Tags
+      inputs:
+        targetType: 'inline'
+        script: |
+          Write-Host "##vso[build.addbuildtag]$(runDateTag)"
+          Write-Host "##vso[build.addbuildtag]$(Build.SourceBranchName)"
     
     # publish the artifacts
     - task: PublishBuildArtifacts@1
