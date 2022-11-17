@@ -77,23 +77,21 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets Make
         /// </summary>
 
-        [DataMember(Name = "makeMasterId", EmitDefaultValue = false)]
-        public long? MakeMasterId { get; set; }
-        public virtual MakeMaster MakeMaster { get; set; }
-
-
-        /// <summary>
-        /// Gets or Sets MeterType
-        /// </summary>
-        [DataMember(Name = "meterType", EmitDefaultValue = false)]
-        public string MeterType { get; set; }
+        [DataMember(Name = "makeName", EmitDefaultValue = false)]
+        public string? MakeName { get; set; }
 
         // / <summary>
         // / Gets or Sets Model
         // / </summary>
-        [DataMember(Name = "modelId", EmitDefaultValue = false)]
-        public long? ModelId { get; set; }
-        public virtual Model Model { get; set; }
+        [DataMember(Name = "modelName", EmitDefaultValue = false)]
+        public string? ModelName { get; set; }
+        /// <summary>
+        /// Gets or Sets MeterType
+        /// </summary>
+        [DataMember(Name = "meterType", EmitDefaultValue = false)]
+        public string? MeterType { get; set; }
+
+       
 
         /// <summary>
         /// Gets or Sets MultiplePorts
@@ -106,7 +104,7 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets PingSchedule
         /// </summary>
         [DataMember(Name = "pingSchedule", EmitDefaultValue = false)]
-        public string PingSchedule { get; set; }
+        public string? PingSchedule { get; set; }
 
         ///// <summary>
         ///// Gets or Sets PrivateStation
@@ -126,7 +124,7 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets ReadingSchedule
         /// </summary>
         [DataMember(Name = "readingSchedule", EmitDefaultValue = false)]
-        public string ReadingSchedule { get; set; }
+        public string? ReadingSchedule { get; set; }
 
         ///// <summary>
         ///// Gets or Sets SerialNumber

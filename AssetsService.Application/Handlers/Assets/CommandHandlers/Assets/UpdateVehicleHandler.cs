@@ -32,8 +32,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                 vehicledetails.Result.DomicileLocation = request.DomicileLocation;
                 vehicledetails.Result.VehicleMacAddress = request.VehicleMacAddress;
                  vehicledetails.Result.ModelYear = request.ModelYear;
-                vehicledetails.Result.VehicleModelId = request.VehicleModelId;
-                vehicledetails.Result.VehicleMakeId = request.VehicleMakeId;
+                vehicledetails.Result.ModelName = request.ModelName;
+                vehicledetails.Result.MakeName = request.MakeName;
                 vehicledetails.Result.Department = request.Department;
                 vehicledetails.Result.ModifiedOn = DateTime.Now;
             }

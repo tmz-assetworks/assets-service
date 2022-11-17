@@ -74,16 +74,8 @@ namespace AssetsService.Api.Controllers
             try
             {
                 createCommonResponse.statusCode = 200;
-                if (command.VehicleModelId <= 0)
-                {
-                    createCommonResponse.statusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
-                    return createCommonResponse;
-                }
-                if (command.VehicleModelId <= 0)
-                {
-                    createCommonResponse.statusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
-                    return createCommonResponse;
-                }
+                
+                
 
                 if (command.RfIdCardsAssigneds is null || command.RfIdCardsAssigneds.Count == 0)
                 {
@@ -137,16 +129,6 @@ namespace AssetsService.Api.Controllers
             try
             {
                 expandoObject.StatusCode = 200;
-                if (command.VehicleModelId <= 0)
-                {
-                    expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
-                    return expandoObject;
-                }               
-                if (command.VehicleModelId <= 0)
-                {
-                    expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelId;
-                    return expandoObject;
-                }
                 if (command.ModelYear <= 0)
                 {
                     expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelYear;

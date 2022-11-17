@@ -28,13 +28,12 @@ namespace AssetsService.Application.Commands.Assets
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModelYear")]
         [Required]
         public long ModelYear { get; set; }
-
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid MakeModelId")]
+        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [Required]
-        public long VehicleModelId { get; set; }
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid VehicleMakeId")]
+        public string ModelName { get; set; }
+        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [Required]
-        public long VehicleMakeId { get; set; }
+        public string MakeName { get; set; }
         [Required]
         public List<RfIdCardsAssigneds>  RfIdCardsAssigneds { get; set; }
     }

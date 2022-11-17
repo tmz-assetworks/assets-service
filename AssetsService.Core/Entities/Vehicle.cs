@@ -69,14 +69,16 @@ namespace AssetsService.Core.Entities
         public long ModelYear { get; set; }           // i.e 2022,2023,2024
                                                       
         [Required]
-        [DataMember(Name = "vehicleModelId", EmitDefaultValue = false)]
-        public long VehicleModelId { get; set; }
-        public virtual VehicleModel VehicleModel { get; set; }
+        [DataMember(Name = "makeName", EmitDefaultValue = false)]
+        public string MakeName { get; set; }
 
-        [DataMember(Name = "VehicleMakeId", EmitDefaultValue = false)]
+        // / <summary>
+        // / Gets or Sets Model
+        // / </summary>
         [Required]
-        public long VehicleMakeId { get; set; }
-        public virtual VehicleMake VehicleMake { get; set; }
+        [DataMember(Name = "modelName", EmitDefaultValue = false)]
+        public string ModelName { get; set; }
+        /// <summary>
         public virtual ICollection<VehicleRFID> vehicleRFID { get; set; }
 
         [NotMapped]

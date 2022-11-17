@@ -672,12 +672,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 result = (from location in _dbContext.Locations
                           join charger in _dbContext.Charger
                           on location.Id equals charger.LocationId
-                          join model in _dbContext.Model
-                          on charger.ModelId equals model.Id
-                          join make in _dbContext.MakeMaster
-                          on charger.MakeMasterId equals make.Id
-                          join protocol in _dbContext.Protocol
-                          on model.ProtocolId equals protocol.Id
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                           on location.Id equals userMap.LocationId
                           select new LocationDispenserForLocation
@@ -685,14 +679,14 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               locationId = location.Id,
                               DispenserId = charger.Id,
                               ChargeBoxId = charger.ChargeBoxId,                              
-                              ProtocolName = protocol.ProtocolName,
+                              ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
                               charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
                               charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                               NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
-                              DispenserMake = make.Name,
-                              DispenserModel = model.ModelName,
+                              DispenserMake = charger.MakeName,
+                              DispenserModel = charger.ModelName,
                               ConnectorType = _dbContext.Port.FirstOrDefault(p => p.ChargerId == charger.Id).Connector.ConnectorType,
                               
                           }).ToList<LocationDispenserForLocation>();
@@ -702,12 +696,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 result = (from location in _dbContext.Locations.Where(x => Id.Contains(x.Id))
                           join charger in _dbContext.Charger
                           on location.Id equals charger.LocationId
-                          join model in _dbContext.Model
-                          on charger.ModelId equals model.Id
-                          join make in _dbContext.MakeMaster
-                          on charger.MakeMasterId equals make.Id
-                          join protocol in _dbContext.Protocol
-                          on model.ProtocolId equals protocol.Id
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                           on location.Id equals userMap.LocationId
                           select new LocationDispenserForLocation
@@ -715,14 +703,14 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               locationId = location.Id,
                               DispenserId = charger.Id,
                               ChargeBoxId = charger.ChargeBoxId,                              
-                              ProtocolName = protocol.ProtocolName,
+                              ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
                               charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
                               charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                               NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
-                              DispenserMake = make.Name,
-                              DispenserModel = model.ModelName,
+                              DispenserMake = charger.MakeName,
+                              DispenserModel = charger.ModelName,
                               ConnectorType = _dbContext.Port.FirstOrDefault(p => p.ChargerId == charger.Id).Connector.ConnectorType,
                              
                           }).ToList<LocationDispenserForLocation>();

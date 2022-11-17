@@ -23,7 +23,7 @@ namespace AssetsService.Application.Commands.Assets
         public string UserId { get; set; }
 
 
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "LocationId must be fewer than 20 characters.")]
+        [StringLength(6, MinimumLength = 0, ErrorMessage = "LocationId must be fewer than 6 characters.")]
         [Required]
         public string LocationId { get; set; }
 
@@ -41,7 +41,7 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(255, MinimumLength = 0, ErrorMessage = "Description must be fewer than 255 characters.")]
         public string Description { get; set; }
 
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "LocationName must be fewer than 20 characters.")]
+        [StringLength(40, MinimumLength = 0, ErrorMessage = "LocationName must be fewer than 49 characters.")]
         [Required]
         public string LocationName { get; set; }
 

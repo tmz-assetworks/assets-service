@@ -46,6 +46,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             dispenserEntitiy.CreatedOn = DateTime.Now;
             dispenserEntitiy.ModifiedOn = DateTime.Now;
             dispenserEntitiy.ModifiedBy = dispenserEntitiy.CreatedBy;
+            dispenserEntitiy.MultiplePorts = true;
+            dispenserEntitiy.IsAutomatic = true;
             dispenserEntitiy.Ports = new List<Port>();
             if (request.PortCommand.Count > 0)
             {

@@ -41,34 +41,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           ModifiedBy = m.ModifiedBy,
                           ModifiedOn = m.ModifiedOn,
                           ModelYear = m.ModelYear,
-                          VehicleModelId = m.VehicleModelId,
-                          VehicleMakeId = m.VehicleMakeId,
-
-                          VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
-                                          select new VehicleModel
-                                          {
-                                              Id = obls.Id,
-                                              Name = obls.Name,
-                                              IsActive = obls.IsActive,
-                                              CreatedBy = obls.CreatedBy,
-                                              CreatedOn = obls.CreatedOn,
-                                              ModifiedBy = obls.ModifiedBy,
-                                              ModifiedOn = obls.ModifiedOn,
-
-                                          }).FirstOrDefault(),
-                          VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
-                                         select new VehicleMake
-                                         {
-                                             Id = obls.Id,
-                                             Name = obls.Name,
-                                             IsActive = obls.IsActive,
-                                             CreatedBy = obls.CreatedBy,
-                                             CreatedOn = obls.CreatedOn,
-                                             ModifiedBy = obls.ModifiedBy,
-                                             ModifiedOn = obls.ModifiedOn,
-
-                                         }).FirstOrDefault(),
-
+                          ModelName = m.ModelName,
+                          MakeName = m.MakeName,
                           vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id && x.IsActive == true)
                                          select new VehicleRFID
                                          {
@@ -103,33 +77,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ModifiedBy = m.ModifiedBy,
                               ModifiedOn = m.ModifiedOn,
                               ModelYear = m.ModelYear,
-                              VehicleModelId = m.VehicleModelId,
-                              VehicleMakeId = m.VehicleMakeId,
-                              VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
-                                              select new VehicleModel
-                                              {
-                                                  Id = obls.Id,
-                                                  Name = obls.Name,
-                                                  IsActive = obls.IsActive,
-                                                  CreatedBy = obls.CreatedBy,
-                                                  CreatedOn = obls.CreatedOn,
-                                                  ModifiedBy = obls.ModifiedBy,
-                                                  ModifiedOn = obls.ModifiedOn,
-
-                                              }).FirstOrDefault(),
-                              VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
-                                             select new VehicleMake
-                                             {
-                                                 Id = obls.Id,
-                                                 Name = obls.Name,
-                                                 IsActive = obls.IsActive,
-                                                 CreatedBy = obls.CreatedBy,
-                                                 CreatedOn = obls.CreatedOn,
-                                                 ModifiedBy = obls.ModifiedBy,
-                                                 ModifiedOn = obls.ModifiedOn,
-
-                                             }).FirstOrDefault(),
-
+                              ModelName = m.ModelName,
+                              MakeName = m.MakeName,
                               vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id && m.IsActive == true)
 
                                              select new VehicleRFID
@@ -174,11 +123,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 //ModifiedBy = m.ModifiedBy,
                 //ModifiedOn = m.ModifiedOn,
                 ModelYear = m.ModelYear,
-                VehicleModelId = m.VehicleModelId,
-                VehicleMakeId = m.VehicleMakeId,
-                //VehicleModelYear = m.VehicleModelYear.Name,
-                VehicleModelName = m.VehicleModel.Name,
-                VehicleMakeName = m.VehicleMake.Name,
+                ModelName = m.ModelName,
+                MakeName = m.MakeName,
                 vehicleRFIDIds = m.vehicleRFID.Select(m => new VehicleRFIDId
                 {
 
@@ -211,33 +157,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                          ModifiedBy = m.ModifiedBy,
                          ModifiedOn = m.ModifiedOn,
                          ModelYear = m.ModelYear,
-                         VehicleModelId = m.VehicleModelId,
-                         VehicleMakeId = m.VehicleMakeId,
-                         //CustomerId = m.CustomerId,
-                        //  SubscriptionPlanId = m.SubscriptionPlanId,
-                         VehicleModel = (from obls in _dbContext.VehicleModel.Where(x => x.Id == m.VehicleModelId)
-                                         select new VehicleModel
-                                         {
-                                             Id = obls.Id,
-                                             Name = obls.Name,
-                                             IsActive = obls.IsActive,
-                                             CreatedBy = obls.CreatedBy,
-                                             CreatedOn = obls.CreatedOn,
-                                             ModifiedBy = obls.ModifiedBy,
-                                             ModifiedOn = obls.ModifiedOn,
-                                         }).FirstOrDefault(),
-                         VehicleMake = (from obls in _dbContext.VehicleMake.Where(x => x.Id == m.VehicleMakeId)
-                                        select new VehicleMake
-                                        {
-                                            Id = obls.Id,
-                                            Name = obls.Name,
-                                            IsActive = obls.IsActive,
-                                            CreatedBy = obls.CreatedBy,
-                                            CreatedOn = obls.CreatedOn,
-                                            ModifiedBy = obls.ModifiedBy,
-                                            ModifiedOn = obls.ModifiedOn,
-
-                                        }).FirstOrDefault(),
+                         MakeName = m.MakeName,
+                         ModelName = m.ModelName,
                          vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id)
 
                                         select new VehicleRFID
@@ -259,8 +180,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     string[] vehicleRFIDs = _dbContext.VehicleRFID.Where(x => x.VehicleId == x.Id && x.IsActive==true).Select(v => v.Name.ToString()).ToArray();
 
                     data.applicableSubscriptionPlans = new List<ApplicableSubscriptionPlan>();
-                    data.applicableSubscriptionPlans = _dbContext.SubscriptionPlan.Where(s => s.SubscriptionsValue == data.ModelYear.ToString() && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime || (s.SubscriptionsValue == data.VehicleModel.Name  && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime)
-                    ||( s.SubscriptionsValue == data.VIN && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime) || (s.SubscriptionsValue == data.VehicleMake.Name && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime) || (vehicleRFIDs.Contains(s.SubscriptionsValue)) && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime
+                    data.applicableSubscriptionPlans = _dbContext.SubscriptionPlan.Where(s => s.SubscriptionsValue == data.ModelYear.ToString() && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime || (s.SubscriptionsValue == data.ModelName  && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime)
+                    ||( s.SubscriptionsValue == data.VIN && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime) || (s.SubscriptionsValue == data.MakeName && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime) || (vehicleRFIDs.Contains(s.SubscriptionsValue)) && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime
                     && s.IsActive == true).Select(s => new ApplicableSubscriptionPlan
                     {
                         RfIdNumbers = data.vehicleRFID != null ? String.Join(',', data.vehicleRFID.Select(s => s.Name)).ToString() : "",
@@ -321,8 +242,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 createVehicleResponse.VehicleMacAddress = cv.VehicleMacAddress;
                 createVehicleResponse.LicencePlate = cv.LicencePlate;
                 createVehicleResponse.ModelYear = cv.ModelYear;
-                createVehicleResponse.VehicleMakeId = cv.VehicleMakeId;
-                createVehicleResponse.VehicleModelId = cv.VehicleModelId;
+                createVehicleResponse.MakeName = cv.MakeName;
+                createVehicleResponse.ModelName = cv.ModelName;
                 createVehicleResponse.ModelYear = cv.ModelYear;
                 createVehicleResponse.CreatedBy = cv.CreatedBy;
                 createVehicleResponse.CreatedOn = cv.CreatedOn;
@@ -395,10 +316,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     IsActive = m.IsActive,
                     ModifiedOn = m.ModifiedOn,
                     ModelYear = m.ModelYear,
-                    VehicleModelId = m.VehicleModelId,
-                    VehicleModelName = m.VehicleModel.Name,
-                    VehicleMakeId = m.VehicleMakeId,
-                    VehicleMakeName = m.VehicleMake.Name,
+                    ModelName = m.ModelName,
+                    MakeName = m.MakeName,
                     vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
 
                     vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
@@ -423,10 +342,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                             IsActive = m.IsActive,
                             ModifiedOn = m.ModifiedOn,
                             ModelYear = m.ModelYear,                           
-                            VehicleModelId = m.VehicleModelId,
-                            VehicleModelName = m.VehicleModel.Name,
-                            VehicleMakeId = m.VehicleMakeId,
-                            VehicleMakeName = m.VehicleMake.Name,
+                            ModelName = m.ModelName,
+                            MakeName = m.MakeName,
                             vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
                             vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
                             {
