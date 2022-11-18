@@ -58,8 +58,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     FleetStation = m.FleetStation,
                     ReadingSchedule = m.ReadingSchedule,                       
                     ChargeBoxId = m.ChargeBoxId,
-                    ModelId = m.ModelId,
-                    MakeMasterId = m.MakeMasterId,
+                    ModelName = m.ModelName,
+                    MakeName = m.MakeName,
                     LocationId = m.LocationId,
                     CableId = m.CableId,
                     ModemId = m.ModemId,
@@ -69,18 +69,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     SwitchGearId = m.SwitchGearId,
                     ChargerStatuses = m.ChargerStatuses,
                     InstallationDate = m.InstallationDate,
-                    MakeMaster = (from obls in _dbContext.MakeMaster.Where(x => x.Id == m.MakeMasterId)
-                                  select new MakeMaster
-                                  {
-                                      Id = obls.Id,
-                                      Name = obls.Name
-                                  }).FirstOrDefault(),
-                    Model = (from obls in _dbContext.Model.Where(x => x.Id == m.ModelId)
-                             select new Model
-                             {
-                                 Id = obls.Id,
-                                 ModelName = obls.ModelName,
-                             }).FirstOrDefault(),
+                   
+                  
                     Location = (from obls in _dbContext.Locations.Where(x => x.Id == m.LocationId)
                                 select new Location
                                 {
@@ -227,10 +217,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                PingSchedule = dispenser.PingSchedule,
                                FleetStation = dispenser.FleetStation,
                                ReadingSchedule = dispenser.ReadingSchedule,
-                               MakeMasterId = dispenser.MakeMasterId==null?0:(long)dispenser.MakeMasterId,
-                               Make = dispenser.MakeMaster != null ? dispenser.MakeMaster.Name : "",
-                               ModelId = dispenser.ModelId==null?0:(long) dispenser.ModelId,
-                               Model = dispenser.Model != null ? dispenser.Model.ModelName : "",
+                               MakeName = dispenser.MakeName,
+                               ModelName = dispenser.ModelName,
                                ModemId = dispenser.ModemId==null?0: (long)dispenser.ModemId,
                                ModemSerialNumber = dispenser.Modem != null ? dispenser.Modem.SerialNumber : "",
                                RFIDReaderId = dispenser.RFIDReaderId==null?0:(long)dispenser.RFIDReaderId,
@@ -300,10 +288,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                PingSchedule = dispenser.PingSchedule,
                                FleetStation = dispenser.FleetStation,
                                ReadingSchedule = dispenser.ReadingSchedule,
-                               MakeMasterId = dispenser.MakeMasterId==null?0:(long)dispenser.MakeMasterId,
-                               Make = dispenser.MakeMaster != null ? dispenser.MakeMaster.Name : "",
-                               ModelId = dispenser.ModelId==null?0 :(long)dispenser.ModelId,
-                               Model = dispenser.Model != null ? dispenser.Model.ModelName : "",
+                               MakeName = dispenser.MakeName ,
+                               ModelName = dispenser.ModelName,
                                ModemId = dispenser.ModemId==null?0:(long)dispenser.ModemId,
                                ModemSerialNumber = dispenser.Modem != null ? dispenser.Modem.SerialNumber : "",
                                RFIDReaderId = dispenser.RFIDReaderId==null?0:(long)dispenser.RFIDReaderId,
@@ -364,10 +350,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      FleetStation = m.FleetStation,
                      ReadingSchedule = m.ReadingSchedule,
                      ChargeBoxId = m.ChargeBoxId,
-                     ModelId = m.ModelId,
+                     ModelName = m.ModelName,
                      CableId = m.CableId,
-                     MakeMasterId = m.MakeMasterId,
-                     ModemId = m.ModelId,
+                     MakeName = m.MakeName,
                      CreatedBy = m.CreatedBy,
                      ChargerStatuses = m.ChargerStatuses,
                      InstallationDate = m.InstallationDate,
@@ -446,8 +431,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ChargeBoxId = m.ChargeBoxId,
                      CreatedOn = m.CreatedOn,
                      CreatedBy = m.CreatedBy,
-                     ModelId = m.ModelId,
-                     MakeMasterId = m.MakeMasterId,
+                     ModelName = m.ModelName,
+                     MakeName = m.MakeName,
                      LocationId = m.LocationId,
                      CableId = m.CableId,
                      ModemId = m.ModemId,
@@ -457,18 +442,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      SwitchGearId = m.SwitchGearId,
                      ChargerStatuses = m.ChargerStatuses,
                      InstallationDate = m.InstallationDate,
-                     MakeMaster = (from obls in _dbContext.MakeMaster.Where(x => x.Id == m.MakeMasterId)
-                                   select new MakeMaster
-                                   {
-                                       Id = obls.Id,
-                                       Name = obls.Name
-                                   }).FirstOrDefault(),
-                     Model = (from obls in _dbContext.Model.Where(x => x.Id == m.ModelId)
-                              select new Model
-                              {
-                                  Id = obls.Id,
-                                  ModelName = obls.ModelName,
-                              }).FirstOrDefault(),
                      Location = (from obls in _dbContext.Locations.Where(x => x.Id == m.LocationId)
                                  select new Location
                                  {
@@ -512,10 +485,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
                              charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                              ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
-                             DispenserModel = charger.Model.ModelName,
-                             ProtocolName = charger.Model.Protocol.ProtocolName,
+                             DispenserModel = charger.ModelName,
+                             ProtocolName = charger.ProtocolName,
                              NoofPort = charger.Ports.Count.ToString(),
-                             DispenserMake = charger.MakeMaster.Name,
+                             DispenserMake = charger.MakeName,
 
 
                          }
@@ -550,10 +523,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
                              charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                              ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
-                             DispenserModel = charger.Model.ModelName,
-                             ProtocolName = charger.Model.Protocol.ProtocolName,
+                             DispenserModel = charger.ModelName,
+                             ProtocolName = charger.ProtocolName,
                              NoofPort = charger.Ports.Count.ToString(),
-                             DispenserMake = charger.MakeMaster.Name,
+                             DispenserMake = charger.MakeName,
                          }).ToList<DispenserByLocationsResponse>();
 
             }
@@ -586,10 +559,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                    ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
                                    charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" : charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                                    ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
-                                   DispenserModel = charger.Model.ModelName,
-                                   ProtocolName = charger.Model.Protocol.ProtocolName,
+                                   DispenserModel = charger.ModelName,
+                                   ProtocolName = charger.ProtocolName,
                                    NoofPort = charger.Ports.Count.ToString(),
-                                   DispenserMake = charger.MakeMaster.Name,
+                                   DispenserMake = charger.MakeName,
                                }
 
                            ).ToListAsync<DispenserByLocationsResponse>();
@@ -620,10 +593,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                    ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
                                    charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" : charger.ChargerStatuses.ToList()[0].ChargerStatus1,
                                    ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
-                                   DispenserModel = charger.Model.ModelName,
-                                   ProtocolName = charger.Model.Protocol.ProtocolName,
+                                   DispenserModel = charger.ModelName,
+                                   ProtocolName = charger.ProtocolName,
                                    NoofPort = charger.Ports.Count.ToString(),
-                                   DispenserMake = charger.MakeMaster.Name,
+                                   DispenserMake = charger.MakeName,
                                }).ToListAsync<DispenserByLocationsResponse>();
 
             }
@@ -726,13 +699,13 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 oldDispenser.AssetId = dispenser.AssetId;
                 oldDispenser.PadId = dispenser.PadId;
                 oldDispenser.ChargeBoxId = dispenser.ChargeBoxId;
-                oldDispenser.MakeMasterId = dispenser.MakeMasterId;
+                oldDispenser.MakeName = dispenser.MakeName;
                 oldDispenser.FirmwareVersion = dispenser.FirmwareVersion;
                 oldDispenser.CableId = dispenser.CableId;
                 oldDispenser.SwitchGearId = dispenser.SwitchGearId;
                 oldDispenser.IsActive = dispenser.IsActive;
                 oldDispenser.MultiplePorts = dispenser.MultiplePorts;
-                oldDispenser.ModelId = dispenser.ModelId;
+                oldDispenser.ModelName = dispenser.ModelName;
                 oldDispenser.IsAutomatic = dispenser.IsAutomatic;
                 oldDispenser.LocationId = dispenser.LocationId;
                 oldDispenser.MeterType = dispenser.MeterType;

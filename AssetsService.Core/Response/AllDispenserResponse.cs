@@ -44,11 +44,9 @@ namespace AssetsService.Core.Response
         public string FirmwareVersion { get; set; }
         public string HardwareSerialNumber { get; set; }
         public long LocationId { get; set; }
-        public string LocationName { get; set; }    
-        public long MakeMasterId { get; set; }
-        public string Make { get; set; }
-        public long ModelId { get; set; }
-        public string Model { get; set; }
+        public string LocationName { get; set; }  
+        public string MakeName { get; set; }
+        public string ModelName { get; set; }
         public long ModemId { get; set; }
         public string ModemSerialNumber { get; set; }
         public string MeterType { get; set; }
@@ -87,10 +85,8 @@ namespace AssetsService.Core.Response
         public string HardwareSerialNumber { get; set; }
         public long LocationId { get; set; }
         public string LocationName { get; set; }
-        public long MakeMasterId { get; set; }
-        public string Make { get; set; }
-        public long ModelId { get; set; }
-        public string Model { get; set; }
+        public string MakeName { get; set; }
+        public string ModelName { get; set; }
         public long ModemId { get; set; }
         public string ModemSerialNumber { get; set; }
         public string MeterType { get; set; }

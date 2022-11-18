@@ -30,24 +30,20 @@ namespace AssetsService.Application.Commands.Assets
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Location Id")]
         public long LocationId { get; set; }
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid MakeMaster Id")]
-        public long MakeMasterId { get; set; }
+        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        public string MakeName { get; set; }
         [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Model Id")]
-        public long ModelId { get; set; }
+        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        public string ModelName { get; set; }
 
         public long? ModemId { get; set; } = 0;    // 07/11/2022
-        [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "MeterType must be fewer than 20 characters.")]
         public string MeterType { get; set; }
-        [Required]
-        public bool MultiplePorts { get; set; }
-        [Required]
+        
         [StringLength(20, MinimumLength = 0, ErrorMessage = "PingSchedule must be fewer than 20 characters.")]
         public string PingSchedule { get; set; }
         [Required]
         public bool FleetStation { get; set; }        // PrivateStation changed to FleetStation  07/11/2022
-        [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "ReadingSchedule must be fewer than 20 characters.")]
         public string ReadingSchedule { get; set; }
         //[Required]
@@ -70,8 +66,6 @@ namespace AssetsService.Application.Commands.Assets
         public string CreatedBy { get; set; }
         [Required]
         public bool IsActive { get; set; }
-        [Required]
-        public bool IsAutomatic { get; set; }
         public DateTime InstallationDate { get; set; }
 
         [Required]

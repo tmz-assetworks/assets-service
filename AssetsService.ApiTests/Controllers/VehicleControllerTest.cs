@@ -53,11 +53,9 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "haryana",
                 IsActive = true,
                 ModifiedOn = DateTime.Now,
-                VehicleModelName = "2014",
-                VehicleMakeName = "2019",
+                ModelName = "2014",
+                MakeName = "2019",
                 vehicleRFIDName = "12345,12345",
-                VehicleModelId = 13,
-                VehicleMakeId = 13,
                 vehicleRFIDIds = new List<VehicleRFIDId>()
                 {
                    new VehicleRFIDId()
@@ -93,8 +91,8 @@ namespace AssetsService.Api.Tests
                 DomicileLocation = "34234",
                 VehicleMacAddress = "343",
                 CreatedBy = "343",
-                VehicleModelId = 13,
-                VehicleMakeId = 13,
+                ModelName = "test",
+                MakeName = "test",
                 RfIdCardsAssigneds = new List<RfIdCardsAssigneds>()
                 { new RfIdCardsAssigneds(){  Id=0,Name="card1",IsActive=true } },
             };
@@ -108,8 +106,9 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "vma123",
                 CreatedBy = "ak4",
                 CreatedOn = DateTime.Now,
-                VehicleModelId = 11,
-                VehicleMakeId = 13,
+                MakeName="",
+                ModelName="",
+                ModelYear=2022,
                 rfids = new List<Rfids>() { new Rfids() { Id = 0, Name = "card1", IsActive = true } },
 
             };
@@ -135,8 +134,8 @@ namespace AssetsService.Api.Tests
                 DomicileLocation = "string",
                 VehicleMacAddress = "string",
                 ModifiedBy = "string",
-                VehicleModelId = 13,
-                VehicleMakeId = 13,
+                ModelName = "",
+                MakeName = "",
                 RfIdCardsAssigneds = new List<RfIdCardsAssigned>() { new RfIdCardsAssigned() { Id = 0, Name = "card1", IsActive = true } },
 
             };
@@ -150,8 +149,9 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "vma123",
                 CreatedBy = "ak4",
                 CreatedOn = DateTime.Now,
-                VehicleModelId = 11,
-                VehicleMakeId = 13,
+                MakeName="",
+                ModelName="",
+                ModelYear=2022,
                 rfids = new List<Rfids>()
                 { new Rfids(){  Id=0,Name="card1",IsActive=true } }
             };
@@ -229,11 +229,9 @@ namespace AssetsService.Api.Tests
                 VehicleMacAddress = "sdfds",
                 IsActive = false,
                 ModifiedOn = DateTime.Now,              
-                VehicleModelName = "2012",
-                VehicleMakeName = "2223",
+                ModelName = "2012",
+                MakeName = "2223",
                 vehicleRFIDName = "SAF",
-                VehicleModelId = 1,
-                VehicleMakeId = 1,
                 vehicleRFIDIds = new List<VehicleRFIDId>()
                  {
                       new VehicleRFIDId()

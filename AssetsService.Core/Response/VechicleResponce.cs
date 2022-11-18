@@ -80,12 +80,12 @@ namespace AssetsService.Core.Responses.Assets
         public long id { get; set; }
         public string VIN { get; set; }
         public long ModelYear { get; set; }
-        public long VehicleMakeId { get; set; }
+        public string MakeName { get; set; }
         public string CreatedBy { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
-        public long VehicleModelId { get; set; }
+        public string ModelName { get; set; }
         public string LicencePlate { get; set; }
         public string Department { get; set; }
         public string DomicileLocation { get; set; }
@@ -104,11 +104,9 @@ namespace AssetsService.Core.Responses.Assets
         public bool IsActive { get; set; }
         public DateTime ModifiedOn { get; set; }
         public long ModelYear { get; set; }       
-        public string VehicleModelName { get; set; }
-        public string VehicleMakeName { get; set; }
+        public string ModelName { get; set; }
+        public string MakeName { get; set; }
         public string vehicleRFIDName { get; set; }
-        public long VehicleModelId { get; set; }
-        public long VehicleMakeId { get; set; }
         public List <VehicleRFIDId> vehicleRFIDIds  { get; set; }
       
     }
