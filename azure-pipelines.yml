@@ -20,7 +20,7 @@
 trigger:
 - none # manual trigger for dev/testing purposes
 
-pool: CMS Agent 
+pool: 'CMS Project' 
 
 # set any pipeline variables
 variables:
