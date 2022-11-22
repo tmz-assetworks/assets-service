@@ -18,7 +18,7 @@
 #
 
 trigger:
-- none # trigger on main branch
+- main # trigger on main branch
 
 pool: 'CMS Project' 
 
@@ -33,9 +33,10 @@ jobs:
 
 # build and publish the artifacts for the api project
 - job: PublishServiceArtifacts
+  displayName: 'Publish Service Artifacts'
   steps:
 
-    # ensure the build agent is using .NET 6
+    # ensure the build agent is using .NET 6`
     - task: UseDotNet@2
       displayName: 'Use .NET 6 SDK'
       inputs:
@@ -79,6 +80,7 @@ jobs:
 
     # copy the docker file to the artifact directory
     - task: CopyFiles@2
+      displayName: 'Copy Dockerfile'
       inputs:
         SourceFolder: '$(Build.SourcesDirectory)'
         Contents: '**/AssetsService/Dockerfile'
@@ -96,6 +98,7 @@ jobs:
     
     # publish the artifacts
     - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifacts'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
