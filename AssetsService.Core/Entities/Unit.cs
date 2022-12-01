@@ -27,6 +27,9 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "unitName", EmitDefaultValue = false)]
         public string UnitName { get; set; }
 
+        [DataMember(Name = "priceTypeId", EmitDefaultValue = false)]
+        public long PriceTypeId { get; set; }
+        public virtual PriceType PriceType { get; set; }
         /// <summary>
         /// Gets or Sets ModifiedBy
         /// </summary>

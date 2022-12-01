@@ -41,7 +41,8 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(255, MinimumLength = 0, ErrorMessage = "Description must be fewer than 255 characters.")]
         public string Description { get; set; }
 
-        [StringLength(40, MinimumLength = 0, ErrorMessage = "LocationName must be fewer than 49 characters.")]
+        [StringLength(40, MinimumLength = 0, ErrorMessage = "LocationName must be fewer than 40 characters.")]
+
         [Required]
         public string LocationName { get; set; }
 
@@ -81,15 +82,13 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(9, MinimumLength = 0, ErrorMessage = "PinCode must be fewer than 9 characters.")]
         [Required]
         public string PinCode { get; set; }
-
-        //  public LocationAddressCommand locationAddress { get; set; }
-        // public string LocationStatusName { get; set; }
+       
         [Required]
         public long LocationStatusId { get; set; }
         [Required]
         [StringLength(200, MinimumLength = 1, ErrorMessage = "DepartmentName must be fewer than 200 characters.")]
         public string DepartmentName { get; set; }
-      
+
         [StringLength(15, MinimumLength = 0, ErrorMessage = "TotalCapacity must be fewer than 15 characters.")]
         public string TotalCapacity { get; set; }
         public List<LocationScheduleCommand> locationScheduleCommand { get; set; }

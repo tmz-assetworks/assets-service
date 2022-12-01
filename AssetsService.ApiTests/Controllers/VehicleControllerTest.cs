@@ -91,8 +91,8 @@ namespace AssetsService.Api.Tests
                 DomicileLocation = "34234",
                 VehicleMacAddress = "343",
                 CreatedBy = "343",
-                ModelName = "test",
-                MakeName = "test",
+                ModelName = "ModelName",
+                MakeName = "MakeName",
                 RfIdCardsAssigneds = new List<RfIdCardsAssigneds>()
                 { new RfIdCardsAssigneds(){  Id=0,Name="card1",IsActive=true } },
             };
@@ -134,8 +134,8 @@ namespace AssetsService.Api.Tests
                 DomicileLocation = "string",
                 VehicleMacAddress = "string",
                 ModifiedBy = "string",
-                ModelName = "",
-                MakeName = "",
+                ModelName = "ModelName",
+                MakeName = "MakeName",
                 RfIdCardsAssigneds = new List<RfIdCardsAssigned>() { new RfIdCardsAssigned() { Id = 0, Name = "card1", IsActive = true } },
 
             };

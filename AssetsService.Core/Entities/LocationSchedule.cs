@@ -51,7 +51,5 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
         [DataMember(Name = "isOpenAlldays", EmitDefaultValue = false)]
         public bool IsOpenAlldays { get; set; }
-
-
     }
 }

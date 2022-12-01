@@ -81,24 +81,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                            IsActive = obls.IsActive,
                                            ModifiedBy = obls.ModifiedBy,
                                            ModifiedOn = obls.ModifiedOn,
-
-                                       }).FirstOrDefault(),
-
-                     //Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                     //              select new Department
-                     //              {
-                     //                  Id = obls.Id,
-                     //                  DepartmentName = obls.DepartmentName,
-                     //                  ContactPersonName = obls.ContactPersonName,
-                     //                  Address = obls.Address,
-                     //                  CreatedBy = obls.CreatedBy,
-                     //                  CreatedOn = obls.CreatedOn,
-                     //                  IsActive = obls.IsActive,
-                     //                  ModifiedBy = obls.ModifiedBy,
-                     //                  ModifiedOn = obls.ModifiedOn,
-
-                     //              }).FirstOrDefault(),
-
+                                       }).FirstOrDefault(),   
                      LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                          select new LocationSchedule
                                          {
@@ -112,7 +95,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                              IsActive = obls.IsActive,
                                              ModifiedBy = obls.ModifiedBy,
                                              ModifiedOn = obls.ModifiedOn,
-                                             IsOpenAlldays=obls.IsOpenAlldays
+                                             IsOpenAlldays = obls.IsOpenAlldays
                                          }).ToList(),
                      OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                            select new OperatorUserMapper
@@ -195,22 +178,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                          ModifiedOn = obls.ModifiedOn,
 
                                      }).FirstOrDefault(),
-
-                   //Department = (from obls in _dbContext.Department.Where(x => x.DepartmentName == m.DepartmentName)
-                   //              select new Department
-                   //              {
-                   //                  Id = obls.Id,
-                   //                  DepartmentName = obls.DepartmentName,
-                   //                  ContactPersonName = obls.ContactPersonName,
-                   //                  Address = obls.Address,
-                   //                  CreatedBy = obls.CreatedBy,
-                   //                  CreatedOn = obls.CreatedOn,
-                   //                  IsActive = obls.IsActive,
-                   //                  ModifiedBy = obls.ModifiedBy,
-                   //                  ModifiedOn = obls.ModifiedOn,
-
-                   //              }).FirstOrDefault(),
-
                    LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                        select new LocationSchedule
                                        {
@@ -224,7 +191,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                            IsActive = obls.IsActive,
                                            ModifiedBy = obls.ModifiedBy,
                                            ModifiedOn = obls.ModifiedOn,
-                                           IsOpenAlldays = obls.IsOpenAlldays,
+                                           IsOpenAlldays = obls.IsOpenAlldays
                                        }).ToList(),
                    OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                          select new OperatorUserMapper
@@ -302,23 +269,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                                IsActive = obls.IsActive,
                                                ModifiedBy = obls.ModifiedBy,
                                                ModifiedOn = obls.ModifiedOn,
-
-                                           }).FirstOrDefault(),
-
-                         //Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                         //              select new Department
-                         //              {
-                         //                  Id = obls.Id,
-                         //                  DepartmentName = obls.DepartmentName,
-                         //                  ContactPersonName = obls.ContactPersonName,
-                         //                  Address = obls.Address,
-                         //                  CreatedBy = obls.CreatedBy,
-                         //                  CreatedOn = obls.CreatedOn,
-                         //                  IsActive = obls.IsActive,
-                         //                  ModifiedBy = obls.ModifiedBy,
-                         //                  ModifiedOn = obls.ModifiedOn,
-
-                         //              }).FirstOrDefault(),
+                                           }).FirstOrDefault(),                         
 
                          LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                              select new LocationSchedule
@@ -333,7 +284,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                                  IsActive = obls.IsActive,
                                                  ModifiedBy = obls.ModifiedBy,
                                                  ModifiedOn = obls.ModifiedOn,
-                                                 IsOpenAlldays = obls.IsOpenAlldays,
+                                                 IsOpenAlldays = obls.IsOpenAlldays
                                              }).ToList(),
                          OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                                select new OperatorUserMapper
@@ -416,22 +367,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                            ModifiedOn = obls.ModifiedOn,
 
                                        }).FirstOrDefault(),
-
-                     //Department = (from obls in _dbContext.Department.Where(x => x.Id == m.DepartmentId)
-                     //              select new Department
-                     //              {
-                     //                  Id = obls.Id,
-                     //                  DepartmentName = obls.DepartmentName,
-                     //                  ContactPersonName = obls.ContactPersonName,
-                     //                  Address = obls.Address,
-                     //                  CreatedBy = obls.CreatedBy,
-                     //                  CreatedOn = obls.CreatedOn,
-                     //                  IsActive = obls.IsActive,
-                     //                  ModifiedBy = obls.ModifiedBy,
-                     //                  ModifiedOn = obls.ModifiedOn,
-
-                     //              }).FirstOrDefault(),
-
                      LocationSchedule = (from obls in _dbContext.LocationSchedule.Where(x => x.LocationId == m.Id)
                                          select new LocationSchedule
                                          {
@@ -445,7 +380,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                              IsActive = obls.IsActive,
                                              ModifiedBy = obls.ModifiedBy,
                                              ModifiedOn = obls.ModifiedOn,
-                                             IsOpenAlldays= obls.IsOpenAlldays
+                                             IsOpenAlldays=obls.IsOpenAlldays
                                          }).ToList(),
                      OperatorUserMapper = (from obls in _dbContext.OperatorUserMapper.Where(x => x.LocationId == m.Id)
                                            select new OperatorUserMapper
@@ -678,7 +613,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           {
                               locationId = location.Id,
                               DispenserId = charger.Id,
-                              ChargeBoxId = charger.ChargeBoxId,                              
+                              ChargeBoxId = charger.ChargeBoxId,
                               ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
                               charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
@@ -702,7 +637,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           {
                               locationId = location.Id,
                               DispenserId = charger.Id,
-                              ChargeBoxId = charger.ChargeBoxId,                              
+                              ChargeBoxId = charger.ChargeBoxId,
                               ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
                               charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :

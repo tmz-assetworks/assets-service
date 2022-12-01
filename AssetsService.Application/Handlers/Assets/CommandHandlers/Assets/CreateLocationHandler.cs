@@ -29,7 +29,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             LocationEntitiy.CreatedOn = DateTime.Now;
             LocationEntitiy.LocationAddressId = 0;
             LocationEntitiy.LocationStatusId = 0;
-            LocationEntitiy.DepartmentName = "Manufacturing";
+            LocationEntitiy.DepartmentName = "";
             LocationEntitiy.CreatedBy = "";
             LocationEntitiy.FuelProtectType = "";
             LocationEntitiy.GlobalTax = "";
@@ -96,11 +96,11 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     ModifiedOn = DateTime.Now,
                     Day = request.locationScheduleCommand[i].Day,
                     LocationId = 0,
-                    StartTime = request.locationScheduleCommand[i].IsOpenAlldays==true ? "": request.locationScheduleCommand[i].StartTime,
+                    StartTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].StartTime,
                     EndTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].EndTime,
                     IsActive = true,
                     ModifiedBy = "",
-                    IsOpenAlldays=request.locationScheduleCommand[i].IsOpenAlldays,
+                    IsOpenAlldays = request.locationScheduleCommand[i].IsOpenAlldays,
                 });
             }
             LocationEntitiy.LocationSchedule = locationSchedules;

@@ -66,7 +66,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     StartTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].StartTime,
                     EndTime = request.locationScheduleCommand[i].IsOpenAlldays == true ? "" : request.locationScheduleCommand[i].EndTime,
                     ModifiedBy = request.UserId,
-                    IsOpenAlldays= request.locationScheduleCommand[i].IsOpenAlldays
+                    IsOpenAlldays = request.locationScheduleCommand[i].IsOpenAlldays
                 });
             }
             LocationEntitiy.LocationSchedule = locationSchedules;

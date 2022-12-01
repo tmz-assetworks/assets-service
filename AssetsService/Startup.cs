@@ -165,6 +165,7 @@ namespace AssetsService.Api
             services.AddTransient<ICombineAssetRepository, CombineAssetRepository>();
 
             services.AddTransient<ICountryRepository, CountryRepository>();
+            services.AddTransient<IDispenserLocationRepository, DispenserByLocationIdRepository>();
             services.AddMediatR(typeof(CreateSwitchGearHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateSwitchGearHandler).GetTypeInfo().Assembly);
             services.AddTransient<ISwitchGearRepository, SwitchGearRepository>();

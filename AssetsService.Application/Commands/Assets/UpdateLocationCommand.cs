@@ -9,12 +9,7 @@ namespace AssetsService.Application.Commands.Assets
 
     public class UpdateLocationCommand : IRequest<Location>
     {
-
-        // public UpdateLocationCommand()
-        // {
-        //     locationSchedule = new List<LocationSchedule>();
-        //     operatorUserMapper = new List<OperatorUserMapper>();
-        // }
+        
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Id")]
         public long Id { get; set; }
@@ -61,7 +56,7 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(255, MinimumLength = 0, ErrorMessage = "Description must be fewer than 255 characters.")]
         public string Description { get; set; }
 
-        [StringLength(40, MinimumLength = 0, ErrorMessage = "LocationName must be fewer than 20 characters.")]
+        [StringLength(40, MinimumLength = 0, ErrorMessage = "LocationName must be fewer than 40 characters.")]
         [Required]
         public string LocationName { get; set; }
 

@@ -10,9 +10,11 @@ namespace AssetsService.Application.Queries
     public class GetDispenserByLocationsQuery : IRequest<List<Core.Response.DispenserByLocationsResponse>>
     {
         public List<long> StationId { get; set; }
-        public GetDispenserByLocationsQuery(List<long> stationId)
+        public string? ChargeBoxId { get; set; }
+        public GetDispenserByLocationsQuery(List<long> stationId, string? chargerId)
         {
             StationId = stationId;
+            ChargeBoxId = chargerId;
         }
     }
 }

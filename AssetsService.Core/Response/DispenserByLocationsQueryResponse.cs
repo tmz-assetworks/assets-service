@@ -53,7 +53,7 @@ namespace AssetsService.Core.Response
     public class DispenserByLocations
     {
         public List<long> LocationIds { get; set; }
-
+        public string? ChargeBoxId { get; set; }
         public string operatorid { get; set; }
     }
 }

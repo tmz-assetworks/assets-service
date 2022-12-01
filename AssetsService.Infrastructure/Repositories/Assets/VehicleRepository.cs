@@ -96,7 +96,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                           })
                          .OrderByDescending(a => a.Id).ToListAsync();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 ;
             }
@@ -137,12 +138,14 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }).Where(m => m.Id == Id).FirstOrDefault();
 
         }
+
+
         public async Task<Vehicle> GetVehicleInfoById(long Id)
         {
             DateTime currentDateTime = DateTime.Now;
             try
             {
-                var data = _dbContext.Vehicle
+                var vehicle = _dbContext.Vehicle
                      .Select(m => new Vehicle
                      {
                          Id = m.Id,
@@ -157,8 +160,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                          ModifiedBy = m.ModifiedBy,
                          ModifiedOn = m.ModifiedOn,
                          ModelYear = m.ModelYear,
-                         MakeName = m.MakeName,
                          ModelName = m.ModelName,
+                         MakeName = m.MakeName,
                          vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id)
 
                                         select new VehicleRFID
@@ -172,28 +175,37 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                             ModifiedBy = obls.ModifiedBy,
                                             ModifiedOn = obls.ModifiedOn,
                                         }).ToList(),
-                        
+
                      }).Where(x => x.Id == Id).FirstOrDefault();
 
-                if (data != null)
+                if (vehicle != null)
                 {
-                    string[] vehicleRFIDs = _dbContext.VehicleRFID.Where(x => x.VehicleId == x.Id && x.IsActive==true).Select(v => v.Name.ToString()).ToArray();
+                    string[] vehicleRFIDs = _dbContext.VehicleRFID.Where(x => x.VehicleId == vehicle.Id && x.IsActive == true).Select(v => v.Name.ToString()).ToArray();
 
-                    data.applicableSubscriptionPlans = new List<ApplicableSubscriptionPlan>();
-                    data.applicableSubscriptionPlans = _dbContext.SubscriptionPlan.Where(s => s.SubscriptionsValue == data.ModelYear.ToString() && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime || (s.SubscriptionsValue == data.ModelName  && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime)
-                    ||( s.SubscriptionsValue == data.VIN && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime) || (s.SubscriptionsValue == data.MakeName && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime) || (vehicleRFIDs.Contains(s.SubscriptionsValue)) && s.ValidFrom <= currentDateTime && s.ValidTo >= currentDateTime
-                    && s.IsActive == true).Select(s => new ApplicableSubscriptionPlan
+                    string modelYear = vehicle.ModelYear.ToString();
+                    List<SubscriptionsGroupDetails> subscriptionsGroupDetails = _dbContext.SubscriptionsGroupDetails.Where(s => s.IsActive == true && (vehicleRFIDs.Contains(s.Value) && s.Text.ToLower() == "rfid")
+                    || (s.Text.ToLower() == "modelyear" && s.Value == modelYear) || (s.Text.ToLower() == "makename" && s.Value == vehicle.MakeName) ||
+                   (s.Text.ToLower() == "modelname" && s.Value == vehicle.ModelName)  || (s.Text.ToLower() == "vin" && s.Value == vehicle.VIN)
+                    ).ToList();
+
+                    List<long> subscriptionsGroupIds = new List<long>();
+                    foreach (var subscriptionsGroup in subscriptionsGroupDetails)
                     {
-                        RfIdNumbers = data.vehicleRFID != null ? String.Join(',', data.vehicleRFID.Select(s => s.Name)).ToString() : "",
+                        subscriptionsGroupIds.Add(subscriptionsGroup.SubscriptionsGroupId);
+                    }
+                    vehicle.applicableSubscriptionPlans = _dbContext.SubscriptionPlan.Where(x => subscriptionsGroupIds.Contains(x.SubscriptionsGroupId.Value)).OrderBy(p => p.Price)
+                    .Where(p => p.ValidFrom <= currentDateTime && p.ValidTo >= currentDateTime && p.IsActive == true).Select(s => new ApplicableSubscriptionPlan
+                    {
+                        RfIdNumbers = vehicle.vehicleRFID != null ? String.Join(',', vehicle.vehicleRFID.Select(s => s.Name)).ToString() : "",
                         SubscriptionPlanName = s.SubscriptionPlanName,
-                        SubscriptionsValue = s.SubscriptionsValue,
+                        SubscriptionsValue = s.Price.ToString(),
                         ValidFrom = s.ValidFrom,
                         ValidTo = s.ValidTo,
-                        Type = s.SubscriptionPlanType.PlanTypeName,
+                        Type = s.PriceType.PriceTypeName,
+
                     }).ToList();
                 }
-
-                return data;
+                return vehicle;
             }
             catch (Exception ex)
             {
@@ -207,7 +219,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             VehicleRFID vehicleRFID = new VehicleRFID();
             try
             {
-                //cv.SubscriptionPlanId = 3;  // TODO 
+
                 cv.ModifiedBy = cv.CreatedBy;
                 cv.CreatedOn = DateTime.Now;
                 cv.ModifiedOn = DateTime.Now;
@@ -341,7 +353,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                             VehicleMacAddress = m.VehicleMacAddress,
                             IsActive = m.IsActive,
                             ModifiedOn = m.ModifiedOn,
-                            ModelYear = m.ModelYear,                           
+                            ModelYear = m.ModelYear,
                             ModelName = m.ModelName,
                             MakeName = m.MakeName,
                             vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",

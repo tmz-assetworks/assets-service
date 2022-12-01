@@ -47,17 +47,17 @@ namespace AssetsService.Application.Commands.Assets
         //[Required]
         //[StringLength(20, MinimumLength = 0, ErrorMessage = "SerialNumber must be fewer than 20 characters.")]
         //public string SerialNumber { get; set; }          // Removed  11/07/2022
-       
+
         public long? RFIdReaderId { get; set; }
-        
+
         public long? PowerCabinetId { get; set; }
-       
+
         public long? PadId { get; set; }
-        
+
         public long? CableId { get; set; }
-        
+
         public long? SwitchGearId { get; set; }
-   
+
         [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "ProtocolName must be fewer than 20 characters.")]
         public string ProtocolName { get; set; }
@@ -79,7 +79,7 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ConnectorType Id")]
         public long ConnectorType { get; set; }
-       
+
         [Required]
         public long IncrementalPower { get; set; }
         [Required]
@@ -98,4 +98,3 @@ namespace AssetsService.Application.Commands.Assets
         public long Power { get; set; }
     }
 }
-

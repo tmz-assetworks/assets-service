@@ -1,4 +1,4 @@
-﻿using AssetsService.Core.PagingHelper;
+using AssetsService.Core.PagingHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace AssetsService.Core.Response
         public string FirmwareVersion { get; set; }
         public string HardwareSerialNumber { get; set; }
         public long LocationId { get; set; }
-        public string LocationName { get; set; }  
+        public string LocationName { get; set; }
         public string MakeName { get; set; }
         public string ModelName { get; set; }
         public long ModemId { get; set; }
@@ -130,5 +130,22 @@ namespace AssetsService.Core.Response
     public class DispensersRequest : QueryStringParameters
     {
         public string operatorId { get; set; }
+    }
+    public class DispenserLocationRequest
+    {
+        public List<long> locationIds { get; set; }
+    }
+    public class GetDispenserLocationResponse
+    {
+        public long Id { get; set; }   
+        public long LocationId { get; set; }    
+        public string ChargeBoxId { get; set; }
+        
+    }
+    public class DispenserLocationResponse
+    {
+        public int StatusCode { get; set; }
+        public string StatusMessage { get; set; }
+        public List<GetDispenserLocationResponse> Data { get; set; }
     }
 }

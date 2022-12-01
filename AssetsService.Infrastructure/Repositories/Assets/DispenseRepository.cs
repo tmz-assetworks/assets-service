@@ -56,10 +56,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     MultiplePorts = m.MultiplePorts,
                     PingSchedule = m.PingSchedule,
                     FleetStation = m.FleetStation,
-                    ReadingSchedule = m.ReadingSchedule,                       
+                    ReadingSchedule = m.ReadingSchedule,
                     ChargeBoxId = m.ChargeBoxId,
                     ModelName = m.ModelName,
-                    MakeName = m.MakeName,
+                    MakeName= m.MakeName,
                     LocationId = m.LocationId,
                     CableId = m.CableId,
                     ModemId = m.ModemId,
@@ -69,8 +69,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     SwitchGearId = m.SwitchGearId,
                     ChargerStatuses = m.ChargerStatuses,
                     InstallationDate = m.InstallationDate,
-                   
-                  
                     Location = (from obls in _dbContext.Locations.Where(x => x.Id == m.LocationId)
                                 select new Location
                                 {
@@ -87,8 +85,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                     ModifiedBy = obls.ModifiedBy,
                                     ModifiedOn = obls.ModifiedOn,
                                     AlternateMobileNumber = obls.AlternateMobileNumber,
-                                    Email = obls.Email,                                      
-                                    LocationName = obls.LocationName,                                       
+                                    Email = obls.Email,
+                                    LocationName = obls.LocationName,
                                     TimeZone = obls.TimeZone,
                                     LocationAddress = (from oblt in _dbContext.LocationAddress.Where(x => x.Id == obls.LocationAddressId)
                                                        select new LocationAddress
@@ -207,7 +205,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                Id = dispenser.Id,
                                AssetId = dispenser.AssetId,
                                ChargeBoxId = dispenser.ChargeBoxId,
-                               LocationId =  dispenser.LocationId==null?0: (long)dispenser.LocationId,
+                               LocationId = dispenser.LocationId == null ? 0 : (long)dispenser.LocationId,
                                LocationName = dispenser.Location.LocationName,
                                EndPointUrl = dispenser.EndPointUrl,
                                FirmwareVersion = dispenser.FirmwareVersion,
@@ -217,24 +215,24 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                PingSchedule = dispenser.PingSchedule,
                                FleetStation = dispenser.FleetStation,
                                ReadingSchedule = dispenser.ReadingSchedule,
-                               MakeName = dispenser.MakeName,
-                               ModelName = dispenser.ModelName,
-                               ModemId = dispenser.ModemId==null?0: (long)dispenser.ModemId,
+                               MakeName = dispenser.MakeName ,
+                               ModelName = dispenser.ModelName ,
+                               ModemId = dispenser.ModemId == null ? 0 : (long)dispenser.ModemId,
                                ModemSerialNumber = dispenser.Modem != null ? dispenser.Modem.SerialNumber : "",
-                               RFIDReaderId = dispenser.RFIDReaderId==null?0:(long)dispenser.RFIDReaderId,
+                               RFIDReaderId = dispenser.RFIDReaderId == null ? 0 : (long)dispenser.RFIDReaderId,
                                RFIDReader = dispenser.RFIDReader != null ? dispenser.RFIDReader.CardReader : "",
-                               PowerCabinetId = dispenser.PowerCabinetId==null?0:(long)dispenser.PowerCabinetId,
+                               PowerCabinetId = dispenser.PowerCabinetId == null ? 0 : (long)dispenser.PowerCabinetId,
                                Status = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0 ? "Offline" :
                                dispenser.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
                                dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
                                dispenser.ChargerStatuses.ToList()[0].ChargerStatus1,
                                PowerCabinetSerialNumber = dispenser.PowerCabinet.SerialNumber,
                                PortType = String.Join(",", dispenser.Ports.Where(p => p.ChargerId == dispenser.Id).Select(s => s.Connector.ConnectorType)),
-                               PadId = dispenser.PadId==null?0:(long)dispenser.PadId,
+                               PadId = dispenser.PadId == null ? 0 : (long)dispenser.PadId,
                                PadName = dispenser.Pad.PadName,
-                               CableId = dispenser.CableId==null?0:(long)dispenser.CableId,
+                               CableId = dispenser.CableId == null ? 0 : (long)dispenser.CableId,
                                CableSerialNumber = dispenser.Cable.SerialNumber,
-                               SwitchGearId = dispenser.SwitchGearId==null?0:(long)dispenser.SwitchGearId,
+                               SwitchGearId = dispenser.SwitchGearId == null ? 0 : (long)dispenser.SwitchGearId,
                                SwitchGearName = dispenser.SwitchGear.SwitchGearName,
                                ProtocolName = dispenser.ProtocolName,
                                ModifiedOn = (DateTime)dispenser.ModifiedOn,
@@ -278,7 +276,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                Id = dispenser.Id,
                                AssetId = dispenser.AssetId,
                                ChargeBoxId = dispenser.ChargeBoxId,
-                               LocationId = dispenser.LocationId==null?0:(long)dispenser.LocationId,
+                               LocationId = dispenser.LocationId == null ? 0 : (long)dispenser.LocationId,
                                LocationName = dispenser.Location.LocationName,
                                EndPointUrl = dispenser.EndPointUrl,
                                FirmwareVersion = dispenser.FirmwareVersion,
@@ -290,22 +288,22 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                ReadingSchedule = dispenser.ReadingSchedule,
                                MakeName = dispenser.MakeName ,
                                ModelName = dispenser.ModelName,
-                               ModemId = dispenser.ModemId==null?0:(long)dispenser.ModemId,
+                               ModemId = dispenser.ModemId == null ? 0 : (long)dispenser.ModemId,
                                ModemSerialNumber = dispenser.Modem != null ? dispenser.Modem.SerialNumber : "",
-                               RFIDReaderId = dispenser.RFIDReaderId==null?0:(long)dispenser.RFIDReaderId,
+                               RFIDReaderId = dispenser.RFIDReaderId == null ? 0 : (long)dispenser.RFIDReaderId,
                                RFIDReader = dispenser.RFIDReader != null ? dispenser.RFIDReader.CardReader : "",
-                               PowerCabinetId = dispenser.PowerCabinetId==null?0:(long)dispenser.PowerCabinetId,
+                               PowerCabinetId = dispenser.PowerCabinetId == null ? 0 : (long)dispenser.PowerCabinetId,
                                Status = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0 ? "Offline" :
                                dispenser.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
                                dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
                                dispenser.ChargerStatuses.ToList()[0].ChargerStatus1,
                                PowerCabinetSerialNumber = dispenser.PowerCabinet.SerialNumber,
                                PortType = p.Connector.ConnectorType,
-                               PadId = dispenser.PadId==null?0:(long)dispenser.PadId,
+                               PadId = dispenser.PadId == null ? 0 : (long)dispenser.PadId,
                                PadName = dispenser.Pad.PadName,
-                               CableId = dispenser.CableId==null?0:(long)dispenser.CableId,
+                               CableId = dispenser.CableId == null ? 0 : (long)dispenser.CableId,
                                CableSerialNumber = dispenser.Cable.SerialNumber,
-                               SwitchGearId = dispenser.SwitchGearId==null?0:(long)dispenser.SwitchGearId,
+                               SwitchGearId = dispenser.SwitchGearId == null ? 0 : (long)dispenser.SwitchGearId,
                                SwitchGearName = dispenser.SwitchGear.SwitchGearName,
                                ProtocolName = dispenser.ProtocolName,
                                ModifiedOn = (DateTime)dispenser.ModifiedOn,
@@ -353,6 +351,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ModelName = m.ModelName,
                      CableId = m.CableId,
                      MakeName = m.MakeName,
+                     ModemId = m.ModemId,
                      CreatedBy = m.CreatedBy,
                      ChargerStatuses = m.ChargerStatuses,
                      InstallationDate = m.InstallationDate,
@@ -424,7 +423,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      IsActive = m.IsActive,
                      IsAutomatic = m.IsAutomatic,
                      MeterType = m.MeterType,
-                     MultiplePorts = m.MultiplePorts,                    
+                     MultiplePorts = m.MultiplePorts,
                      PingSchedule = m.PingSchedule,
                      FleetStation = m.FleetStation,
                      ReadingSchedule = m.ReadingSchedule,
@@ -456,9 +455,46 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                             }).FirstOrDefault(),
                  }).Where(x => x.Id == dispenserId).FirstOrDefault();
         }
-        public async Task<List<DispenserByLocationsResponse>> GetDispenserByLocations(List<long> locationIds)
+        public async Task<List<DispenserByLocationsResponse>> GetDispenserByLocations(List<long> locationIds ,string? chargeBoxId)
         {
             List<DispenserByLocationsResponse> query = new List<DispenserByLocationsResponse>();
+            if(chargeBoxId != null && chargeBoxId != "")
+            {
+                query = (from location in _dbContext.Locations
+                         join charger in _dbContext.Charger.Where(x => x .ChargeBoxId.Equals(chargeBoxId))
+                         on location.Id equals charger.LocationId
+                         join address in _dbContext.LocationAddress
+                         on location.LocationAddressId equals address.Id
+                         join Status in _dbContext.LocationStatus
+                         on location.LocationStatusId equals Status.Id
+                         join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
+                         on location.Id equals userMap.LocationId
+                         select new DispenserByLocationsResponse
+                         {
+                             DispenserId = charger.Id,
+                             LocationId = location.Id,
+                             LocationName = location.LocationName,
+                             ContactPersonName = location.ContactPersonName,
+                             AddressLine1 = address.AddressLine1,
+                             LocationStatusName = Status.LocationStatusName,
+                             LocationStatusId = location.LocationStatusId,
+                             ChargeBoxId = charger.ChargeBoxId,
+                             ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
+                             charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
+                             charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
+                             charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                             ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
+                             DispenserModel = charger.ModelName,
+                             ProtocolName = charger.ProtocolName,
+                             NoofPort = charger.Ports.Count.ToString(),
+                             DispenserMake = charger.MakeName,
+
+
+                         }
+
+                          ).ToList<DispenserByLocationsResponse>();
+            }
+            else
             if (locationIds.Count <= 0)
             {
                 query = (from location in _dbContext.Locations
@@ -630,21 +666,20 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                       select new DispensersDetail
                       {
                           ChargerBoxId = disp.ChargeBoxId,
-                          FaultSince = "",
-                          TimeReported = "",
-                          LocationId = disp.LocationId==null?0:(long)disp.LocationId,
+                          TimeReported = disp.ChargerStatuses == null ? "" :
+                          disp.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count == 0 ? "" : 
+                          disp.ChargerStatusHistories.Where(x => x.ConnectorStatus.ToLower() == "faulted").OrderByDescending(m => m.Id).FirstOrDefault().CreatedOn.Value.ToString("d-MM-yyyy h:mm"),
+                          FaultSince = disp.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count == 0 ? "" :
+                          (DateTime.Now- disp.ChargerStatusHistories.Where(x => x.ConnectorStatus.ToLower() == "faulted").OrderByDescending(m => m.Id).FirstOrDefault().CreatedOn).Value.Hours.ToString() + " hours",
+                          LocationId = disp.LocationId == null ? 0 : (long)disp.LocationId,
                           State = location.LocationAddress != null ? location.LocationAddress.StateName : "",
                           ChargerType = "OCPP",
                           LocationContactName = location.LocationName,
-                          LocationContactNumber = location.ContactPersonName,
-
-
+                          LocationContactNumber = location.ContactPersonNumber,
                       }).ToList<DispensersDetail>();
             result = result != null ? result.OrderByDescending(a => a.ChargerName).ToList<DispensersDetail>() : result;
-
-
             if (!string.IsNullOrEmpty(dispensersDetailRequest.SearchParam))
-                result = result.Where(d => d.ChargerName.ToLower().Contains(dispensersDetailRequest.SearchParam.ToLower())
+                result = result.Where(d => d.ChargerBoxId.ToLower().Contains(dispensersDetailRequest.SearchParam.ToLower())
              ).ToList<DispensersDetail>();
             //  Paging on Records
 
@@ -788,8 +823,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
             return Task.FromResult(dispenser);
         }
+       
 
         #endregion
+
     }
 }
 

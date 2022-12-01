@@ -224,12 +224,10 @@ namespace AssetsService.Infrastructure.Repositories.Repository
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
-
         public async Task<T> GetByIdAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }
-
         public async Task<T> UpdateAsync(T entity, long id, string types)
         {
             if (types == "PAD")

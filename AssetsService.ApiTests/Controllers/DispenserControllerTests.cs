@@ -34,6 +34,7 @@ namespace AssetsService.Api.Tests
             _mediator = new Mock<IMediator>();
             _mockHttpHelper = new Mock<IHtmlHelper>();
             _token = new Mock<TokenBase>();
+            _token.Object.acces_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSIsImtpZCI6IjJaUXBKM1VwYmpBWVhZR2FYRUpsOGxWMFRPSSJ9.eyJhdWQiOiJzcG46NzY5OGNiZWQtN2Q5Zi00M2IzLWI5Y2QtYTRmMDliOWI1NWVkIiwiaXNzIjoiaHR0cHM6Ly9zdHMud2luZG93cy5uZXQvNzQ0YWE4YjAtYmI5OS00OTgyLTkwM2YtNTIzMjgyMTZiNGJlLyIsImlhdCI6MTY2ODQ5MzIyMSwibmJmIjoxNjY4NDkzMjIxLCJleHAiOjE2Njg0OTc5MzMsImFjciI6IjEiLCJhaW8iOiJBVFFBeS84VEFBQUFmNWZ1VGVDMjE0Q3k2dFllL1AySURhQ3dmSjVOZGlmdm45RnpoSXZJamxKM2NsamZiTHZkQ2NFTzJ0SmpJWElDIiwiYW1yIjpbInB3ZCJdLCJhcHBpZCI6Ijc2OThjYmVkLTdkOWYtNDNiMy1iOWNkLWE0ZjA5YjliNTVlZCIsImFwcGlkYWNyIjoiMSIsImZhbWlseV9uYW1lIjoib3BlcmF0b3IiLCJnaXZlbl9uYW1lIjoib3BlcmF0b3IiLCJpcGFkZHIiOiI1Mi4xNDIuMTcyLjEyOCIsIm5hbWUiOiJvcGVyYXRvciIsIm9pZCI6ImY0ZTliNDE5LWM3ZGMtNDJiNi05MmJjLWYyMDc3MDcxNjdmMiIsInJoIjoiMC5BVlVBc0toS2RKbTdna21RUDFJeWdoYTB2dTNMbUhhZmZiTkR1YzJrOEp1YlZlMklBT3cuIiwicm9sZXMiOlsiT3BlcmF0b3IiXSwic2NwIjoiQXBwUm9sZUFzc2lnbm1lbnQuUmVhZFdyaXRlLkFsbCBEaXJlY3RvcnkuQWNjZXNzQXNVc2VyLkFsbCBEaXJlY3RvcnkuUmVhZC5BbGwgRGlyZWN0b3J5LlJlYWRXcml0ZS5BbGwgRGlyZWN0b3J5LldyaXRlLlJlc3RyaWN0ZWQgZW1haWwgR3JvdXAuUmVhZC5BbGwgR3JvdXAuUmVhZFdyaXRlLkFsbCBJZGVudGl0eVVzZXJGbG93LlJlYWRXcml0ZS5BbGwgb2ZmbGluZV9hY2Nlc3Mgb3BlbmlkIHByb2ZpbGUgVXNlci5FeHBvcnQuQWxsIFVzZXIuSW52aXRlLkFsbCBVc2VyLk1hbmFnZUlkZW50aXRpZXMuQWxsIFVzZXIuUmVhZCBVc2VyLlJlYWQuQWxsIFVzZXIuUmVhZEJhc2ljLkFsbCBVc2VyLlJlYWRXcml0ZSBVc2VyLlJlYWRXcml0ZS5BbGwgVXNlckF1dGhlbnRpY2F0aW9uTWV0aG9kLlJlYWQgVXNlckF1dGhlbnRpY2F0aW9uTWV0aG9kLlJlYWQuQWxsIFVzZXJBdXRoZW50aWNhdGlvbk1ldGhvZC5SZWFkV3JpdGUgVXNlckF1dGhlbnRpY2F0aW9uTWV0aG9kLlJlYWRXcml0ZS5BbGwiLCJzdWIiOiJLMmFuNzhfZEhMdU9rY3VrTHRBY2pwMWZYOU5PWWU2SnotNkhkWnFiODFZIiwidGlkIjoiNzQ0YWE4YjAtYmI5OS00OTgyLTkwM2YtNTIzMjgyMTZiNGJlIiwidW5pcXVlX25hbWUiOiJvcGVyYXRvckBkZXZvcHN0ZWttaW5kei5vbm1pY3Jvc29mdC5jb20iLCJ1cG4iOiJvcGVyYXRvckBkZXZvcHN0ZWttaW5kei5vbm1pY3Jvc29mdC5jb20iLCJ1dGkiOiIxX21pb3JTLVhrQ1lVYnBlM2FJWEFBIiwidmVyIjoiMS4wIn0.HiGz906bKzjvvDjmM6ha58qOEnWZ_f88BIQparnul1k3trscJPO-1urnvD1I4bPzPVL_an54kCkMjJNA2kjiqIKwYaW4t65IE7pGaUdXZhAXPx_niLHm2YwPmTmvPMFLuwtG50bd_qcRTexGbWqH0rZUgmGjO9fP4Evq9DdWSKRpQJFocOzK3ihu1Tw847YaAkaAzoYkJGPcIs8OVo-pCGuJS05sbsOVXzzOgJ5RyEhF-wOIf2UogfxEdKj92NXaLcjCXYHGh5TT9HVKo4t5jA953dubdVRrb2SyVAxvkmRd8_XYZtJ1jpW_zcGboPHnbxvvLnJlIS8RWy65jA9ZcQ";
             _configuration = new Mock<IConfiguration>();
             _logger = new Mock<ILogger<DispenserController>>();
             _dispenserController = new DispenserController(_mediator.Object, _logger.Object, _token.Object);
@@ -48,10 +49,10 @@ namespace AssetsService.Api.Tests
             CreateDispenserCommand command = new CreateDispenserCommand()
             {
                 AssetId = "New RFID 22 0",
-                CableId = 1,
+                CableId = 1,                
                 LocationId = 1,
-                MakeName = "MakeTest",
-                ModelName = "ModelTest",
+                MakeName = "Make",
+                ModelName = "Model",
                 CreatedBy = "1",
                 ChargeBoxId = "",
                 RFIdReaderId = 1,
@@ -64,7 +65,7 @@ namespace AssetsService.Api.Tests
                 PadId = 1,
                 PingSchedule = "",
                 PowerCabinetId = 1,
-                FleetStation= true,
+                FleetStation = true,
                 ProtocolName = "",
                 ReadingSchedule = "",
                 PortCommand = new List<PortCommand>()
@@ -135,10 +136,11 @@ namespace AssetsService.Api.Tests
             {
                 Id = 1,
                 CableId = 1,
-                AssetId = "New RFID 22 0",
+                AssetId = "New RFID 22 0",                
                 LocationId = 1,
-                MakeName = "Model",
-                ModelName = "Make",
+                MakeName = "Make",
+                ModelName = "Model",
+
                 ModifiedBy = "1",
                 ChargeBoxId = "",
                 RFIdReaderId = 1,
@@ -260,7 +262,7 @@ namespace AssetsService.Api.Tests
                           PortType="",
                           PowerCabinetId=1,
                           PowerCabinetSerialNumber="1",
-                          FleetStation=true,
+                          FleetStation =true,
                           ProtocolName="",
                           ReadingSchedule="",
                           RFIDReader="",

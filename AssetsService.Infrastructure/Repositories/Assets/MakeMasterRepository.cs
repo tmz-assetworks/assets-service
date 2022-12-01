@@ -59,7 +59,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      Id = m.Id,
                      Name = m.Name,
                      IsActive = m.IsActive
-                 }).Where(m => m.Name!= "").ToList<Core.Response.MakeMasterList>();
+                 }).Where(m => m.Name!= "").OrderBy(m => m.Name).ToList<Core.Response.MakeMasterList>();
         }
     }
 }

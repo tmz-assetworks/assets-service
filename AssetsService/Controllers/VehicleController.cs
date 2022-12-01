@@ -74,8 +74,6 @@ namespace AssetsService.Api.Controllers
             try
             {
                 createCommonResponse.statusCode = 200;
-                
-                
 
                 if (command.RfIdCardsAssigneds is null || command.RfIdCardsAssigneds.Count == 0)
                 {
