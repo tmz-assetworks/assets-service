@@ -94,4 +94,9 @@ namespace AssetsService.Core.Response
         public long Id { get; set; }
         public string ConnectorTypeName { get; set; }
     }
+    public class LocationDispensersByidRequest 
+    {
+        public List<long> locationIds { get; set; }
+    }
+    
 }

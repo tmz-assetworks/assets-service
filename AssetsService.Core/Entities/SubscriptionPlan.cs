@@ -32,6 +32,11 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "currencyid", EmitDefaultValue = false)]
         public long CurrencyId { get; set; }
         public virtual Currency currency { get; set; }
+        public virtual Unit Unit { get; set; }
+
+        [DataMember(Name = "UnitId", EmitDefaultValue = false)]
+
+        public long UnitId { get; set; }
 
         [DataMember(Name = "validFrom", EmitDefaultValue = false)]
         public DateTime ValidFrom { get; set; }
@@ -39,25 +44,31 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "validTo", EmitDefaultValue = false)]
         public DateTime ValidTo { get; set; }
 
-        [DataMember(Name = "status", EmitDefaultValue = false)]
-        public long StatusId { get; set; }
-        public virtual Status Status { get; set; }
+        // [DataMember(Name = "status", EmitDefaultValue = false)]
+        // public long? StatusId { get; set; }
+        // public virtual Status Status { get; set; }
 
         [DataMember(Name = "subscriptionsGroupId", EmitDefaultValue = false)]
-        public long SubscriptionsGroupId { get; set; }
+        public long? SubscriptionsGroupId { get; set; }
         public virtual SubscriptionsGroup SubscriptionsGroup { get; set; }
 
 
-        [DataMember(Name = "SubscriptionPlanTypeId", EmitDefaultValue = false)]
-        public long SubscriptionPlanTypeId { get; set; }
-        public virtual SubscriptionPlanType SubscriptionPlanType { get; set; }
+        // [DataMember(Name = "SubscriptionPlanTypeId", EmitDefaultValue = false)]
+        // public long SubscriptionPlanTypeId { get; set; }
+        // public virtual SubscriptionPlanType SubscriptionPlanType { get; set; }
+        public virtual PriceType PriceType { get; set; }
 
+        [DataMember(Name = "priceTypeid", EmitDefaultValue = false)]
+
+        public long PriceTypeId { get; set; }
 
         [DataMember(Name = "subscriptionsDetails", EmitDefaultValue = false)]
         public string SubscriptionsDetails { get; set; }
 
-        [DataMember(Name = "subscriptionsValue", EmitDefaultValue = false)]
-        public string SubscriptionsValue { get; set; }
+        // [DataMember(Name = "subscriptionsValue", EmitDefaultValue = false)]
+        // public string SubscriptionsValue { get; set; }
+        [DataMember(Name = "Price", EmitDefaultValue = false)]
+        public double Price { get; set; }
 
         [DataMember(Name = "isActive", EmitDefaultValue = false)]
         public bool IsActive { get; set; }
@@ -79,3 +90,4 @@ namespace AssetsService.Core.Entities
         public DateTime? ModifiedOn { get; set; }
     }
 }
+

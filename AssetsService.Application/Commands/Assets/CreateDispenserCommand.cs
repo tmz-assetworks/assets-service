@@ -39,7 +39,6 @@ namespace AssetsService.Application.Commands.Assets
         public long? ModemId { get; set; } = 0;    // 07/11/2022
         [StringLength(20, MinimumLength = 0, ErrorMessage = "MeterType must be fewer than 20 characters.")]
         public string MeterType { get; set; }
-        
         [StringLength(20, MinimumLength = 0, ErrorMessage = "PingSchedule must be fewer than 20 characters.")]
         public string PingSchedule { get; set; }
         [Required]
@@ -56,7 +55,6 @@ namespace AssetsService.Application.Commands.Assets
         public long? PadId { get; set; } = 0;
 
         public long? CableId { get; set; } = 0;
-        
         public long? SwitchGearId { get; set; } = 0;
 
         [Required]

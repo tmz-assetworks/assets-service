@@ -21,7 +21,7 @@ namespace AssetsService.Core.Repositories.Assets
         Task<Charger> GetDispenserByChargeBoxId(string chargeBoxId);
         Task<Charger> GetDispenserByStationId(long stationId);
         Task<List<DispenserByLocationIdResponse>> GetDispenserByLocationId(long locationId);
-        Task<List<DispenserByLocationsResponse>> GetDispenserByLocations(List<long> locationId);
+        Task<List<DispenserByLocationsResponse>> GetDispenserByLocations(List<long> locationId, string? chargerBoxId);
         Task<PagedList<DispensersDetail>> GetDispensersDetail(DispensersDetailRequest dispensersDetailRequest);
         Task<PagedList<DispenserByLocationsResponse>> GetLocationDispensers(LocationDispensersRequest locationDispensersRequest);
         Task<ChargerResponse>ValidateChargerId(string ChargeBoxId);

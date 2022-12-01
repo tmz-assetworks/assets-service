@@ -9,13 +9,11 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
     public class UpdateVehicleHandler : IRequestHandler<UpdateVehicleCommand, CreateVehicleResponse>
     {
         private readonly IVehicleRepository _vehicleRepo;
-
         public UpdateVehicleHandler(IVehicleRepository vehicleRepository)
         {
             _vehicleRepo = vehicleRepository;
         }
         public async Task<CreateVehicleResponse> Handle(UpdateVehicleCommand request, CancellationToken cancellationToken)
-
         {
             CreateVehicleResponse vehicleResponse = new CreateVehicleResponse();
             if (request.Id <= 0)
@@ -31,7 +29,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                 vehicledetails.Result.LicencePlate = request.LicencePlate;
                 vehicledetails.Result.DomicileLocation = request.DomicileLocation;
                 vehicledetails.Result.VehicleMacAddress = request.VehicleMacAddress;
-                 vehicledetails.Result.ModelYear = request.ModelYear;
+                vehicledetails.Result.ModelYear = request.ModelYear;
                 vehicledetails.Result.ModelName = request.ModelName;
                 vehicledetails.Result.MakeName = request.MakeName;
                 vehicledetails.Result.Department = request.Department;

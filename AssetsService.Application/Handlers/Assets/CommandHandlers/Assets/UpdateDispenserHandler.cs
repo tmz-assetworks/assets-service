@@ -28,7 +28,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
         {
             _DispenserRepo = DispenserRepository;
             _RFIdRepository = _rfidrepository;
-            _locationRepository = locationRepository;   
+            _locationRepository = locationRepository;
             _cableRepo = cableRepo;
             _switchGearRepository = switchGearRepository;
         }
@@ -36,14 +36,14 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
 
         public async Task<DispenserResponse> Handle(UpdateDispenserCommand request, CancellationToken cancellationToken)
         {
-            
+
             var dispenserEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Charger>(request);
             if (dispenserEntitiy is null)
             {
                 throw new ApplicationException("Issue with mapper");
             }
             DispenserResponse dataResponse = new DispenserResponse();
-           
+
             var location = _locationRepository.GetByIdLocation(request.LocationId);
             if (location.Result == null)
             {
@@ -60,7 +60,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     dispenserEntitiy.Ports.Add(new Port()
                     {
                         Id = request.UpdatePortCommand[i].Id,
-                        ChargerId = (int) request.Id,
+                        ChargerId = (int)request.Id,
                         ConnectorId = request.UpdatePortCommand[i].ConnectorId,
                         ConnectorType = request.UpdatePortCommand[i].ConnectorType,
                         IncrementalPower = request.UpdatePortCommand[i].IncrementalPower,
@@ -75,14 +75,12 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     });
                 }
             }
-
-            dispenserEntitiy.CableId = (dispenserEntitiy.CableId.HasValue && dispenserEntitiy.CableId == 0) ? null : dispenserEntitiy.CableId; 
-            dispenserEntitiy.ModemId = (dispenserEntitiy.ModemId.HasValue && dispenserEntitiy.ModemId == 0) ? null : dispenserEntitiy.ModemId; 
-            dispenserEntitiy.PadId = (dispenserEntitiy.PadId.HasValue && dispenserEntitiy.PadId == 0) ? null : dispenserEntitiy.PadId; 
-            dispenserEntitiy.RFIDReaderId = (dispenserEntitiy.RFIDReaderId.HasValue && dispenserEntitiy.RFIDReaderId == 0) ? null : dispenserEntitiy.RFIDReaderId; 
-            dispenserEntitiy.SwitchGearId = (dispenserEntitiy.SwitchGearId.HasValue && dispenserEntitiy.SwitchGearId == 0) ? null : dispenserEntitiy.SwitchGearId; 
-            dispenserEntitiy.PowerCabinetId = (dispenserEntitiy.PowerCabinetId.HasValue && dispenserEntitiy.PowerCabinetId == 0) ? null : dispenserEntitiy.PowerCabinetId; 
-             
+            dispenserEntitiy.CableId = (dispenserEntitiy.CableId.HasValue && dispenserEntitiy.CableId == 0) ? null : dispenserEntitiy.CableId;
+            dispenserEntitiy.ModemId = (dispenserEntitiy.ModemId.HasValue && dispenserEntitiy.ModemId == 0) ? null : dispenserEntitiy.ModemId;
+            dispenserEntitiy.PadId = (dispenserEntitiy.PadId.HasValue && dispenserEntitiy.PadId == 0) ? null : dispenserEntitiy.PadId;
+            dispenserEntitiy.RFIDReaderId = (dispenserEntitiy.RFIDReaderId.HasValue && dispenserEntitiy.RFIDReaderId == 0) ? null : dispenserEntitiy.RFIDReaderId;
+            dispenserEntitiy.SwitchGearId = (dispenserEntitiy.SwitchGearId.HasValue && dispenserEntitiy.SwitchGearId == 0) ? null : dispenserEntitiy.SwitchGearId;
+            dispenserEntitiy.PowerCabinetId = (dispenserEntitiy.PowerCabinetId.HasValue && dispenserEntitiy.PowerCabinetId == 0) ? null : dispenserEntitiy.PowerCabinetId;
             var updateDispenser = _DispenserRepo.UpdateDispenser(dispenserEntitiy);
             var mapUserResponse = Mapper.Mappers.Map<DispenserResponse>(updateDispenser.Result);
             return mapUserResponse;
@@ -90,5 +88,3 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
 
     }
 }
-
-

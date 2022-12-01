@@ -20,7 +20,7 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         }
         public async Task<List<Core.Response.DispenserByLocationsResponse>> Handle(GetDispenserByLocationsQuery request, CancellationToken cancellationToken)
         {
-            return (List<Core.Response.DispenserByLocationsResponse>)await _dispenserRepository.GetDispenserByLocations(request.StationId);
+            return (List<Core.Response.DispenserByLocationsResponse>)await _dispenserRepository.GetDispenserByLocations(request.StationId,request.ChargeBoxId);
         }
     }
 }

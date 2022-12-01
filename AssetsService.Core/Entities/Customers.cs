@@ -23,7 +23,7 @@ namespace AssetsService.Core.Entities
         [Column(TypeName = "nvarchar(200)")]
         public string userName { get; set; }
         [DataMember(Name = "phoneNumber", EmitDefaultValue = false)]
-        public long phoneNumber { get; set; }
+        public string phoneNumber { get; set; }
 
 
         [DataMember(Name = "AddressLine1", EmitDefaultValue = false)]

@@ -13,6 +13,7 @@ namespace AssetsService.Api
             //var containerName = "assets-service-log";
             Log.Logger = new LoggerConfiguration()
                  .WriteTo.Console().WriteTo.Debug(outputTemplate: DateTime.Now.ToString()).WriteTo.File("./logs/log-.txt", rollingInterval: RollingInterval.Day)
+                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
                  .WriteTo.AzureBlobStorage(connectionString, LogEventLevel.Information,
                         containerName,
                         "{yyyy}{MM}{dd}.txt",

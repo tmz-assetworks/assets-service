@@ -62,15 +62,15 @@ namespace AssetsService.Core.Entities
 
         [DataMember(Name = "parkingFee", EmitDefaultValue = false)]
 
-        public long ParkingFee { get; set; }
+        public double ParkingFee { get; set; }
 
         [DataMember(Name = "gracePeriod", EmitDefaultValue = false)]
 
-        public DateTime GracePeriod { get; set; }
+        public double GracePeriod { get; set; }
 
         [DataMember(Name = "transactionFees", EmitDefaultValue = false)]
 
-        public long TransactionFees { get; set; }
+        public double TransactionFees { get; set; }
 
         [DataMember(Name = "salaryTax", EmitDefaultValue = false)]
 
@@ -102,6 +102,11 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "ModifiedOn", EmitDefaultValue = false)]
 
         public DateTime ModifiedOn { get; set; }
+        [DataMember(Name = "processPayment", EmitDefaultValue = false)]
+        public bool ProcessPayment { get; set; }
+
+        [DataMember(Name = "priceSlot", EmitDefaultValue = false)]
+        public bool PriceSlot { get; set; }
         public virtual ICollection<PricePlanLocationsMapper> PricePlanLocationsMapper { get; set; }
     }
 

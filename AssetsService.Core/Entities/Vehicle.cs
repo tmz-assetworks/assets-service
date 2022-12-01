@@ -1,6 +1,4 @@
-﻿
-
-using AssetsService.Core.Responses.Assets;
+﻿using AssetsService.Core.Responses.Assets;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -26,8 +24,8 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "LicencePlate", EmitDefaultValue = false)]
 
         public string LicencePlate { get; set; }
-       // [StringLength(5, ErrorMessage = "LicencePlate name must be 5 characters or less")]
-       [DataMember(Name = "Department", EmitDefaultValue = false)]
+        // [StringLength(5, ErrorMessage = "LicencePlate name must be 5 characters or less")]
+        [DataMember(Name = "Department", EmitDefaultValue = false)]
         public string Department { get; set; }
 
         [RegularExpression("^[a-zA-Z0-9]{25}*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
@@ -65,9 +63,9 @@ namespace AssetsService.Core.Entities
 
 
         [Required]
-        [DataMember(Name = "ModelYear", EmitDefaultValue = false)]       
+        [DataMember(Name = "ModelYear", EmitDefaultValue = false)]
         public long ModelYear { get; set; }           // i.e 2022,2023,2024
-                                                      
+
         [Required]
         [DataMember(Name = "makeName", EmitDefaultValue = false)]
         public string MakeName { get; set; }
@@ -83,8 +81,9 @@ namespace AssetsService.Core.Entities
 
         [NotMapped]
         public List<ApplicableSubscriptionPlan> applicableSubscriptionPlans { get; set; }
-      
+
     }
 
 
 }
+

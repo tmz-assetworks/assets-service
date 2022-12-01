@@ -29,7 +29,7 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.VehicleModel> VehicleModel { get; set; }
         public DbSet<AssetsService.Core.Entities.VehicleMake> VehicleMake { get; set; }
         public DbSet<AssetsService.Core.Entities.VehicleRFID> VehicleRFID { get; set; }
-
+        public DbSet<AssetsService.Core.Entities.SubscriptionsGroupDetails> SubscriptionsGroupDetails { get; set; }
         public DbSet<AssetsService.Core.Entities.Level> Level { get; set; }
         public DbSet<AssetsService.Core.Entities.Protocol> Protocol { get; set; }
         public DbSet<AssetsService.Core.Entities.PlugType> PlugType { get; set; }
@@ -86,7 +86,7 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.Users> Users { get; set; }
         public DbSet<AssetsService.Core.Entities.Customers> Customers { get; set; }
         public DbSet<AssetsService.Core.Entities.ChargerStatus> ChargerStatuses { get; set; }
-
+        public virtual DbSet<ChargerStatusHistory> ChargerStatusHistories { get; set; }
         public DbSet<AssetsService.Core.Entities.PricePlanLocationsMapper> PricePlanLocationsMapper { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -111,6 +111,26 @@ namespace AssetsService.Infrastructure.DBContext
                     .WithMany(p => p.ChargerStatuses)
                     .HasForeignKey(d => d.ChargerId);
             });
+            builder.Entity<ChargerStatusHistory>(entity =>
+            {
+                entity.ToTable("ChargerStatusHistory");
+
+                entity.Property(e => e.ChargerStatus)
+                    .IsRequired()
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.ConnectorStatus).HasMaxLength(255);
+
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+
+                entity.Property(e => e.Operation)
+                    .IsRequired()
+                    .HasMaxLength(255);
+                entity.HasOne(d => d.Charger)
+                    .WithMany(p => p.ChargerStatusHistories)
+                    .HasForeignKey(d => d.ChargerId);
+            });
+
             builder.Entity<AssetsService.Core.Entities.Cable>()
                 .HasIndex(u => u.AssetId)
                 .IsUnique();

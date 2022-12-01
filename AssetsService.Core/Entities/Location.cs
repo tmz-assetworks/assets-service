@@ -30,11 +30,7 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "locationStatusId", EmitDefaultValue = false)]
         public long LocationStatusId { get; set; }
         public virtual LocationStatus? LocationStatus { get; set; }
-
-        //public virtual Department? Department { get; set; }
-
-        [DataMember(Name = "departmentName", EmitDefaultValue = false)]
-        public string DepartmentName { get; set; }                  //DepartmentId changed to  DepartmentName Date 07/11/2022
+        public string DepartmentName { get; set; }        //DepartmentId changed to  DepartmentName Date 07/11/2022
 
         [DataMember(Name = "locationId", EmitDefaultValue = false)]
         public string LocationId { get; set; }

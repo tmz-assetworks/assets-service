@@ -25,7 +25,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             _RFIdRepository = _rfidrepository;
             _locationRepository = locationRepository;
             _cableRepo = cableRepo;
-            _switchGearRepository = switchGearRepository;   
+            _switchGearRepository = switchGearRepository;
         }
         public async Task<DispenserResponse> Handle(CreateDispenserCommand request, CancellationToken cancellationToken)
         {

@@ -59,7 +59,7 @@ namespace AssetsService.Core.Entities
         /// Gets or Sets IsAutomatic
         /// </summary>
         [DataMember(Name = "isAutomatic", EmitDefaultValue = false)]
-        public bool IsAutomatic { get; set; }      
+        public bool IsAutomatic { get; set; }
 
         /// <summary>
         /// Gets or Sets Latitude
@@ -91,15 +91,11 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "meterType", EmitDefaultValue = false)]
         public string? MeterType { get; set; }
 
-       
-
         /// <summary>
         /// Gets or Sets MultiplePorts
         /// </summary>
         [DataMember(Name = "multiplePorts", EmitDefaultValue = false)]
         public bool MultiplePorts { get; set; }
-      
-
         /// <summary>
         /// Gets or Sets PingSchedule
         /// </summary>
@@ -195,5 +191,7 @@ namespace AssetsService.Core.Entities
         public DateTime? ModifiedOn { get; set; }
         public virtual ICollection<Port> Ports { get; set; }
         public virtual ICollection<ChargerStatus> ChargerStatuses { get; set; }
+        public virtual ICollection<ChargerStatusHistory> ChargerStatusHistories { get; set; }
     }
 }
+
