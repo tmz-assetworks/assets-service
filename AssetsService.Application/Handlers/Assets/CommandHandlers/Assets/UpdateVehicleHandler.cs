@@ -34,6 +34,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                 vehicledetails.Result.MakeName = request.MakeName;
                 vehicledetails.Result.Department = request.Department;
                 vehicledetails.Result.ModifiedOn = DateTime.Now;
+                vehicledetails.Result.UnitNumber = request.UnitNumber;
             }
 
             if (request.RfIdCardsAssigneds != null && request.RfIdCardsAssigneds.Count() > 0)

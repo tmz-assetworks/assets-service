@@ -8,11 +8,11 @@ Tag_Release:
   stage: Tag_Release
   image: registry.gitlab.com/gitlab-org/release-cli:latest 
   rules:
-    - if: $CI_COMMIT_BRANCH == "m5_qa_release"
+    - if: $CI_COMMIT_BRANCH == "m9_qa_release"
       when: always    
   script:
     - tag_time=`date "+%d-%m-%Y-%H-%M-%S"`
-    - export COMMIT_TAG="m5_qa_release-$tag_time"
+    - export COMMIT_TAG="m9_qa_release-$tag_time"
     - release-cli create --name "Release $COMMIT_TAG" --tag-name $COMMIT_TAG
 
 
@@ -37,7 +37,7 @@ Sonarqube:
       - "dotnet sonarscanner end /d:sonar.login=\"$SONAR_TOKEN\""
   allow_failure: true
   only:
-    - /^(m5_qa_release)+-?.*$/
+    - /^(m9_qa_release)+-?.*$/
   except:
     - branches
 
@@ -48,7 +48,7 @@ Dotnet_App_Publish:
   tags: 
    - assets-service
   only:
-    - /^(m5_qa_release)+-?.*$/
+    - /^(m9_qa_release)+-?.*$/
   except:
     - branches
   script:
@@ -73,12 +73,13 @@ Docker_Image_Build:
   script:
       - cp -R publish/ AssetsService/publish
       - ls -lrth AssetsService/publish
-      - docker build -t $QA_IMAGE_TAG -f AssetsService/Dockerfile .
+      - docker build -t $IMAGE_TAG -f AssetsService/Dockerfile .
       - docker login -u $AZ_TOKEN_NAME -p $AZ_LOGIN_TOKEN $AZ_ECR_REPO
-      - docker push $QA_IMAGE_TAG
+      - docker push $IMAGE_TAG
+   
   only:
-    - /^(m5_qa_release)+-?.*$/
+    - /^(m9_qa_release)+-?.*$/
   except:
     - branches
-  when: manual
+  when: on_success
   timeout: 5 minute 

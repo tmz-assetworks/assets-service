@@ -62,9 +62,9 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
 
 
-        [DataMember(Name = "plugTypeId", EmitDefaultValue = false)]
-        public long PlugTypeId { get; set; }
-        public PlugType PlugType { get; set; }
+        [DataMember(Name = "chargerTypeId", EmitDefaultValue = false)]
+        public long ChargerTypeId { get; set; }
+        public ChargerType ChargerType { get; set; }
 
 
         [DataMember(Name = "portName", EmitDefaultValue = false)]

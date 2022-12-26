@@ -36,6 +36,8 @@ namespace AssetsService.Application.Commands.Assets
         public string MakeName { get; set; }
         [Required]
         public List<RfIdCardsAssigneds>  RfIdCardsAssigneds { get; set; }
+
+        public string UnitNumber { get; set; } = "";
     }
     public class RfIdCardsAssigneds
     {

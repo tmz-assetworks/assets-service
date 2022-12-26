@@ -22,7 +22,6 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             _vehicleRepo = vehicleRepository;
         }
         public async Task<CreateVehicleResponse> Handle(CreateVehicleCommand request, CancellationToken cancellationToken)
-
         {
             CreateVehicleResponse vehicleResponse = new CreateVehicleResponse();
             var vehicleEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Vehicle>(request);
@@ -44,12 +43,31 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                         var dataDublicate = request.RfIdCardsAssigneds.GroupBy(x => new { x.Name }).Where(x => x.Count() > 1).ToList();
                         if (dataDublicate != null && dataDublicate.Count() > 0)
                         {
-                            foreach(var name in dataDublicate)
+                            foreach (var name in dataDublicate)
                             {
-
+                                var alreadyVehicleRFID = await _vehicleRepo.GetVehicleRFIDDetailsByName(name.Key.Name);
+                                if (alreadyVehicleRFID != null)
+                                {
+                                    vehicleResponse.id = -5;  // RfID is already assigned to vehicle 
+                                    return vehicleResponse;
+                                }
                                 vehicleResponse.VIN = name.Key.Name + ", " + vehicleResponse.VIN;
                             }
                             return vehicleResponse;
+                        }
+                        else
+                        {
+                            // AS 2085 , RfID is already assigned to vehicle.
+                            foreach (var rfIdCard in request.RfIdCardsAssigneds)
+                            {
+                                var alreadyVehicleRFID = await _vehicleRepo.GetVehicleRFIDDetailsByName(rfIdCard.Name);
+                                if (alreadyVehicleRFID != null)
+                                {
+                                    vehicleResponse.id = -5;  // RfID is already assigned to vehicle 
+                                    vehicleResponse.VIN = rfIdCard.Name;
+                                    return vehicleResponse;
+                                }
+                            }
                         }
                     }
                     objVehicleRfIdReader = new VehicleRFID();
@@ -60,7 +78,6 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                     objVehicleRfIdReader.CreatedOn = DateTime.Now;
                     objVehicleRfIdReader.IsActive = rdIdCard.IsActive;
                     vehicleEntitiy.vehicleRFID.Add(objVehicleRfIdReader);
-
                 }
             }
             vehicleResponse = await _vehicleRepo.CreateVehicle(vehicleEntitiy);

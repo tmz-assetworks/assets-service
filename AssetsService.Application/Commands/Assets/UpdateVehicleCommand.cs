@@ -34,6 +34,8 @@ namespace AssetsService.Application.Commands.Assets
         [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [Required]
         public string MakeName { get; set; }
+        public string UnitNumber { get; set; }
+
         public List<RfIdCardsAssigned> RfIdCardsAssigneds { get; set; }
     }
     public class RfIdCardsAssigned

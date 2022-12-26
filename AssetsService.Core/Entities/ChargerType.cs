@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace AssetsService.Core.Entities
 {
     [DataContract]
-    public class PlugType
+    public class ChargerType
     {
 
 
@@ -40,8 +40,8 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
 
        
-        [DataMember(Name = "plugTypeName", EmitDefaultValue = false)]
-        public string PlugTypeName { get; set; }
+        [DataMember(Name = "chargerTypeName", EmitDefaultValue = false)]
+        public string ChargerTypeName { get; set; }
 
     }
 }

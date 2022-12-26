@@ -61,10 +61,9 @@ namespace AssetsService.Core.ConstantResponse
         public static readonly string Make_Master_not_updated = "Make Master not updated";
         public static readonly string Make_Master_not_deleted = "Make Master not Deleted";
         public static readonly string Duplicate_AssetId_can = "Duplicate AssetId can not be created.";
-        public static readonly string Dublicate_entry_for = "Dublicate entry for :";
+        public static readonly string Duplicate_entry_for = "Duplicate entry for :";
         public static readonly string Issue_with_mapper = "Issue with mapper ";
         public static readonly string Duplicate_AssetId_can_notbe_created = "Duplicate AssetId can not be created.";
-
-
+        public static readonly string RfID_Already_Assigned_To_Vehicle = "RfID  is already assigned to vehicle.";
     }
 }

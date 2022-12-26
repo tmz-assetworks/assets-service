@@ -32,7 +32,7 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.SubscriptionsGroupDetails> SubscriptionsGroupDetails { get; set; }
         public DbSet<AssetsService.Core.Entities.Level> Level { get; set; }
         public DbSet<AssetsService.Core.Entities.Protocol> Protocol { get; set; }
-        public DbSet<AssetsService.Core.Entities.PlugType> PlugType { get; set; }
+        public DbSet<AssetsService.Core.Entities.ChargerType> ChargerType { get; set; }
         public DbSet<AssetsService.Core.Entities.Port> Port { get; set; }
         public DbSet<AssetsService.Core.Entities.Connector> Connector { get; set; }
 
