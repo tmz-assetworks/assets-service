@@ -50,11 +50,11 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                              MinPower = obls.MinPower,
                                              PortName = obls.PortName,
                                              Power = obls.Power,
-                                             PlugType = (from oblss in _dbContext.PlugType.Where(y => y.Id == obls.PlugTypeId)
-                                                     select new PlugType
+                                             ChargerType = (from oblss in _dbContext.ChargerType.Where(y => y.Id == obls.ChargerTypeId)
+                                                     select new ChargerType
                                                      {
                                                          Id = obls.Id,
-                                                         PlugTypeName = oblss.PlugTypeName,
+                                                         ChargerTypeName = oblss.ChargerTypeName,
                                                          IsActive = obls.IsActive,
                                                          CreatedBy = obls.CreatedBy,
                                                          ModifiedBy = obls.ModifiedBy,
@@ -136,11 +136,11 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                  MinPower = obls.MinPower,
                                  PortName = obls.PortName,
                                  Power = obls.Power,
-                                 PlugType = (from oblss in _dbContext.PlugType.Where(y => y.Id == obls.PlugTypeId)
-                                             select new PlugType
+                                 ChargerType = (from oblss in _dbContext.ChargerType.Where(y => y.Id == obls.ChargerTypeId)
+                                             select new ChargerType
                                              {
                                                  Id = obls.Id,
-                                                 PlugTypeName = oblss.PlugTypeName,
+                                                 ChargerTypeName = oblss.ChargerTypeName,
                                                  IsActive = obls.IsActive,
                                                  CreatedBy = obls.CreatedBy,
                                                  ModifiedBy = obls.ModifiedBy,

@@ -101,7 +101,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                            select new OperatorUserMapper
                                            {
                                                UserId = obls.UserId,
-                                               UserName = obls.UserName,
                                                CreatedBy = obls.CreatedBy,
                                                CreatedOn = obls.CreatedOn,
                                                Id = obls.Id,
@@ -197,7 +196,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                          select new OperatorUserMapper
                                          {
                                              UserId = obls.UserId,
-                                             UserName = obls.UserName,
                                              CreatedBy = obls.CreatedBy,
                                              CreatedOn = obls.CreatedOn,
                                              Id = obls.Id,
@@ -290,7 +288,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                                select new OperatorUserMapper
                                                {
                                                    UserId = obls.UserId,
-                                                   UserName = obls.UserName,
                                                    CreatedBy = obls.CreatedBy,
                                                    CreatedOn = obls.CreatedOn,
                                                    Id = obls.Id,
@@ -386,7 +383,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                            select new OperatorUserMapper
                                            {
                                                UserId = obls.UserId,
-                                               UserName = obls.UserName,
                                                CreatedBy = obls.CreatedBy,
                                                CreatedOn = obls.CreatedOn,
                                                Id = obls.Id,
@@ -426,8 +422,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               DispenserId = charger.Id,
                               ChargeBoxid = charger.ChargeBoxId,
                               status = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                              charger.ChargerStatuses.ToList().Where(x=> x.ConnectorStatus=="Faulted").ToList().Count>0? "Faulted" : 
-                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" : charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                                charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
+                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
 
                           }).ToList<LocationsDispenser>();
             }
@@ -449,8 +445,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               LocationName = location.LocationName,
                               DispenserId = charger.Id,
                               status = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                              charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus == "Faulted").ToList().Count > 0 ? "Faulted" :
-                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" : charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
+                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
                               ChargeBoxid = charger.ChargeBoxId
                           }).ToList<LocationsDispenser>();
             }
@@ -464,7 +460,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             List<LocationsDispenserDetails> result = new List<LocationsDispenserDetails>();
             if (locationDispenserRequest.LocationIds.Count <= 0 || locationDispenserRequest.LocationIds == null)
             {
-                result = (from location in _dbContext.Locations
+                result = (from location in (locationDispenserRequest.SearchParam==null && locationDispenserRequest.SearchParam=="")? _dbContext.Locations:
+                           _dbContext.Locations.Where(d => d.LocationName.ToLower().Contains(locationDispenserRequest.SearchParam.ToLower()))
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                          on location.Id equals userMap.LocationId
                           select new LocationsDispenserDetails
@@ -522,7 +519,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
             else
             {
-                result = (from location in _dbContext.Locations.Where(x => locationDispenserRequest.LocationIds.Contains(x.Id))
+                result = (from location in (locationDispenserRequest.SearchParam == null && locationDispenserRequest.SearchParam == "") ? _dbContext.Locations.Where(x => locationDispenserRequest.LocationIds.Contains(x.Id)) :
+                           _dbContext.Locations.Where(d => d.LocationName.ToLower().Contains(locationDispenserRequest.SearchParam.ToLower()) && locationDispenserRequest.LocationIds.Contains(d.Id))
+
                           join userMap in _dbContext.OperatorUserMapper.Where(x => x.UserId == (_dbContext.Users.Where(z => z.ObjectId.Equals(_tokenBase.getObjectId())).FirstOrDefault().Id))
                          on location.Id equals userMap.LocationId
                           select new LocationsDispenserDetails
@@ -579,9 +578,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           }).ToList<LocationsDispenserDetails>();
             }
             result = result != null ? result.OrderByDescending(a => a.locationId).ToList() : result;
-            if (!string.IsNullOrEmpty(locationDispenserRequest.SearchParam))
-                result = result.Where(d => d.LocationName.ToLower().Contains(locationDispenserRequest.SearchParam.ToLower())
-             ).ToList<LocationsDispenserDetails>();
+            
             //Paging on Records           
 
             var dataResult = PagedList<LocationsDispenserDetails>.ToPagedList(result,
@@ -616,9 +613,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ChargeBoxId = charger.ChargeBoxId,
                               ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                              charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
-                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
-                              charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
+                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
                               NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = charger.MakeName,
                               DispenserModel = charger.ModelName,
@@ -640,9 +636,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ChargeBoxId = charger.ChargeBoxId,
                               ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                              charger.ChargerStatuses.ToList().Where(x => x.ConnectorStatus.ToLower() == "faulted").ToList().Count > 0 ? "Faulted" :
-                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "unavailable" ? "Connected" :
-                              charger.ChargerStatuses.ToList()[0].ChargerStatus1,
+                                charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
+                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
                               NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = charger.MakeName,
                               DispenserModel = charger.ModelName,

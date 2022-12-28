@@ -43,6 +43,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                           ModelYear = m.ModelYear,
                           ModelName = m.ModelName,
                           MakeName = m.MakeName,
+                          UnitNumber = m.UnitNumber,
                           vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id && x.IsActive == true)
                                          select new VehicleRFID
                                          {
@@ -62,7 +63,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
                 }
                 else
-                    result = await _dbContext.Vehicle.Where(d => d.VIN.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
+                    result = await _dbContext.Vehicle.Where(d => d.Department.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()) || d.VehicleMacAddress.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
                           .Select(m => new Vehicle
                           {
                               Id = m.Id,
@@ -79,6 +80,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ModelYear = m.ModelYear,
                               ModelName = m.ModelName,
                               MakeName = m.MakeName,
+                              UnitNumber = m.UnitNumber,
                               vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id && m.IsActive == true)
 
                                              select new VehicleRFID
@@ -126,6 +128,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 ModelYear = m.ModelYear,
                 ModelName = m.ModelName,
                 MakeName = m.MakeName,
+                UnitNumber = m.UnitNumber,
                 vehicleRFIDIds = m.vehicleRFID.Select(m => new VehicleRFIDId
                 {
 
@@ -162,6 +165,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                          ModelYear = m.ModelYear,
                          ModelName = m.ModelName,
                          MakeName = m.MakeName,
+                         UnitNumber = m.UnitNumber,
                          vehicleRFID = (from obls in _dbContext.VehicleRFID.Where(x => x.VehicleId == m.Id)
 
                                         select new VehicleRFID
@@ -185,7 +189,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     string modelYear = vehicle.ModelYear.ToString();
                     List<SubscriptionsGroupDetails> subscriptionsGroupDetails = _dbContext.SubscriptionsGroupDetails.Where(s => s.IsActive == true && (vehicleRFIDs.Contains(s.Value) && s.Text.ToLower() == "rfid")
                     || (s.Text.ToLower() == "modelyear" && s.Value == modelYear) || (s.Text.ToLower() == "makename" && s.Value == vehicle.MakeName) ||
-                   (s.Text.ToLower() == "modelname" && s.Value == vehicle.ModelName)  || (s.Text.ToLower() == "vin" && s.Value == vehicle.VIN)
+                   (s.Text.ToLower() == "modelname" && s.Value == vehicle.ModelName) || (s.Text.ToLower() == "vin" && s.Value == vehicle.VIN)
                     ).ToList();
 
                     List<long> subscriptionsGroupIds = new List<long>();
@@ -224,6 +228,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 cv.CreatedOn = DateTime.Now;
                 cv.ModifiedOn = DateTime.Now;
                 cv.IsActive = true;
+                cv.UnitNumber=cv.UnitNumber;
 
                 _dbContext.Vehicle.Add(cv);
                 _dbContext.SaveChanges();
@@ -259,6 +264,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 createVehicleResponse.ModelYear = cv.ModelYear;
                 createVehicleResponse.CreatedBy = cv.CreatedBy;
                 createVehicleResponse.CreatedOn = cv.CreatedOn;
+                createVehicleResponse.UnitNumber = cv.UnitNumber;
                 createVehicleResponse.rfids = cv.vehicleRFID.Select(m => new Rfids
                 {
                     Id = m.Id,
@@ -330,6 +336,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     ModelYear = m.ModelYear,
                     ModelName = m.ModelName,
                     MakeName = m.MakeName,
+                    UnitNumber=m.UnitNumber,
                     vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
 
                     vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
@@ -341,7 +348,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
             }
             else
-                result = _dbContext.Vehicle.Where(d => d.VIN.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
+                result = _dbContext.Vehicle.Where(d => d.Department.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()) || d.VehicleMacAddress.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
 
                         .Select(m => new VehicleDTO
                         {
@@ -356,6 +363,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                             ModelYear = m.ModelYear,
                             ModelName = m.ModelName,
                             MakeName = m.MakeName,
+                            UnitNumber=m.UnitNumber,
                             vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
                             vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
                             {

@@ -64,8 +64,6 @@ namespace AssetsService.Api.Controllers
             return res;
         }
 
-
-
         [HttpPost("CreateVehicle")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<CreateCommonResponse>> CreateVehicle([FromBody] CreateVehicleCommand command)
@@ -73,7 +71,7 @@ namespace AssetsService.Api.Controllers
             CreateCommonResponse createCommonResponse = new CreateCommonResponse();
             try
             {
-                createCommonResponse.statusCode = 200;
+                
 
                 if (command.RfIdCardsAssigneds is null || command.RfIdCardsAssigneds.Count == 0)
                 {
@@ -88,18 +86,26 @@ namespace AssetsService.Api.Controllers
                     {
                         createCommonResponse.Id = createresult.id;
                         createCommonResponse.statusMessage = RespnoseMessage.Record_Save_Successfully;
+                        createCommonResponse.statusCode = 200;
                     }
                     else
                     {
                         if (createresult != null && !string.IsNullOrEmpty(createresult.VIN))
                         {
-
-                            createCommonResponse.statusMessage = RespnoseMessage.Dublicate_entry_for + createresult.VIN;
+                            createCommonResponse.statusMessage = RespnoseMessage.Duplicate_entry_for + createresult.VIN;
+                            
+                        }
+                        if (createresult != null && (createresult.id == -5))    // RfID is already assigned to vehicle 
+                        {
+                            createCommonResponse.statusMessage = createresult.VIN+", "+ RespnoseMessage.RfID_Already_Assigned_To_Vehicle;
+                           
                         }
                         else
                         {
                             createCommonResponse.statusMessage = RespnoseMessage.Record_Not_Saved;
+
                         }
+                        createCommonResponse.statusCode = 400;
                     }
                 }
                 else
@@ -126,36 +132,39 @@ namespace AssetsService.Api.Controllers
             dynamic expandoObject = new ExpandoObject();
             try
             {
-                expandoObject.StatusCode = 200;
+                
                 if (command.ModelYear <= 0)
                 {
-                    expandoObject.StatusMessage = RespnoseMessage.Please_provide_Vehicle_ModelYear;
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Vehicle_ModelYear;
                     return expandoObject;
                 }
                 var resultdata = await _mediator.Send(command);
 
                 if (resultdata != null && resultdata.id > 0)
                 {
-                    expandoObject.StatusMessage = RespnoseMessage.Record_Updated_Successfully;
+                    expandoObject.statusMessage = RespnoseMessage.Record_Updated_Successfully;
                     expandoObject.data = resultdata;
+                    expandoObject.statusCode = 200;
                 }
                 else
                 {
+
                     if (resultdata != null && !string.IsNullOrEmpty(resultdata.VIN))
                     {
-                        expandoObject.statusMessage = RespnoseMessage.Dublicate_entry_for + resultdata.VIN;
+                        expandoObject.statusMessage = RespnoseMessage.Duplicate_entry_for + resultdata.VIN;
                     }
                     else
                     {
-                        expandoObject.StatusMessage = RespnoseMessage.Record_Not_Saved;
+                        expandoObject.statusMessage = RespnoseMessage.Record_Not_Saved;
                     }
+                    expandoObject.statusCode = 400;
                 }
             }
             catch (Exception ex)
             {
                 Log.Information("error occurred :" + ex.Message);
-                expandoObject.StatusMessage = RespnoseMessage.Opeartion_Failed;
-                expandoObject.StatusCode = 404;
+                expandoObject.statusMessage = RespnoseMessage.Opeartion_Failed;
+                expandoObject.statusCode = 404;
             }
             return expandoObject;
         }

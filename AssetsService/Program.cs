@@ -7,10 +7,13 @@ namespace AssetsService.Api
     {
         public static void Main(string[] args)
         {
-            string connectionString = Environment.GetEnvironmentVariable("ConnectionStringLogs");
-            //string connectionString = "DefaultEndpointsProtocol=https;AccountName=assetswork;AccountKey=Rk7iyAEtGHdMWfojFlyE23dXYsMDUkH1zvLghSjWW9kZX7Ecv6wuJuvRifNQfOChKmY5d1Hvx7mE+AStxFztQw==;EndpointSuffix=core.windows.net";
-            var containerName = Environment.GetEnvironmentVariable("ContainerName");
-            //var containerName = "assets-service-log";
+            var MyConfig = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            string containerName = Environment.GetEnvironmentVariable("LOG_CONTAINER_NAME");
+            string connectionString = Environment.GetEnvironmentVariable("LOG_CONNECTIONSTRING");
+            if (connectionString == null) {
+                connectionString = MyConfig.GetValue<string>("LOG:CONTAINER_NAME");
+                containerName = MyConfig.GetValue<string>("LOG:CONNECTIONSTRING");
+            }
             Log.Logger = new LoggerConfiguration()
                  .WriteTo.Console().WriteTo.Debug(outputTemplate: DateTime.Now.ToString()).WriteTo.File("./logs/log-.txt", rollingInterval: RollingInterval.Day)
                  .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
@@ -36,33 +39,6 @@ namespace AssetsService.Api
             {
                 Log.CloseAndFlush();
             }
-
-          // Log.Logger = new LoggerConfiguration()
-          //.MinimumLevel.Debug()
-          //.MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-          //.Enrich.FromLogContext()
-          //.WriteTo.File("Log//log.txt", rollingInterval: RollingInterval.Day)
-          ////.WriteTo.Seq("http://localhost:5341")
-          //.CreateLogger();
-
-           
-          //  try
-          //  {
-          //      Log.Information("Starting host===========================================================");
-
-          //      return 0;
-          //  }
-          //  catch (Exception ex)
-          //  {
-               
-          //      Log.Fatal(ex, "Host terminated unexpectedly");
-          //      return 1;
-          //  }
-          //  finally
-          //  {
-          //      Log.CloseAndFlush();
-          //  }
-
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

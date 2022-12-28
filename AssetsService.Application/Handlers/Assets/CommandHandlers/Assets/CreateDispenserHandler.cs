@@ -67,7 +67,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                         MinPower = request.PortCommand[i].MinPower,
                         ModifiedBy = "",
                         ModifiedOn = DateTime.Now,
-                        PlugTypeId = request.PortCommand[i].PlugTypeId,
+                        ChargerTypeId = request.PortCommand[i].PlugTypeId,
                         PortName = request.PortCommand[i].PortName,
                         Power = request.PortCommand[i].Power,
                     });
@@ -89,7 +89,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     MinPower = 10,
                     ModifiedBy = "",
                     ModifiedOn = DateTime.Now,
-                    PlugTypeId = 1,
+                    ChargerTypeId = 1,
                     PortName = "Port",
                     Power = 100,
                 });

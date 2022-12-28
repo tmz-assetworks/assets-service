@@ -76,6 +76,11 @@ namespace AssetsService.Core.Entities
         [Required]
         [DataMember(Name = "modelName", EmitDefaultValue = false)]
         public string ModelName { get; set; }
+
+
+        //this param is optinal
+        [DataMember(Name = "UnitNumber", EmitDefaultValue = false)]
+        public string? UnitNumber { get; set; }
         /// <summary>
         public virtual ICollection<VehicleRFID> vehicleRFID { get; set; }
 

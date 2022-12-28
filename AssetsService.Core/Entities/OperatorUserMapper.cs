@@ -25,10 +25,6 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "locationId", EmitDefaultValue = false)]
         public long LocationId { get; set; }
         
-
-        [DataMember(Name = "userName", EmitDefaultValue = false)]
-        public string UserName { get; set; }
-
         [DataMember(Name = "userId", EmitDefaultValue = false)]
         public long UserId { get; set; }
 
