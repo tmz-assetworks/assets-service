@@ -155,7 +155,7 @@ namespace AssetsService.Api.Controllers
                     }
                     else
                     {
-                        expandoObject.statusMessage = RespnoseMessage.Record_Not_Saved;
+                        expandoObject.statusMessage = RespnoseMessage.Duplicat_Rfid;
                     }
                     expandoObject.statusCode = 400;
                 }
