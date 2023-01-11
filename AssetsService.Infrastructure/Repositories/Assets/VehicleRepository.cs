@@ -1,4 +1,5 @@
 using System.Dynamic;
+using System.Security.Cryptography.X509Certificates;
 using AssetsService.Core.Entities;
 using AssetsService.Core.PagingHelper;
 using AssetsService.Core.Repositories;
@@ -248,6 +249,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             CreateVehicleResponse createVehicleResponse = new CreateVehicleResponse();
             try
             {
+                var obj = string.Join(",", _dbContext.VehicleRFID.Where(r => r.VehicleId != cv.Id).Select(x => x.Name).ToList());
+                var x = cv.vehicleRFID.Where(x => obj.Contains(x.Name)).ToList();
+                if (x.Count > 0)
+                {
+                    createVehicleResponse.id = -5;  // RfID is already assigned to vehicle 
+                    createVehicleResponse.VIN = x.Select(x => x.Name).FirstOrDefault();
+                    return createVehicleResponse;
+                }
+
                 cv.ModifiedOn = DateTime.Now;
                 _dbContext.Vehicle.Update(cv);
                 _dbContext.SaveChanges();

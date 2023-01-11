@@ -65,5 +65,6 @@ namespace AssetsService.Core.ConstantResponse
         public static readonly string Issue_with_mapper = "Issue with mapper ";
         public static readonly string Duplicate_AssetId_can_notbe_created = "Duplicate AssetId can not be created.";
         public static readonly string RfID_Already_Assigned_To_Vehicle = "RfID  is already assigned to vehicle.";
+        public static readonly string Duplicat_Rfid = "Please enter Unique RFID";
     }
 }
