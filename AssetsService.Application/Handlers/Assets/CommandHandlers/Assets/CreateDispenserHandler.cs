@@ -83,15 +83,15 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                     ConnectorType = 1,
                     CreatedBy = request.CreatedBy,
                     CreatedOn = DateTime.Now,
-                    IncrementalPower = 100,
+                    IncrementalPower = "100",
                     IsActive = true,
-                    MaxPower = 20,
-                    MinPower = 10,
+                    MaxPower = "20",
+                    MinPower = "10",
                     ModifiedBy = "",
                     ModifiedOn = DateTime.Now,
                     ChargerTypeId = 1,
                     PortName = "Port",
-                    Power = 100,
+                    Power = "100",
                 });
             }
             try

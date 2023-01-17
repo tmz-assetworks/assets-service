@@ -75,13 +75,13 @@ namespace AssetsService.Api.Tests
                         Id = 1,
                         ConnectorId=1,
                         ConnectorType=1,
-                        IncrementalPower=100,
-                        MaxPower=100,
-                        MinPower=100,
+                        IncrementalPower="100",
+                        MaxPower="100",
+                        MinPower="100",
                         PlugTypeId=1,
                         PortName="",
                         IsActive=true,
-                        Power=500
+                        Power="500"
                    }
                  }
             };
@@ -163,13 +163,13 @@ namespace AssetsService.Api.Tests
                         Id=1,
                         ConnectorId=1,
                         ConnectorType=1,
-                        IncrementalPower=100,
-                        MaxPower=100,
-                        MinPower=100,
+                        IncrementalPower="100",
+                        MaxPower="100",
+                        MinPower="100",
                         PlugTypeId=1,
                         PortName="",
                         IsActive=true,
-                        Power=500
+                        Power="500"
                    }
                  }
             };
@@ -350,13 +350,13 @@ namespace AssetsService.Api.Tests
                            ConnectorId = 1,
                            ConnectorType=1,
                            CreatedBy="",
-                           IncrementalPower=10,
+                           IncrementalPower="10",
                            IsActive=true,
-                           MaxPower=100,
-                           MinPower=50,
+                           MaxPower="100",
+                           MinPower="50",
                            PlugTypeId=1,
                            PortName="",
-                           Power=2000
+                           Power="200"
                       }
                  }
             };
