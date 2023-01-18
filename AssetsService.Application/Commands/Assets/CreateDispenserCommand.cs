@@ -84,19 +84,19 @@ namespace AssetsService.Application.Commands.Assets
         //public string CreatedBy { get; set; }
 
         [Required]
-        public long IncrementalPower { get; set; }
+        public string IncrementalPower { get; set; }
         [Required]
         public bool IsActive { get; set; }
         [Required]
-        public long MaxPower { get; set; }
+        public string MaxPower { get; set; }
         [Required]
-        public long MinPower { get; set; }
+        public string MinPower { get; set; }
         [Required]
         public long PlugTypeId { get; set; }
         [Required]
         [StringLength(20, ErrorMessage = "PortName must be fewer than 20 characters.")]
         public string PortName { get; set; }
         [Required]
-        public long Power { get; set; }
+        public string Power { get; set; }
     }
 }

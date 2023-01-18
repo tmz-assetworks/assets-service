@@ -119,13 +119,13 @@ namespace AssetsService.Core.Response
         public long ConnectorId { get; set; }
         public long ConnectorType { get; set; }
         public string CreatedBy { get; set; }
-        public long IncrementalPower { get; set; }
+        public string IncrementalPower { get; set; }
         public bool IsActive { get; set; }
-        public long MaxPower { get; set; }
-        public long MinPower { get; set; }
+        public string MaxPower { get; set; }
+        public string MinPower { get; set; }
         public long PlugTypeId { get; set; }
         public string PortName { get; set; }
-        public long Power { get; set; }
+        public string Power { get; set; }
     }
     public class DispensersRequest : QueryStringParameters
     {

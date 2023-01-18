@@ -81,13 +81,13 @@ namespace AssetsService.Application.Commands.Assets
         public long ConnectorType { get; set; }
 
         [Required]
-        public long IncrementalPower { get; set; }
+        public string IncrementalPower { get; set; }
         [Required]
         public bool IsActive { get; set; }
         [Required]
-        public long MaxPower { get; set; }
+        public string MaxPower { get; set; }
         [Required]
-        public long MinPower { get; set; }
+        public string MinPower { get; set; }
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid PlugType Id")]
         public long PlugTypeId { get; set; }
@@ -95,6 +95,6 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(20, ErrorMessage = "PortName must be fewer than 20 characters.")]
         public string PortName { get; set; }
         [Required]
-        public long Power { get; set; }
+        public string Power { get; set; }
     }
 }
