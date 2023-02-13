@@ -1,9 +1,11 @@
 
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Application.Queries;
 using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Queries;
 using AssetsService.Core.Responses;
+using AssetsService.Core.Responses.Assets;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,14 +64,14 @@ namespace AssetsService.Api
                 //_logger.LogInformation("error occurred :" + ex.Message);
                 Log.Information("error occurred :" + ex.Message);
             }
-            
-           
-          return re;
+
+
+            return re;
 
         }
         [HttpGet("getModembyid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async  Task<Core.Entities.ModemByIDResponse> GetModemById(int id)
+        public async Task<Core.Entities.ModemByIDResponse> GetModemById(int id)
         {
             Core.Entities.ModemByIDResponse modem = new ModemByIDResponse();
 
@@ -80,13 +82,13 @@ namespace AssetsService.Api
             catch (Exception ex)
             {
                 //_logger.LogInformation("Get by id the data of Modem");
-                Log.Information("error occurred :" + ex.Message); 
+                Log.Information("error occurred :" + ex.Message);
             }
-               
-            
+
+
             return modem;
 
-            
+
         }
         [HttpPost("CreateModem")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -176,6 +178,29 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
             }
             return expandoObject;
+        }
+
+        [HttpGet("GetAllModemTypeData")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<AllModemType> GetAllModenTypeData()
+        {
+            AllModemType allModemTypeDataResponse = new AllModemType();
+            try
+            {
+                List<ModemTypeNameList> modemsType = await _mediator.Send(new GetAllModemTypeDataQuery());
+                allModemTypeDataResponse.StatusMessage = RespnoseMessage.Record_found;
+                allModemTypeDataResponse.StatusCode = (int)HttpStatusCode.OK;
+                allModemTypeDataResponse.Data = modemsType;
+            }
+            catch (Exception ex)
+            {
+                allModemTypeDataResponse.StatusMessage = ex.Message.ToString();
+                allModemTypeDataResponse.StatusCode = (int)HttpStatusCode.NotFound;
+                allModemTypeDataResponse.Data = null;
+                Log.Information("error occurred :" + ex.Message);
+
+            }
+            return allModemTypeDataResponse;
         }
     }
 }
