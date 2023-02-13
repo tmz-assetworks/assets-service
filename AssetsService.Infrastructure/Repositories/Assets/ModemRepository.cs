@@ -111,5 +111,16 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
             return re;
         }
+
+        public async Task<List<AssetsService.Core.Responses.Assets.ModemTypeNameList>> GetAllModemType()
+        {
+
+            return _dbContext.ModemType
+                 .Select(m => new Core.Responses.Assets.ModemTypeNameList
+                 {
+                     Id = m.Id,
+                     ModemTypeName = m.ModemTypeName
+                 }).Where(m => m.ModemTypeName != "").OrderBy(m => m.ModemTypeName).ToList<Core.Responses.Assets.ModemTypeNameList>();
+        }
     }
 }

@@ -32,38 +32,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ModelName = m.ModelName,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     PortId = m.PortId,
-
-
-                     Port = (from obls in _dbContext.Port.Where(x => x.Id == m.PortId)
-                                         select new Port
-                                         {
-                                             Id = obls.Id,
-                                             ConnectorType = obls.ConnectorType,
-                                             IsActive = obls.IsActive,
-                                             CreatedBy = obls.CreatedBy,
-                                             ModifiedBy = obls.ModifiedBy,
-                                             ModifiedOn = obls.ModifiedOn,
-                                             CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-                                             IncrementalPower = obls.IncrementalPower,
-                                             MaxPower = obls.MaxPower,
-                                             MinPower = obls.MinPower,
-                                             PortName = obls.PortName,
-                                             Power = obls.Power,
-                                             ChargerType = (from oblss in _dbContext.ChargerType.Where(y => y.Id == obls.ChargerTypeId)
-                                                     select new ChargerType
-                                                     {
-                                                         Id = obls.Id,
-                                                         ChargerTypeName = oblss.ChargerTypeName,
-                                                         IsActive = obls.IsActive,
-                                                         CreatedBy = obls.CreatedBy,
-                                                         ModifiedBy = obls.ModifiedBy,
-                                                         ModifiedOn = obls.ModifiedOn,
-                                                         CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-
-                                                     }).FirstOrDefault(),
-
-                                         }).FirstOrDefault(),
                      Protocol = (from obls in _dbContext.Protocol.Where(x => x.Id == m.ProtocolId)
                                      select new Protocol
                                      {
@@ -118,38 +86,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                      ModelName = m.ModelName,
                      ModifiedBy = m.ModifiedBy,
                      ModifiedOn = m.ModifiedOn,
-                     PortId = m.PortId,
-
-
-                     Port = (from obls in _dbContext.Port.Where(x => x.Id == m.PortId)
-                             select new Port
-                             {
-                                 Id = obls.Id,
-                                 ConnectorType = obls.ConnectorType,
-                                 IsActive = obls.IsActive,
-                                 CreatedBy = obls.CreatedBy,
-                                 ModifiedBy = obls.ModifiedBy,
-                                 ModifiedOn = obls.ModifiedOn,
-                                 CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-                                 IncrementalPower = obls.IncrementalPower,
-                                 MaxPower = obls.MaxPower,
-                                 MinPower = obls.MinPower,
-                                 PortName = obls.PortName,
-                                 Power = obls.Power,
-                                 ChargerType = (from oblss in _dbContext.ChargerType.Where(y => y.Id == obls.ChargerTypeId)
-                                             select new ChargerType
-                                             {
-                                                 Id = obls.Id,
-                                                 ChargerTypeName = oblss.ChargerTypeName,
-                                                 IsActive = obls.IsActive,
-                                                 CreatedBy = obls.CreatedBy,
-                                                 ModifiedBy = obls.ModifiedBy,
-                                                 ModifiedOn = obls.ModifiedOn,
-                                                 CreatedOn = (obls.CreatedOn == DateTime.MinValue ? DateTime.MinValue : obls.CreatedOn),
-
-                                             }).FirstOrDefault(),
-
-                             }).FirstOrDefault(),
                      Protocol = (from obls in _dbContext.Protocol.Where(x => x.Id == m.ProtocolId)
                                  select new Protocol
                                  {
