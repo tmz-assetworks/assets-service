@@ -8,6 +8,7 @@ namespace AssetsService.Core.Repositories
     {
         Task<StatusVehicleresponcse> GetAllVehicle(GetAllVehicleRequest getAllVehicleRequest);
         Task<VehicleDTO> GetVehicleById(long Id);
+        Task<VehicleDTO> GetVehicleByVinNumber(string vinnumber);
         Task<CreateVehicleResponse> CreateVehicle(Vehicle vehicle);
         Task<CreateVehicleResponse> UpdateVehicle(Vehicle vehicle);
         Task<Vehicle> GetByIdVehicleData(long Id);

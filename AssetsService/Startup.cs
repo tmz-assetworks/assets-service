@@ -108,12 +108,14 @@ namespace AssetsService.Api
             services.AddMediatR(typeof(UpdatePadHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(IsActivePadHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(CreateRFIdHandler).GetTypeInfo().Assembly);
+            
             services.AddMediatR(typeof(UpdateRFIdHandler).GetTypeInfo().Assembly);
             services.AddTransient<ICableRepository, CableRepository>();
             services.AddScoped<IPadRepository, PadRepository>();
             services.AddScoped<IRFIdRepository, RFIdRepository>();
 
             services.AddTransient<ITotalLocationAndChargerRepository, TotalLocationAndChargerRepository>();
+
 
             services.AddTransient<IDispenserRepository, DispenserRepository>();
             services.AddMediatR(typeof(CreateDispenserHandler).GetTypeInfo().Assembly);
@@ -160,6 +162,8 @@ namespace AssetsService.Api
 
             services.AddTransient<ICombineAssetRepository, CombineAssetRepository>();
 
+            services.AddMediatR(typeof(ExternalHandler).GetTypeInfo().Assembly);
+            services.AddTransient<IExternalRepository, ExternalRepository>();
             services.AddTransient<ICountryRepository, CountryRepository>();
             services.AddTransient<IDispenserLocationRepository, DispenserByLocationIdRepository>();
             services.AddMediatR(typeof(CreateSwitchGearHandler).GetTypeInfo().Assembly);
