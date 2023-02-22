@@ -142,7 +142,37 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }).Where(m => m.Id == Id).FirstOrDefault();
 
         }
+        public async Task<VehicleDTO> GetVehicleByVinNumber(string vinnumber)
+        {
+            return _dbContext.Vehicle.Select(m => new VehicleDTO
+            {
+                Id = m.Id,
+                VIN = m.VIN,
+                LicencePlate = m.LicencePlate,
+                Department = m.Department,
+                DomicileLocation = m.DomicileLocation,
+                VehicleMacAddress = m.VehicleMacAddress,
+                IsActive = m.IsActive,
+                //CreatedBy = m.CreatedBy,
+                //CreatedOn = m.CreatedOn,
+                //ModifiedBy = m.ModifiedBy,
+                //ModifiedOn = m.ModifiedOn,
+                ModelYear = m.ModelYear,
+                ModelName = m.ModelName,
+                MakeName = m.MakeName,
+                UnitNumber = m.UnitNumber,
+                vehicleRFIDIds = m.vehicleRFID.Select(m => new VehicleRFIDId
+                {
 
+                    Id = m.Id,
+                    Name = m.Name,
+                    IsActive = m.IsActive
+
+                }).ToList(),
+
+            }).Where(m => m.VIN == vinnumber).FirstOrDefault();
+
+        }
 
         public async Task<Vehicle> GetVehicleInfoById(long Id)
         {

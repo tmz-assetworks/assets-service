@@ -135,4 +135,24 @@ namespace AssetsService.Core.Responses.Assets
         public string RfIdNumbers { get; set; }
 
     }
+    //added by Abhishek External API Entity 17/2/2023--------------------------------------------------------------------//
+    public class CreateVehicleResponseExternal
+
+    {
+        public long id { get; set; }
+        public string VIN { get; set; }
+        public long ModelYear { get; set; }
+        public string MakeName { get; set; }
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public string ModelName { get; set; }
+        public string LicencePlate { get; set; }
+        public string Department { get; set; }
+        public string DomicileLocation { get; set; }
+        public string VehicleMacAddress { get; set; }
+        public string? UnitNumber { get; set; }
+        public List<Rfids> rfids { get; set; }
+    }
 }

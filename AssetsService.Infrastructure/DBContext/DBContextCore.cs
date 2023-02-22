@@ -45,6 +45,7 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.Currency> Currency { get; set; }
 
         public DbSet<AssetsService.Core.Entities.PricePlan> PricePlan { get; set; }
+        public DbSet<AssetsService.Core.Entities.PaymentTransaction> PaymentTransaction { get; set; }
 
 
         public DbSet<AssetsService.Core.Entities.ModemType> ModemType { get; set; }
@@ -87,6 +88,7 @@ namespace AssetsService.Infrastructure.DBContext
         public DbSet<AssetsService.Core.Entities.Customers> Customers { get; set; }
         public DbSet<AssetsService.Core.Entities.ChargerStatus> ChargerStatuses { get; set; }
         public virtual DbSet<ChargerStatusHistory> ChargerStatusHistories { get; set; }
+        public virtual DbSet<ChargingSession> ChargingSessions { get; set; }
         public DbSet<AssetsService.Core.Entities.PricePlanLocationsMapper> PricePlanLocationsMapper { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {

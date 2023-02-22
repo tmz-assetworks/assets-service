@@ -12,4 +12,10 @@ namespace AssetsService.Application.Responses.Assets
         public int statusCode { get; set; }
         public string statusMessage { get; set; }
     }
+    public class CreateCommonResponseExternal
+    {
+        public long Id { get; set; }
+        public int statusCode { get; set; }
+        public string statusMessage { get; set; }
+    }
 }
