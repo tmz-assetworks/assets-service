@@ -422,8 +422,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               DispenserId = charger.Id,
                               ChargeBoxid = charger.ChargeBoxId,
                               status = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                                charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
 
                           }).ToList<LocationsDispenser>();
             }
@@ -445,8 +445,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               LocationName = location.LocationName,
                               DispenserId = charger.Id,
                               status = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                               ChargeBoxid = charger.ChargeBoxId
                           }).ToList<LocationsDispenser>();
             }
@@ -613,8 +613,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ChargeBoxId = charger.ChargeBoxId,
                               ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                               charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                               NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = charger.MakeName,
                               DispenserModel = charger.ModelName,
@@ -636,8 +636,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                               ChargeBoxId = charger.ChargeBoxId,
                               ProtocolName = charger.ProtocolName,
                               ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                                charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                               NoofPort = charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count == 0 ? "0" : charger.Ports.Where(t => t.ChargerId.Equals(charger.Id)).ToList().Count.ToString(),
                               DispenserMake = charger.MakeName,
                               DispenserModel = charger.ModelName,
