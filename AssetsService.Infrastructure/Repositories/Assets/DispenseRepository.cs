@@ -8,6 +8,7 @@ using AssetsService.Core.PagingHelper;
 using AssetsService.Infrastructure.EnumData;
 using AssetsService.Infrastructure.Helpers;
 using static AssetsService.Core.Response.GetDispenserStatusResponse;
+using System.Runtime.InteropServices;
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
@@ -224,9 +225,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                RFIDReaderId = dispenser.RFIDReaderId == null ? 0 : (long)dispenser.RFIDReaderId,
                                RFIDReader = dispenser.RFIDReader != null ? dispenser.RFIDReader.CardReader : "",
                                PowerCabinetId = dispenser.PowerCabinetId == null ? 0 : (long)dispenser.PowerCabinetId,
-                               Status = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0 ? "Offline" :
-                               dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                               Status  = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0 ? "Offline" :
+                                              dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
+
                                PowerCabinetSerialNumber = dispenser.PowerCabinet.SerialNumber,
                                PortType = String.Join(",", dispenser.Ports.Where(p => p.ChargerId == dispenser.Id).Select(s => s.Connector.ConnectorType)),
                                PadId = dispenser.PadId == null ? 0 : (long)dispenser.PadId,
@@ -296,8 +298,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                RFIDReader = dispenser.RFIDReader != null ? dispenser.RFIDReader.CardReader : "",
                                PowerCabinetId = dispenser.PowerCabinetId == null ? 0 : (long)dispenser.PowerCabinetId,
                                Status = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0 ? "Offline" :
-                                dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                                PowerCabinetSerialNumber = dispenser.PowerCabinet.SerialNumber,
                                PortType = p.Connector.ConnectorType,
                                PadId = dispenser.PadId == null ? 0 : (long)dispenser.PadId,
@@ -555,14 +557,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                          LocationStatusId = location.LocationStatusId,
                          ChargeBoxId = charger.ChargeBoxId,
                          ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                         // charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "charging" ? "Busy" :
-                         //     charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "suspendedev" ||
-                         //     charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "uspendedevse" ||
-                         //      charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "finishing" ||
-                         //     charger.ChargerStatuses.ToList()[0].ChargerStatus1.ToLower() == "preparing" ? "Occupied" :
-                         //charger.ChargerStatuses.ToList()[0].ChargerStatus1,
-                          charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                          ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
                          DispenserModel = charger.ModelName,
                          ProtocolName = charger.ProtocolName,
@@ -599,8 +595,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                LocationStatusId = location.LocationStatusId,
                                ChargeBoxId = charger.ChargeBoxId,
                                ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                                charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                                ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
                                DispenserModel = charger.ModelName,
                                ProtocolName = charger.ProtocolName,
@@ -635,8 +631,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                LocationStatusId = location.LocationStatusId,
                                ChargeBoxId = charger.ChargeBoxId,
                                ChargerStatus = charger.ChargerStatuses == null || charger.ChargerStatuses.Count == 0 ? "Offline" :
-                                charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("suspendedev", "Busy").Replace("uspendedevse", "Busy")
-                              .Replace("finishing", "Busy").Replace("preparing", "Busy"),
+                                              charger.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
+                                              .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
                                ConnectorType = String.Join(",", _dbContext.Port.Where(p => p.ChargerId == charger.Id).Select(s => s.Connector.ConnectorType)),
                                DispenserModel = charger.ModelName,
                                ProtocolName = charger.ProtocolName,
