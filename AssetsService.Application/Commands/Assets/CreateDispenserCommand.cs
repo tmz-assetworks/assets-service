@@ -17,14 +17,14 @@ namespace AssetsService.Application.Commands.Assets
         [StringLength(20, MinimumLength = 0, ErrorMessage = "AssetId must be fewer than 20 characters.")]
         public string AssetId { get; set; }
         [Required]
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "ChargeBoxId must be fewer than 20 characters.")]
+        [StringLength(100, MinimumLength = 0, ErrorMessage = "ChargeBoxId must be fewer than 100 characters.")]
         public string ChargeBoxId { get; set; }
         [StringLength(20, MinimumLength = 0, ErrorMessage = "EndPointUrl must be fewer than 20 characters.")]
         public string EndPointUrl { get; set; }
         [StringLength(20, MinimumLength = 0, ErrorMessage = "FirmwareVersion must be fewer than 20 characters.")]
         public string FirmwareVersion { get; set; }
         [Required]
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "HardwareSerialNumber must be fewer than 20 characters.")]
+        [StringLength(100, MinimumLength = 0, ErrorMessage = "HardwareSerialNumber must be fewer than 100 characters.")]
         public string HardwareSerialNumber { get; set; }
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Location Id")]
