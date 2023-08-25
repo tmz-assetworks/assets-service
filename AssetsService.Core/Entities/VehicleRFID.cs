@@ -45,5 +45,11 @@ namespace AssetsService.Core.Entities
         /// </summary>
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime ModifiedOn { get; set; }
-    }
+
+		[DataMember(Name = "expiryDate", EmitDefaultValue = false)]
+		public DateTime ExpiryDate { get; set; }
+
+		[DataMember(Name = "isblocked", EmitDefaultValue = false)]
+		public bool Isblocked { get; set; }
+	}
 }

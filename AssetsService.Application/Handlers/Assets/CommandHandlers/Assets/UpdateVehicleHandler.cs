@@ -60,6 +60,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                     vehicle.Name = item.Name;
                     vehicle.IsActive = item.IsActive;
                     vehicle.VehicleId = request.Id;
+                    vehicle.ExpiryDate = DateTime.Now.AddYears(1);
+                    vehicle.Isblocked = false;
                     cardsAssigned.Add(vehicle);
                 }
                 foreach (var item in request.RfIdCardsAssigneds.Where(m => m.Id > 0))
@@ -67,7 +69,9 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                     vehicle = await _vehicleRepo.GetVehicleRFIDDetails(item.Id);
                     vehicle.IsActive = item.IsActive;
                     vehicle.Name = item.Name;
-                    cardsAssigned.Add(vehicle);
+					vehicle.ExpiryDate = DateTime.Now.AddYears(1);
+					vehicle.Isblocked = false;
+					cardsAssigned.Add(vehicle);
                 }
                 vehicledetails.Result.vehicleRFID = cardsAssigned;
             }
