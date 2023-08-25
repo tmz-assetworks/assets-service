@@ -77,6 +77,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                     objVehicleRfIdReader.ModifiedOn = DateTime.Now;
                     objVehicleRfIdReader.CreatedOn = DateTime.Now;
                     objVehicleRfIdReader.IsActive = rdIdCard.IsActive;
+                    objVehicleRfIdReader.ExpiryDate=DateTime.Now.AddYears(1);
+                    objVehicleRfIdReader.Isblocked = false;
                     vehicleEntitiy.vehicleRFID.Add(objVehicleRfIdReader);
                 }
             }
