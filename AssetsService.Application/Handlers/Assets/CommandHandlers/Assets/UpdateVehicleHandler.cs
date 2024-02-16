@@ -20,7 +20,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             {
                 throw new ApplicationException("Invalid Vehicle Id.");
             }
-
+            
             var vehicledetails = _vehicleRepo.GetByIdVehicleData(request.Id);
             if (vehicledetails is not null && vehicledetails.Result is not null)
             {
@@ -35,6 +35,10 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
                 vehicledetails.Result.Department = request.Department;
                 vehicledetails.Result.ModifiedOn = DateTime.Now;
                 vehicledetails.Result.UnitNumber = request.UnitNumber;
+                if (string.IsNullOrEmpty(request.AssetId))
+                {
+                    vehicledetails.Result.AssetId = request.UnitNumber;
+                }
             }
 
             if (request.RfIdCardsAssigneds != null && request.RfIdCardsAssigneds.Count() > 0)
