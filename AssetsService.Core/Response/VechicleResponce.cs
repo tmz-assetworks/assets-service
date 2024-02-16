@@ -91,6 +91,7 @@ namespace AssetsService.Core.Responses.Assets
         public string DomicileLocation { get; set; }
         public string VehicleMacAddress { get; set; }
         public string? UnitNumber { get; set; }
+        public string? AssetId { get; set; }
         public List <Rfids> rfids{ get; set; }
     }
 
@@ -109,6 +110,7 @@ namespace AssetsService.Core.Responses.Assets
         public string MakeName { get; set; }
         public string vehicleRFIDName { get; set; }
         public string? UnitNumber { get; set; }
+        public string? AssetId { get; set; }
         public List <VehicleRFIDId> vehicleRFIDIds  { get; set; }
          
     }
@@ -153,6 +155,7 @@ namespace AssetsService.Core.Responses.Assets
         public string DomicileLocation { get; set; }
         public string VehicleMacAddress { get; set; }
         public string? UnitNumber { get; set; }
+        public string? AssetId { get; set; }
         public List<Rfids> rfids { get; set; }
     }
 }

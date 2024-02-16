@@ -25,10 +25,13 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
         {
             CreateVehicleResponse vehicleResponse = new CreateVehicleResponse();
             var vehicleEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Vehicle>(request);
-
+            
             if (vehicleEntitiy is null)
             {
                 throw new ApplicationException("Issue with mapper");
+            }
+            if (string.IsNullOrEmpty(vehicleEntitiy.AssetId)) {
+                vehicleEntitiy.AssetId = vehicleEntitiy.UnitNumber;
             }
             if (request.RfIdCardsAssigneds is not null && request.RfIdCardsAssigneds.Count() > 0)
             {

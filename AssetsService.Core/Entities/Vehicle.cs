@@ -81,6 +81,9 @@ namespace AssetsService.Core.Entities
         //this param is optinal
         [DataMember(Name = "UnitNumber", EmitDefaultValue = false)]
         public string? UnitNumber { get; set; }
+        //this param is optinal
+        [DataMember(Name = "AssetId", EmitDefaultValue = false)]
+        public string? AssetId { get; set; }
         /// <summary>
         public virtual ICollection<VehicleRFID> vehicleRFID { get; set; }
 
