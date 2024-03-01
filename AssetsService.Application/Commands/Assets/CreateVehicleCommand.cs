@@ -29,10 +29,10 @@ namespace AssetsService.Application.Commands.Assets
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModelYear")]
         [Required]
         public long ModelYear { get; set; }
-        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [RegularExpression("^[a-zA-Z0-9 -/]{0,40}$", ErrorMessage = "Only Alphabets , Numbers and -/ allowed.")]
         [Required]
         public string ModelName { get; set; }
-        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [RegularExpression("^[a-zA-Z0-9 -/]{0,40}$", ErrorMessage = "Only Alphabets , Numbers and -/ allowed.")]
         [Required]
         public string MakeName { get; set; }
         [Required]
