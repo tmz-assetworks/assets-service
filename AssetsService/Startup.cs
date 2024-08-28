@@ -102,14 +102,15 @@ namespace AssetsService.Api
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICableRepository, CableRepository>();
-            services.AddMediatR(typeof(CreateCableHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateCableHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreatePadHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdatePadHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(IsActivePadHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateRFIdHandler).GetTypeInfo().Assembly);
+            //services.AddMediatR(typeof(CreateCableHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateCableHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateCableHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreatePadHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdatePadHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActivePadHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateRFIdHandler).GetTypeInfo().Assembly));
             
-            services.AddMediatR(typeof(UpdateRFIdHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateRFIdHandler).GetTypeInfo().Assembly));
             services.AddTransient<ICableRepository, CableRepository>();
             services.AddScoped<IPadRepository, PadRepository>();
             services.AddScoped<IRFIdRepository, RFIdRepository>();
@@ -118,58 +119,58 @@ namespace AssetsService.Api
 
 
             services.AddTransient<IDispenserRepository, DispenserRepository>();
-            services.AddMediatR(typeof(CreateDispenserHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateDispenserHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteDispenserHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateDispenserHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateDispenserHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteDispenserHandler).GetTypeInfo().Assembly));
 
             services.AddTransient<ILocationRepository, LocationRepository>();
-            services.AddMediatR(typeof(CreateLocationHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateLocationHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteLocationHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateLocationHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateLocationHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteLocationHandler).GetTypeInfo().Assembly));
            
 
             services.AddTransient<IPowerCabinetRepository, PowerCabinetRepository>();
-            services.AddMediatR(typeof(CreatePowerCabinetHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdatePowerCabinetHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreatePowerCabinetHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdatePowerCabinetHandler).GetTypeInfo().Assembly));
 
             services.AddTransient<IVehicleRepository, VehicleRepository>();
-            services.AddMediatR(typeof(CreateVehicleHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateVehicleHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(IsActiveVehicleHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateVehicleHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateVehicleHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActiveVehicleHandler).GetTypeInfo().Assembly));
 
             services.AddTransient<IVehicleMakeRepository, VehicleMakeRepository>();
-            services.AddMediatR(typeof(CreateVehicleMakeHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateVehicleMakeHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteVehicleMakeMakeHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateVehicleMakeHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateVehicleMakeHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteVehicleMakeMakeHandler).GetTypeInfo().Assembly));
 
             services.AddTransient<IMakeMasterRepository, MakeMasterRepository>();
-            services.AddMediatR(typeof(CreateMakeMasterHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateMakeMasterHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteMakeMasterHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateMakeMasterHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateMakeMasterHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteMakeMasterHandler).GetTypeInfo().Assembly));
 
             services.AddTransient<IModelRepository, ModelRepository>();
-            services.AddMediatR(typeof(CreateModelHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateModelHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteModelHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateModelHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateModelHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteModelHandler).GetTypeInfo().Assembly));
 
-            services.AddMediatR(typeof(CreateModemHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateModemHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateModemHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateModemHandler).GetTypeInfo().Assembly));
             services.AddTransient<IModemRepository, ModemRepository>();
 
-            services.AddMediatR(typeof(CreatePosHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdatePosHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreatePosHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdatePosHandler).GetTypeInfo().Assembly));
             services.AddTransient<IPosRepository, PosRepository>();
 
             services.AddTransient<ICombineAssetRepository, CombineAssetRepository>();
 
-            services.AddMediatR(typeof(ExternalHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(ExternalHandler).GetTypeInfo().Assembly));
             services.AddTransient<IExternalRepository, ExternalRepository>();
             services.AddTransient<ICountryRepository, CountryRepository>();
             services.AddTransient<IDispenserLocationRepository, DispenserByLocationIdRepository>();
-            services.AddMediatR(typeof(CreateSwitchGearHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateSwitchGearHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSwitchGearHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateSwitchGearHandler).GetTypeInfo().Assembly));
             services.AddTransient<ISwitchGearRepository, SwitchGearRepository>();
-            services.AddMediatR(typeof(IsActiveAssetHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActiveAssetHandler).GetTypeInfo().Assembly));
             services.AddScoped<TokenBase>();
             services.AddHealthChecks()
                 .AddCheck<AssetHealthCheck>("example_health_check");
