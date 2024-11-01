@@ -50,6 +50,12 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 dataResponse.Id = -3;      //  return back becouse the mapped LocationId is not  present in Database.   Bug Issue  AS-1337
                 return dataResponse;
             }
+            var dispensery = _DispenserRepo.GetDispenserByChargeBoxId(request.ChargeBoxId);
+            if ((dispensery != null) && (dispensery.Result != null) && ((dispensery.Result.Id != request.Id)))
+            {
+                dataResponse.Id = -5;
+                return dataResponse;
+            }
             dispenserEntitiy.MultiplePorts = true;
             dispenserEntitiy.IsAutomatic = true;
             dispenserEntitiy.Ports = new List<Port>();
