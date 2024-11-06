@@ -51,7 +51,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 return dataResponse;
             }
             var dispensery = _DispenserRepo.GetDispenserByChargeBoxId(request.ChargeBoxId);
-            if ((dispensery != null) && (dispensery.Result != null) && ((dispensery.Result.Id != request.Id)))
+            if (dispensery != null && dispensery.Result != null && dispensery.Result.Id != request.Id)
             {
                 dataResponse.Id = -5;
                 return dataResponse;
