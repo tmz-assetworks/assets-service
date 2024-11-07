@@ -201,14 +201,14 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 Color = ConnectorColor.TotalPorts.GetEnumDisplayName()
             });
             List<String> Occupied = new List<String>();
-            var results = (from dispenser in (getAllDispenserRequest.SearchParam == null && getAllDispenserRequest.SearchParam == "") ? _dbContext.Charger :
-                           _dbContext.Charger.Where(m => m.ChargeBoxId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()))
+            var results = (from dispenser in (string.IsNullOrEmpty(getAllDispenserRequest.SearchParam)) ? _dbContext.Charger :
+                           _dbContext.Charger.Where(m => m.ChargeBoxId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.AssetId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.MakeName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.ModelName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.Location.LocationName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()))
                            select new GetAllDispenserResponse
                            {
                                Id = dispenser.Id,
                                AssetId = dispenser.AssetId,
                                ChargeBoxId = dispenser.ChargeBoxId,
-                               LocationId = dispenser.LocationId == null ? 0 : (long)dispenser.LocationId,
+                               LocationId = (long)dispenser.LocationId,
                                LocationName = dispenser.Location.LocationName,
                                EndPointUrl = dispenser.EndPointUrl,
                                FirmwareVersion = dispenser.FirmwareVersion,
@@ -243,10 +243,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                IsAutomatic = dispenser.IsAutomatic,
 
                            }).OrderByDescending(m => m.ModifiedOn).ToList<GetAllDispenserResponse>();
-            //if (results.Count > 0 && !string.IsNullOrEmpty(getAllDispenserRequest.SearchParam))
-            //{
-            //    results = results.Where(m => m.ChargeBoxId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower())).ToList();
-            //}
             var dataResult = PagedList<GetAllDispenserResponse>.ToPagedList(results,
             getAllDispenserRequest.PageNumber,
             getAllDispenserRequest.PageSize);

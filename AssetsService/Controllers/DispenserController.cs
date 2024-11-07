@@ -360,6 +360,12 @@ namespace AssetsService.Api
                         expendo.statusMessage = RespnoseMessage.Mapped_CableID_is_not_exits;
                         return BadRequest(expendo);
                     }
+                    else if (result.Id == -5)
+                    {
+                        expendo.statusCode = 400;
+                        expendo.statusMessage = RespnoseMessage.Duplicate_ChargeBoxId_can;
+                        return BadRequest(expendo);
+                    }
                     else
                     {
                         expendo.statusCode = 400;
@@ -390,6 +396,12 @@ namespace AssetsService.Api
                     expendo.Id = result.Id;
                     expendo.statusMessage = RespnoseMessage.Record_Updated_Successfully;
                 }
+                if (result.Id == -1)
+                {
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
+                    return BadRequest(expendo);
+                }
                 else if (result.Id == -2)
                 {
                     expendo.statusCode = 400;
@@ -406,6 +418,12 @@ namespace AssetsService.Api
                 {
                     expendo.statusCode = 400;
                     expendo.statusMessage = RespnoseMessage.Mapped_CableID_is_not_exits;
+                    return BadRequest(expendo);
+                }
+                else if (result.Id == -5)
+                {
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = RespnoseMessage.Duplicate_ChargeBoxId_can;
                     return BadRequest(expendo);
                 }
                 else
