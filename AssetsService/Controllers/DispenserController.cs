@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 using AssetsService.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using AssetsService.Core.ConstantResponse;
+using Microsoft.AspNetCore.Http;
 
 namespace AssetsService.Api
 {
@@ -336,41 +337,9 @@ namespace AssetsService.Api
                 }
                 else
                 {
-                    if (result.Id == -1)
-                    {
-                        expendo.statusCode = 400;
-                        expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
-                        return BadRequest(expendo);
-                    }
-                    else if (result.Id == -2)
-                    {
-                        expendo.statusCode = 400;
-                        expendo.statusMessage = RespnoseMessage.Mapped_RFIdReaderId_is_not_exits;
-                        return BadRequest(expendo);
-                    }
-                    else if (result.Id == -3)
-                    {
-                        expendo.statusCode = 400;
-                        expendo.statusMessage = RespnoseMessage.Mapped_LocationID_is_not_exits;
-                        return BadRequest(expendo);
-                    }
-                    else if (result.Id == -4)
-                    {
-                        expendo.statusCode = 400;
-                        expendo.statusMessage = RespnoseMessage.Mapped_CableID_is_not_exits;
-                        return BadRequest(expendo);
-                    }
-                    else if (result.Id == -5)
-                    {
-                        expendo.statusCode = 400;
-                        expendo.statusMessage = RespnoseMessage.Duplicate_ChargeBoxId_can;
-                        return BadRequest(expendo);
-                    }
-                    else
-                    {
-                        expendo.statusCode = 400;
-                        expendo.statusMessage = RespnoseMessage.Record_Not_Saved;
-                    }
+                    expendo.statusCode = 400;
+                    expendo.statusMessage = result.Id == -1 ? RespnoseMessage.Duplicate_AssetId_can : result.Id == -2 ? RespnoseMessage.Mapped_RFIdReaderId_is_not_exits : result.Id == -3 ? RespnoseMessage.Mapped_LocationID_is_not_exits : result.Id == -4 ? RespnoseMessage.Mapped_CableID_is_not_exits : result.Id == -5 ? RespnoseMessage.Duplicate_ChargeBoxId_can : RespnoseMessage.Record_Not_Updated;
+                    return BadRequest(expendo);
                 }
             }
             catch (Exception ex)
@@ -386,59 +355,31 @@ namespace AssetsService.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExpandoObject>> UpdateDispenser([FromBody] UpdateDispenserCommand command)
         {
-            dynamic expendo = new ExpandoObject();
-            var result = await _mediator.Send(command);
+            dynamic updatertn = new ExpandoObject();
+            var Updateresult = await _mediator.Send(command);
             try
             {
-                if (result.Id > 0)
+                if (Updateresult.Id > 0)
                 {
-                    expendo.statusCode = 200;
-                    expendo.Id = result.Id;
-                    expendo.statusMessage = RespnoseMessage.Record_Updated_Successfully;
-                }
-                if (result.Id == -1)
-                {
-                    expendo.statusCode = 400;
-                    expendo.statusMessage = RespnoseMessage.Duplicate_AssetId_can;
-                    return BadRequest(expendo);
-                }
-                else if (result.Id == -2)
-                {
-                    expendo.statusCode = 400;
-                    expendo.statusMessage = RespnoseMessage.Mapped_RFIdReaderId_is_not_exits;
-                    return BadRequest(expendo);
-                }
-                else if (result.Id == -3)
-                {
-                    expendo.statusCode = 400;
-                    expendo.statusMessage = RespnoseMessage.Mapped_LocationID_is_not_exits;
-                    return BadRequest(expendo);
-                }
-                else if (result.Id == -4)
-                {
-                    expendo.statusCode = 400;
-                    expendo.statusMessage = RespnoseMessage.Mapped_CableID_is_not_exits;
-                    return BadRequest(expendo);
-                }
-                else if (result.Id == -5)
-                {
-                    expendo.statusCode = 400;
-                    expendo.statusMessage = RespnoseMessage.Duplicate_ChargeBoxId_can;
-                    return BadRequest(expendo);
+                    updatertn.statusCode = 200;
+                    updatertn.Id = Updateresult.Id;
+                    updatertn.statusMessage = RespnoseMessage.Record_Updated_Successfully;
                 }
                 else
                 {
-                    expendo.statusCode = 400;
-                    expendo.statusMessage = RespnoseMessage.Record_Not_Updated;
+                    updatertn.statusCode = 400;
+                    updatertn.statusMessage = Updateresult.Id == -1 ? RespnoseMessage.Duplicate_AssetId_can : Updateresult.Id == -2 ? RespnoseMessage.Mapped_RFIdReaderId_is_not_exits : Updateresult.Id == -3 ? RespnoseMessage.Mapped_LocationID_is_not_exits : Updateresult.Id == -4 ? RespnoseMessage.Mapped_CableID_is_not_exits : Updateresult.Id == -5 ? RespnoseMessage.Duplicate_ChargeBoxId_can : RespnoseMessage.Record_Not_Updated;
+                    return BadRequest(updatertn);
                 }
+
             }
             catch (Exception ex)
             {
-                expendo.statusCode = (int)HttpStatusCode.BadRequest;
-                expendo.statusMessage = RespnoseMessage.Record_Not_Updated;
+                updatertn.statusCode = (int)HttpStatusCode.BadRequest;
+                updatertn.statusMessage = RespnoseMessage.Record_Not_Updated;
                 Log.Information("error occurred :" + ex.Message);
             }
-            return (expendo);
+            return (updatertn);
         }
 
         [HttpPost("GetDispenserByLocations")]
