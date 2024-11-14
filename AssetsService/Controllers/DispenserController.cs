@@ -21,6 +21,7 @@ using AssetsService.Infrastructure.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using AssetsService.Core.ConstantResponse;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AssetsService.Api
 {
@@ -338,7 +339,7 @@ namespace AssetsService.Api
                 else
                 {
                     expendo.statusCode = 400;
-                    expendo.statusMessage = result.Id == -1 ? RespnoseMessage.Duplicate_AssetId_can : result.Id == -2 ? RespnoseMessage.Mapped_RFIdReaderId_is_not_exits : result.Id == -3 ? RespnoseMessage.Mapped_LocationID_is_not_exits : result.Id == -4 ? RespnoseMessage.Mapped_CableID_is_not_exits : result.Id == -5 ? RespnoseMessage.Duplicate_ChargeBoxId_can : RespnoseMessage.Record_Not_Updated;
+                    expendo.statusMessage = ResultMessage(result.Id);
                     return BadRequest(expendo);
                 }
             }
@@ -350,6 +351,7 @@ namespace AssetsService.Api
             }
             return (expendo);
         }
+
 
         [HttpPut("UpdateDispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -368,7 +370,7 @@ namespace AssetsService.Api
                 else
                 {
                     updatertn.statusCode = 400;
-                    updatertn.statusMessage = Updateresult.Id == -1 ? RespnoseMessage.Duplicate_AssetId_can : Updateresult.Id == -2 ? RespnoseMessage.Mapped_RFIdReaderId_is_not_exits : Updateresult.Id == -3 ? RespnoseMessage.Mapped_LocationID_is_not_exits : Updateresult.Id == -4 ? RespnoseMessage.Mapped_CableID_is_not_exits : Updateresult.Id == -5 ? RespnoseMessage.Duplicate_ChargeBoxId_can : RespnoseMessage.Record_Not_Updated;
+                    updatertn.statusMessage = ResultMessage(Updateresult.Id);
                     return BadRequest(updatertn);
                 }
 
@@ -380,6 +382,34 @@ namespace AssetsService.Api
                 Log.Information("error occurred :" + ex.Message);
             }
             return (updatertn);
+        }
+
+        private string ResultMessage(long ID)
+        {
+            if (ID == -1)
+            {
+                return RespnoseMessage.Duplicate_AssetId_can;
+            }
+            else if (ID == -2)
+            {
+                return RespnoseMessage.Mapped_RFIdReaderId_is_not_exits;
+            }
+            else if (ID == -3)
+            {
+                return RespnoseMessage.Mapped_LocationID_is_not_exits;
+            }
+            else if (ID == -4)
+            {
+                return RespnoseMessage.Mapped_CableID_is_not_exits;
+            }
+            else if (ID == -5)
+            {
+                return RespnoseMessage.Duplicate_ChargeBoxId_can;
+            }
+            else
+            {
+                return RespnoseMessage.Record_Not_Saved;
+            }
         }
 
         [HttpPost("GetDispenserByLocations")]
