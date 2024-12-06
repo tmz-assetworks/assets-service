@@ -49,8 +49,10 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 dataResponse.Id = -5;
                 return dataResponse;
             }
+            dispenserEntitiy.FleetStation = true;
             dispenserEntitiy.CreatedOn = DateTime.Now;
             dispenserEntitiy.ModifiedOn = DateTime.Now;
+            dispenserEntitiy.SimCardMSIDN = request.SimCardMSIDN != null ? request.SimCardMSIDN :"";
             dispenserEntitiy.ModifiedBy = dispenserEntitiy.CreatedBy;
             dispenserEntitiy.MultiplePorts = true;
             dispenserEntitiy.IsAutomatic = true;
@@ -68,7 +70,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                         CreatedBy = request.CreatedBy,
                         CreatedOn = DateTime.Now,
                         IncrementalPower = request.PortCommand[i].IncrementalPower,
-                        IsActive = request.PortCommand[i].IsActive,
+                        IsActive = true, //request.PortCommand[i].IsActive,
                         MaxPower = request.PortCommand[i].MaxPower,
                         MinPower = request.PortCommand[i].MinPower,
                         ModifiedBy = "",
