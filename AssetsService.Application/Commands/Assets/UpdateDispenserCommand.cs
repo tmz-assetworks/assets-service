@@ -14,6 +14,9 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "AssetId must be fewer than 20 characters.")]
         public string AssetId { get; set; }
+
+        [StringLength(15, MinimumLength = 0, ErrorMessage = "SimCardMSIDN must be fewer than 15 characters.")]
+        public string? SimCardMSIDN { get; set; }
         [Required]
         [StringLength(100, MinimumLength = 0, ErrorMessage = "ChargeBoxId must be fewer than 100 characters.")]
         public string ChargeBoxId { get; set; }

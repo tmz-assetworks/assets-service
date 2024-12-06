@@ -47,6 +47,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 (m, n) => new Charger
                 {
                     Id = m.Id,
+                    SimCardMSIDN = m.SimCardMSIDN,
                     AssetId = m.AssetId,
                     EndPointUrl = m.EndPointUrl,
                     FirmwareVersion = m.FirmwareVersion,
@@ -207,6 +208,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                            {
                                Id = dispenser.Id,
                                AssetId = dispenser.AssetId,
+                               SimCardMSIDN = dispenser.SimCardMSIDN != null? dispenser.SimCardMSIDN:"",
                                ChargeBoxId = dispenser.ChargeBoxId,
                                LocationId = (long)dispenser.LocationId,
                                LocationName = dispenser.Location.LocationName,
@@ -275,6 +277,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                            {
                                Id = dispenser.Id,
                                AssetId = dispenser.AssetId,
+                               SimCardMSIDN = dispenser.SimCardMSIDN,
                                ChargeBoxId = dispenser.ChargeBoxId,
                                LocationId = dispenser.LocationId == null ? 0 : (long)dispenser.LocationId,
                                LocationName = dispenser.Location.LocationName,
@@ -725,6 +728,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             Charger oldDispenser = _dbContext.Charger.Find(dispenser.Id);
             oldDispenser.Id = dispenser.Id;
             oldDispenser.ModifiedBy = dispenser.ModifiedBy;
+            oldDispenser.SimCardMSIDN = dispenser.SimCardMSIDN;
             oldDispenser.ModifiedOn = DateTime.Now;
             oldDispenser.HardwareSerialNumber = dispenser.HardwareSerialNumber;
             oldDispenser.EndPointUrl = dispenser.EndPointUrl;
@@ -735,7 +739,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             oldDispenser.FirmwareVersion = dispenser.FirmwareVersion;
             oldDispenser.CableId = dispenser.CableId;
             oldDispenser.SwitchGearId = dispenser.SwitchGearId;
-            oldDispenser.IsActive = dispenser.IsActive;
+            oldDispenser.IsActive = true;
             oldDispenser.MultiplePorts = dispenser.MultiplePorts;
             oldDispenser.ModelName = dispenser.ModelName;
             oldDispenser.IsAutomatic = dispenser.IsAutomatic;
@@ -745,7 +749,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             oldDispenser.PingSchedule = dispenser.PingSchedule;
             oldDispenser.ReadingSchedule = dispenser.ReadingSchedule;
             oldDispenser.PowerCabinetId = dispenser.PowerCabinetId;
-            oldDispenser.FleetStation = dispenser.FleetStation;
+            oldDispenser.FleetStation = true;
             oldDispenser.RFIDReaderId = dispenser.RFIDReaderId;
             oldDispenser.ProtocolName = dispenser.ProtocolName;
             oldDispenser.InstallationDate = dispenser.InstallationDate;
@@ -759,7 +763,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 for (int j = 0; j < newports.Count(); j++)
                 {
                     newPort = new Port();
-                    newPort.IsActive = newports[j].IsActive;
+                    newPort.IsActive = true;
                     newPort.CreatedBy = oldDispenser.CreatedBy;
                     newPort.CreatedOn = DateTime.Now;
                     newPort.Power = newports[j].Power;
@@ -787,7 +791,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                         port.ConnectorType = oldPorts[j].ConnectorType;
                         port.Id = oldPorts[j].Id;
                         port.ChargerId = oldPorts[j].ChargerId;
-                        port.IsActive = oldPorts[j].IsActive;
+                        port.IsActive = true;
                         port.ConnectorId = oldPorts[j].ConnectorId;
                         port.IncrementalPower = oldPorts[j].IncrementalPower;
                         port.MaxPower = oldPorts[j].MaxPower;

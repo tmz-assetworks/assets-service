@@ -29,6 +29,8 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "assetId", EmitDefaultValue = false)]
         public string AssetId { get; set; }
 
+        [DataMember(Name = "simCardMSIDN", EmitDefaultValue = false)]
+        public string? SimCardMSIDN { get; set; }
 
 
         /// <summary>

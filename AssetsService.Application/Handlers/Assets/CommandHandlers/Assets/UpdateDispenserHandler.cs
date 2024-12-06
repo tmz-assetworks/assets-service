@@ -56,8 +56,10 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 dataResponse.Id = -5;
                 return dataResponse;
             }
+            dispenserEntitiy.SimCardMSIDN = request.SimCardMSIDN;
             dispenserEntitiy.MultiplePorts = true;
             dispenserEntitiy.IsAutomatic = true;
+            dispenserEntitiy.FleetStation = true;
             dispenserEntitiy.Ports = new List<Port>();
             if (request.UpdatePortCommand != null)
             {
@@ -70,7 +72,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                         ConnectorId = request.UpdatePortCommand[i].ConnectorId,
                         ConnectorType = request.UpdatePortCommand[i].ConnectorType,
                         IncrementalPower = request.UpdatePortCommand[i].IncrementalPower,
-                        IsActive = request.UpdatePortCommand[i].IsActive,
+                        IsActive = true,//request.UpdatePortCommand[i].IsActive,
                         MaxPower = request.UpdatePortCommand[i].MaxPower,
                         MinPower = request.UpdatePortCommand[i].MinPower,
                         ModifiedBy = request.ModifiedBy,

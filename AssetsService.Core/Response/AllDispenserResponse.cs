@@ -39,6 +39,7 @@ namespace AssetsService.Core.Response
     {
         public long Id { get; set; }
         public string AssetId { get; set; }
+        public string? SimCardMSIDN { get; set; }
         public string ChargeBoxId { get; set; }
         public string EndPointUrl { get; set; }
         public string FirmwareVersion { get; set; }
@@ -79,6 +80,7 @@ namespace AssetsService.Core.Response
     {
         public long Id { get; set; }
         public string AssetId { get; set; }
+        public string SimCardMSIDN { get; set; }
         public string ChargeBoxId { get; set; }
         public string EndPointUrl { get; set; }
         public string FirmwareVersion { get; set; }
