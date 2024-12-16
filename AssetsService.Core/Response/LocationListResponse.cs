@@ -37,6 +37,7 @@ namespace AssetsService.Core.Response
         public string Live { get; set; }
         public string UnderMaintenance { get; set; }
         public string Upcomming { get; set; }
+        public string Inactive { get; set; }
         public PagedList<LocationsData> data { get; set; }
     }
 

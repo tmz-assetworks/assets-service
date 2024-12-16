@@ -702,13 +702,14 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             locationalist.Live = _dbContext.Locations.Where(m => m.LocationStatus.LocationStatusName == "Live").Count().ToString();//result.Where(m => m.LocationStatusName == "Live").Count().ToString();
             locationalist.UnderMaintenance = _dbContext.Locations.Where(m => m.LocationStatus.LocationStatusName == "Under Maintenance").Count().ToString();//result.Where(m => m.LocationStatusName == "Under Maintenance").Count().ToString();
             locationalist.Upcomming = _dbContext.Locations.Where(m => m.LocationStatus.LocationStatusName == "Upcoming").Count().ToString();//result.Where(m => m.LocationStatusName == "Upcoming").Count().ToString();
+            locationalist.Inactive = _dbContext.Locations.Where(m => m.LocationStatus.LocationStatusName == "Inactive").Count().ToString();
             return (locationalist);
         }
 
         public async Task<List<AllLocationStatuss>> GetAllLocationStatus()
         {
             List<AllLocationStatuss> result = new List<AllLocationStatuss>();
-            result = _dbContext.LocationStatus
+            result = _dbContext.LocationStatus.Where(m => m.IsActive)
                                          .Select(obls => new AllLocationStatuss
                                          {
                                              Id = obls.Id,
