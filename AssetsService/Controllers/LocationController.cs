@@ -139,6 +139,11 @@ namespace AssetsService.Api
                                 Key = "Under Maintenance",
                                 Value = Locationalist.UnderMaintenance,
                                 Color = "#757575",
+                            },                            
+                            new StatusData () {
+                                Key = "Inactive",
+                                Value = Locationalist.Inactive,
+                                Color = "#0062A6",
                             },
                             new StatusData () {
                                 Key = "Upcoming",
