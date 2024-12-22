@@ -166,6 +166,7 @@ namespace AssetsService.Api
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(ExternalHandler).GetTypeInfo().Assembly));
             services.AddTransient<IExternalRepository, ExternalRepository>();
             services.AddTransient<ICountryRepository, CountryRepository>();
+            services.AddTransient<ITimeZoneRepository, TimeZoneRepository>();
             services.AddTransient<IDispenserLocationRepository, DispenserByLocationIdRepository>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSwitchGearHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateSwitchGearHandler).GetTypeInfo().Assembly));
