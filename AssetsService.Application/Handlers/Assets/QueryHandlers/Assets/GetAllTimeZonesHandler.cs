@@ -23,7 +23,7 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         }
         public async Task<List<TimeZoneResponse>> Handle(GetAllTimeZoneQuery request, CancellationToken cancellationToken)
         {
-            return (List<TimeZoneResponse>)await _TimeZoneRepo.GetAllTimeZones();
+            return await _TimeZoneRepo.GetAllTimeZones();
         }
     }
 }

@@ -16,7 +16,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 {
     public class TimeZoneRepository : Repository<TimeZoneResponse>, ITimeZoneRepository
     {
-        string JSONString = string.Empty;
         public TimeZoneRepository(AssetsService.Infrastructure.DBContext.DBContextCore dbContext) : base(dbContext)
         {
         }

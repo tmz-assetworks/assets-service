@@ -5,6 +5,7 @@ using AssetsService.Core.Response;
 using AssetsService.Core.Responses.Assets;
 using AssetsService.Infrastructure.Helpers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -15,14 +16,13 @@ namespace AssetsService.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TimeZoneController : ControllerBase
     {
         private readonly IMediator _mediator;
-        TokenBase _token;
-        public TimeZoneController(IMediator mediator, TokenBase token)
+        public TimeZoneController(IMediator mediator)
         {
             _mediator = mediator;
-            _token = token;
         }
 
         [HttpGet("GetAllTimeZones")]
