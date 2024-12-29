@@ -90,6 +90,7 @@ namespace AssetsService.Infrastructure.DBContext
         public virtual DbSet<ChargerStatusHistory> ChargerStatusHistories { get; set; }
         public virtual DbSet<ChargingSession> ChargingSessions { get; set; }
         public DbSet<AssetsService.Core.Entities.PricePlanLocationsMapper> PricePlanLocationsMapper { get; set; }
+        public DbSet<AssetsService.Core.Entities.SpecificTimeZone> TimeZones { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<ChargerStatus>(entity =>
@@ -131,6 +132,14 @@ namespace AssetsService.Infrastructure.DBContext
                 entity.HasOne(d => d.Charger)
                     .WithMany(p => p.ChargerStatusHistories)
                     .HasForeignKey(d => d.ChargerId);
+            });
+
+            builder.Entity<SpecificTimeZone>(SpecificTimeZone =>
+            {
+                SpecificTimeZone.ToTable("SpecificTimeZone");
+
+                SpecificTimeZone.Property(e => e.CreatedOn).HasColumnType("datetime").HasColumnName("CreatedOn");
+                SpecificTimeZone.Property(e => e.IsActive).HasColumnName("IsActive");
             });
 
             builder.Entity<AssetsService.Core.Entities.Cable>()
