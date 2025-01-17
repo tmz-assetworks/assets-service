@@ -18,7 +18,7 @@ namespace AssetsService.Core.Entities
 
         [DataMember(Name = "VIN", EmitDefaultValue = false)]
 
-        public string VIN { get; set; }
+        public string? VIN { get; set; }
 
         [RegularExpression("^[a-zA-Z0-9]{20}*$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [DataMember(Name = "LicencePlate", EmitDefaultValue = false)]
@@ -62,20 +62,20 @@ namespace AssetsService.Core.Entities
         public DateTime ModifiedOn { get; set; }
 
 
-        [Required]
+        //[Required]
         [DataMember(Name = "ModelYear", EmitDefaultValue = false)]
-        public long ModelYear { get; set; }           // i.e 2022,2023,2024
+        public long? ModelYear { get; set; }           // i.e 2022,2023,2024
 
-        [Required]
+        //[Required]
         [DataMember(Name = "makeName", EmitDefaultValue = false)]
-        public string MakeName { get; set; }
+        public string? MakeName { get; set; }
 
         // / <summary>
         // / Gets or Sets Model
         // / </summary>
-        [Required]
+        //[Required]
         [DataMember(Name = "modelName", EmitDefaultValue = false)]
-        public string ModelName { get; set; }
+        public string? ModelName { get; set; }
 
 
         //this param is optinal
