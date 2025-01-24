@@ -9,8 +9,7 @@ namespace AssetsService.Application.Commands.Assets
     {
         public long Id { get; set; }
         [RegularExpression("^[a-zA-Z0-9]{1,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
-        [StringLength(50, MinimumLength = 0, ErrorMessage = "Vin must be fewer than 50 characters.")]
-        //[Required]
+        [StringLength(50, MinimumLength = 0, ErrorMessage = "Vin must be fewer than 50 characters.")]        
         public string? VIN { get; set; }
         [RegularExpression("^[a-zA-Z0-9-_ ]{0,20}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "LicencePlate must be fewer than 50 characters.")]
@@ -24,15 +23,10 @@ namespace AssetsService.Application.Commands.Assets
         public string VehicleMacAddress { get; set; }
         //  public bool IsActive { get; set; }
         public string ModifiedBy { get; set; }
-
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ModelYear")] 
-        //[Required]
         public long? ModelYear { get; set; }                                            // i.e 2022,2023,2024                     
-        [RegularExpression("^[a-zA-Z0-9 -/]{0,40}$", ErrorMessage = "Only Alphabets , Numbers and -/ allowed.")]
-        //[Required]
+        [RegularExpression("^[a-zA-Z0-9 -/]{0,40}$", ErrorMessage = "Only Alphabets , Numbers and -/ allowed.")]        
         public string? ModelName { get; set; }
-        [RegularExpression("^[a-zA-Z0-9 -/]{0,40}$", ErrorMessage = "Only Alphabets , Numbers and -/ allowed.")]
-        //[Required]
+        [RegularExpression("^[a-zA-Z0-9 -/]{0,40}$", ErrorMessage = "Only Alphabets , Numbers and -/ allowed.")]        
         public string? MakeName { get; set; }
         [Required]
         public string UnitNumber { get; set; }
