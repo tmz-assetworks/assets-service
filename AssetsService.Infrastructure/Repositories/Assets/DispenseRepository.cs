@@ -203,7 +203,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             });
             List<String> Occupied = new List<String>();
             var results = (from dispenser in (string.IsNullOrEmpty(getAllDispenserRequest.SearchParam)) ? _dbContext.Charger :
-                           _dbContext.Charger.Where(m => m.ChargeBoxId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.AssetId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.MakeName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.ModelName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.Location.LocationName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()))
+                           _dbContext.Charger.Where(m => m.ChargeBoxId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.AssetId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.MakeName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.ModelName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.SimCardMSIDN.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.Location.LocationName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()))
                            select new GetAllDispenserResponse
                            {
                                Id = dispenser.Id,
