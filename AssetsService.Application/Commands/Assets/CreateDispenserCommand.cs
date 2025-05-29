@@ -34,10 +34,10 @@ namespace AssetsService.Application.Commands.Assets
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Location Id")]
         public long LocationId { get; set; }
         [Required]
-        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string MakeName { get; set; }
         [Required]
-        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string ModelName { get; set; }
 
         public long? ModemId { get; set; } = 0;    // 07/11/2022
@@ -69,6 +69,8 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public bool IsActive { get; set; }
         public DateTime InstallationDate { get; set; }
+        public string? OEMOrderNumber { get; set; }
+        public DateTime? DeactivationDate { get; set; }
 
         [Required]
         public List<PortCommand>? PortCommand { get; set; }

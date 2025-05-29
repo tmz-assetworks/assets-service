@@ -312,6 +312,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                IsActive = dispenser.IsActive,
                                IsAutomatic = dispenser.IsAutomatic,
                                InstallationDate = (DateTime)dispenser.InstallationDate,
+                               OEMOrderNumber = dispenser.OEMOrderNumber,
+                               DeactivationDate = dispenser.DeactivationDate,
                                PortCommmand = (from port in dispenser.Ports.ToList()
                                                select new PortResponse
                                                {
@@ -739,7 +741,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             oldDispenser.FirmwareVersion = dispenser.FirmwareVersion;
             oldDispenser.CableId = dispenser.CableId;
             oldDispenser.SwitchGearId = dispenser.SwitchGearId;
-            oldDispenser.IsActive = true;
+            oldDispenser.IsActive = dispenser.IsActive;
             oldDispenser.MultiplePorts = dispenser.MultiplePorts;
             oldDispenser.ModelName = dispenser.ModelName;
             oldDispenser.IsAutomatic = dispenser.IsAutomatic;
@@ -753,6 +755,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             oldDispenser.RFIDReaderId = dispenser.RFIDReaderId;
             oldDispenser.ProtocolName = dispenser.ProtocolName;
             oldDispenser.InstallationDate = dispenser.InstallationDate;
+            oldDispenser.OEMOrderNumber= dispenser.OEMOrderNumber;
+            oldDispenser.DeactivationDate= dispenser.DeactivationDate;
             oldDispenser.Ports = new List<Port>();
             List<Port> oldPorts = dispenser.Ports.Where(m => m.Id > 0).ToList();
             var newports = dispenser.Ports.Where(m => m.Id == 0).ToList();

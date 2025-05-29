@@ -69,6 +69,8 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public bool IsActive { get; set; }
         public DateTime InstallationDate { get; set; }
+        public string? OEMOrderNumber { get; set; }
+        public DateTime? DeactivationDate { get; set; }
 
         [Required]
         public List<UpdatePortCommand>? UpdatePortCommand { get; set; }
