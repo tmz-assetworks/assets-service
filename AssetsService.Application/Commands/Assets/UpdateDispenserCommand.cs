@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace AssetsService.Application.Commands.Assets
 {
 
-    public class UpdateDispenserCommand : IRequest<DispenserResponse>
+    public class UpdateDispenserCommand : DispenserCommandBase, IRequest<DispenserResponse>
     {
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Please enter valid Id")]
@@ -19,24 +19,7 @@ namespace AssetsService.Application.Commands.Assets
         public string? SimCardMSIDN { get; set; }
         [Required]
         [StringLength(100, MinimumLength = 0, ErrorMessage = "ChargeBoxId must be fewer than 100 characters.")]
-        public string ChargeBoxId { get; set; }
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "EndPointUrl must be fewer than 20 characters.")]
-        public string EndPointUrl { get; set; }
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "FirmwareVersion must be fewer than 20 characters.")]
-        public string FirmwareVersion { get; set; }
-        [Required]
-        [StringLength(100, MinimumLength = 0, ErrorMessage = "HardwareSerialNumber must be fewer than 100 characters.")]
-        public string HardwareSerialNumber { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Location Id")]
-        public long LocationId { get; set; }
-        [Required]
-        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
-        public string MakeName { get; set; }
-        [Required]
-        [RegularExpression("^[a-zA-Z0-9 ]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
-        public string ModelName { get; set; }
-
+        public string ChargeBoxId { get; set; } 
         public long? ModemId { get; set; }
         [StringLength(20, MinimumLength = 0, ErrorMessage = "MeterType must be fewer than 20 characters.")]
         public string MeterType { get; set; }
@@ -75,24 +58,10 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public List<UpdatePortCommand>? UpdatePortCommand { get; set; }
     }
-    public class UpdatePortCommand
+    public class UpdatePortCommand: PortCommandBase
     {
-        public long Id { get; set; }
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Please enter valid Connector Id")]
-        public int ConnectorId { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ConnectorType Id")]
-        public long ConnectorType { get; set; }
-
-        [Required]
-        public string IncrementalPower { get; set; }
-        [Required]
-        public bool IsActive { get; set; }
-        [Required]
-        public string MaxPower { get; set; }
-        [Required]
-        public string MinPower { get; set; }
+        public long Id { get; set; } 
+        
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid PlugType Id")]
         public long PlugTypeId { get; set; }

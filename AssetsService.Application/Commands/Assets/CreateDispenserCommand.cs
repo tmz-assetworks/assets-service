@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AssetsService.Application.Commands.Assets
 {
-    public class CreateDispenserCommand : IRequest<DispenserResponse>
+    public class CreateDispenserCommand : DispenserCommandBase, IRequest<DispenserResponse>
     {
         [Required]
         [StringLength(20, MinimumLength = 0, ErrorMessage = "AssetId must be fewer than 20 characters.")]
@@ -21,25 +21,7 @@ namespace AssetsService.Application.Commands.Assets
         public string ChargeBoxId { get; set; }
         
         [StringLength(15, MinimumLength = 0, ErrorMessage = "SimCardMSIDN must be fewer than 15 characters.")]
-        public string? SimCardMSIDN { get; set; }
-
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "EndPointUrl must be fewer than 20 characters.")]
-        public string EndPointUrl { get; set; }
-        [StringLength(20, MinimumLength = 0, ErrorMessage = "FirmwareVersion must be fewer than 20 characters.")]
-        public string FirmwareVersion { get; set; }
-        [Required]
-        [StringLength(100, MinimumLength = 0, ErrorMessage = "HardwareSerialNumber must be fewer than 100 characters.")]
-        public string HardwareSerialNumber { get; set; }
-        [Required]
-        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Location Id")]
-        public long LocationId { get; set; }
-        [Required]
-        [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
-        public string MakeName { get; set; }
-        [Required]
-        [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
-        public string ModelName { get; set; }
-
+        public string? SimCardMSIDN { get; set; }   
         public long? ModemId { get; set; } = 0;    // 07/11/2022
         [StringLength(20, MinimumLength = 0, ErrorMessage = "MeterType must be fewer than 20 characters.")]
         public string MeterType { get; set; }
@@ -49,9 +31,6 @@ namespace AssetsService.Application.Commands.Assets
         public bool FleetStation { get; set; }        // PrivateStation changed to FleetStation  07/11/2022
         [StringLength(20, MinimumLength = 0, ErrorMessage = "ReadingSchedule must be fewer than 20 characters.")]
         public string ReadingSchedule { get; set; }
-        //[Required]
-        //[StringLength(20, MinimumLength = 0, ErrorMessage = "SerialNumber must be fewer than 20 characters.")]
-        //public string SerialNumber { get; set; }              // SerialNumber Removed 07/11/2022
         public long? RFIdReaderId { get; set; } = 0;
 
         public long? PowerCabinetId { get; set; } = 0;
@@ -75,20 +54,46 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         public List<PortCommand>? PortCommand { get; set; }
     }
-    public class PortCommand
+    public class PortCommand : PortCommandBase
     {
         public long? Id { get; set; }
+        [Required]
+        public long PlugTypeId { get; set; }
+        [Required]
+        [StringLength(20, ErrorMessage = "PortName must be fewer than 20 characters.")]
+        public string PortName { get; set; }
+        [Required]
+        public string Power { get; set; }
+    }
 
+    public abstract class DispenserCommandBase
+    {
+        [StringLength(20, MinimumLength = 0, ErrorMessage = "EndPointUrl must be fewer than 20 characters.")]
+        public string EndPointUrl { get; set; }
+        [StringLength(20, MinimumLength = 0, ErrorMessage = "FirmwareVersion must be fewer than 20 characters.")]
+        public string FirmwareVersion { get; set; }
+        [Required]
+        [StringLength(100, MinimumLength = 0, ErrorMessage = "HardwareSerialNumber must be fewer than 100 characters.")]
+        public string HardwareSerialNumber { get; set; }
+        [Required]
+        [Range(1, long.MaxValue, ErrorMessage = "Please enter valid Location Id")]
+        public long LocationId { get; set; }
+        [Required]
+        [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        public string MakeName { get; set; }
+        [Required]
+        [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
+        public string ModelName { get; set; }
+    }
+
+    public abstract class PortCommandBase
+    {
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Please enter valid Connector Id")]
         public int ConnectorId { get; set; }
         [Required]
         [Range(1, long.MaxValue, ErrorMessage = "Please enter valid ConnectorType Id")]
         public long ConnectorType { get; set; }
-
-        //[Required]
-        //public string CreatedBy { get; set; }
-
         [Required]
         public string IncrementalPower { get; set; }
         [Required]
@@ -97,12 +102,6 @@ namespace AssetsService.Application.Commands.Assets
         public string MaxPower { get; set; }
         [Required]
         public string MinPower { get; set; }
-        [Required]
-        public long PlugTypeId { get; set; }
-        [Required]
-        [StringLength(20, ErrorMessage = "PortName must be fewer than 20 characters.")]
-        public string PortName { get; set; }
-        [Required]
-        public string Power { get; set; }
+        
     }
 }
