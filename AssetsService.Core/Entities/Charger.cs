@@ -175,6 +175,13 @@ namespace AssetsService.Core.Entities
         [DataMember(Name = "installationDate", EmitDefaultValue = false)]
         public DateTime? InstallationDate { get; set; }
 
+        [DataMember(Name = "OEMOrderNumber", EmitDefaultValue = false)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string? OEMOrderNumber { get; set; }
+
+        [DataMember(Name = "deactivationDate", EmitDefaultValue = false)]
+        public DateTime? DeactivationDate { get; set; }
+
         /// <summary>
         /// Gets or Sets CreatedOn
         /// </summary>

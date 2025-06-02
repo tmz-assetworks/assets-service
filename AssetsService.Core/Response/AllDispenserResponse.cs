@@ -74,6 +74,8 @@ namespace AssetsService.Core.Response
         public bool IsActive { get; set; }
         public bool IsAutomatic { get; set; }
         public DateTime InstallationDate { get; set; }
+        public string? OEMOrderNumber { get; set; }
+        public DateTime? DeactivationDate { get; set; }
         public List<PortResponse> PortCommmand { get; set; }
     }
     public class GetAllDispenserResponse
