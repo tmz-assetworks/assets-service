@@ -84,6 +84,8 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         [RegularExpression("^[a-zA-Z0-9 \\-]{0,40}$", ErrorMessage = "Only Alphabets and Numbers allowed.")]
         public string ModelName { get; set; }
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
     }
 
     public abstract class PortCommandBase

@@ -198,6 +198,15 @@ namespace AssetsService.Core.Entities
         /// </summary>
         [DataMember(Name = "modifiedOn", EmitDefaultValue = false)]
         public DateTime? ModifiedOn { get; set; }
+
+        [DataMember(Name = "latitude", EmitDefaultValue = false)]
+        public double? Latitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Longitude
+        /// </summary>
+        [DataMember(Name = "longitude", EmitDefaultValue = false)]
+        public double? Longitude { get; set; }
         public virtual ICollection<Port> Ports { get; set; }
         public virtual ICollection<ChargerStatus> ChargerStatuses { get; set; }
         public virtual ICollection<ChargerStatusHistory> ChargerStatusHistories { get; set; }
