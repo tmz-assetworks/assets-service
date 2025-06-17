@@ -314,6 +314,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                                InstallationDate = (DateTime)dispenser.InstallationDate,
                                OEMOrderNumber = dispenser.OEMOrderNumber,
                                DeactivationDate = dispenser.DeactivationDate,
+                               Latitude=dispenser.Latitude,
+                               Longitude=dispenser.Longitude,
                                PortCommmand = (from port in dispenser.Ports.ToList()
                                                select new PortResponse
                                                {
@@ -757,6 +759,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             oldDispenser.InstallationDate = dispenser.InstallationDate;
             oldDispenser.OEMOrderNumber= dispenser.OEMOrderNumber;
             oldDispenser.DeactivationDate= dispenser.DeactivationDate;
+            oldDispenser.Latitude = dispenser.Latitude;
+            oldDispenser.Longitude = dispenser.Longitude;
             oldDispenser.Ports = new List<Port>();
             List<Port> oldPorts = dispenser.Ports.Where(m => m.Id > 0).ToList();
             var newports = dispenser.Ports.Where(m => m.Id == 0).ToList();

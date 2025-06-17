@@ -76,6 +76,8 @@ namespace AssetsService.Core.Response
         public DateTime InstallationDate { get; set; }
         public string? OEMOrderNumber { get; set; }
         public DateTime? DeactivationDate { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
         public List<PortResponse> PortCommmand { get; set; }
     }
     public class GetAllDispenserResponse
