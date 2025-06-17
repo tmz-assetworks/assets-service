@@ -110,8 +110,8 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 dispenserEntitiy.RFIDReaderId = (dispenserEntitiy.RFIDReaderId.HasValue && dispenserEntitiy.RFIDReaderId == 0) ? null : dispenserEntitiy.RFIDReaderId;
                 dispenserEntitiy.SwitchGearId = (dispenserEntitiy.SwitchGearId.HasValue && dispenserEntitiy.SwitchGearId == 0) ? null : dispenserEntitiy.SwitchGearId;
                 dispenserEntitiy.PowerCabinetId = (dispenserEntitiy.PowerCabinetId.HasValue && dispenserEntitiy.PowerCabinetId == 0) ? null : dispenserEntitiy.PowerCabinetId;
-                dispenserEntitiy.Latitude = (dispenserEntitiy.Latitude.HasValue && dispenserEntitiy.Latitude == 0) ? null : dispenserEntitiy.Latitude;
-                dispenserEntitiy.Longitude = (dispenserEntitiy.Longitude.HasValue && dispenserEntitiy.Longitude == 0) ? null : dispenserEntitiy.Longitude;
+                dispenserEntitiy.Latitude = (!dispenserEntitiy.Latitude.HasValue || dispenserEntitiy.Latitude.ToString() == "0") ? null : dispenserEntitiy.Latitude;
+                dispenserEntitiy.Longitude = (!dispenserEntitiy.Longitude.HasValue || dispenserEntitiy.Longitude.ToString() == "0") ? null : dispenserEntitiy.Longitude;
 
                 var addDispenserResponse = await _dispenserRepo.AddAsync(dispenserEntitiy);
                 dataResponse = Mapper.Mappers.Map<DispenserResponse>(addDispenserResponse);
