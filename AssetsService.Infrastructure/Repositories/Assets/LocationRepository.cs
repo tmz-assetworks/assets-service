@@ -399,6 +399,10 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
         }
 
+        public async Task<Location> GetLocationByLocationId(string locationId)
+        {
+            return await _dbContext.Locations.Where(m => m.LocationId == locationId).FirstOrDefaultAsync();
+        }
         public Task<List<LocationsDispenser>> GetLocationsDispenserformap(List<long> Id)
         {
             // return null

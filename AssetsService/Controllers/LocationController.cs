@@ -278,34 +278,39 @@ namespace AssetsService.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ExpandoObject>> CreateLocation([FromBody] CreateLocationCommand command)
         {
-            dynamic expendo = new ExpandoObject();
+            dynamic createloc = new ExpandoObject();
             var result = await _mediator.Send(command);
             try
             {
-                if (result.Id != 0)
+                if (result.Id > 0)
                 {
-
-                    expendo.StatusCode = 200;
-                    expendo.Id = result.Id;
-                    expendo.StatusMessage = RespnoseMessage.Record_Save_Successfully;
-                    //_logger.LogInformation("New Location created successfully");
+                    createloc.StatusCode = 200;
+                    createloc.Id = result.Id;
+                    createloc.StatusMessage = RespnoseMessage.Record_Save_Successfully;
+                    return (createloc);
                 }
                 else
                 {
-                    expendo.StatusCode = 200;
-                    expendo.StatusMessage = RespnoseMessage.Record_Not_Saved;
-
+                    createloc.StatusCode = 400;
+                    if (result.Id == -1)
+                    {
+                        createloc.StatusMessage = RespnoseMessage.Duplicate_entry_for + " Location ID";
+                    }
+                    else
+                    {
+                        createloc.StatusMessage = RespnoseMessage.Record_Not_Saved;
+                    }
+                    return BadRequest(createloc);
                 }
             }
             catch (Exception ex)
             {
-                expendo.StatusCode = 200;
-                expendo.StatusMessage = RespnoseMessage.Record_Not_Saved;
-                //_logger.LogError(ex.StackTrace.ToString());
-                Log.Information("error occurred :" + ex.Message);
-
+                createloc.StatusCode = 400;
+                createloc.StatusMessage = RespnoseMessage.Record_Not_Saved;
+                Log.Information( ex, "error occurred CreateLocation");
+                return BadRequest(createloc);
             }
-            return (expendo);
+            
         }
 
 
@@ -339,17 +344,38 @@ namespace AssetsService.Api
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<LocationResponse>> UpdateLocation([FromBody] UpdateLocationCommand command)
         {
+            dynamic updateloc = new ContentResult();
             try
             {
-                // command.ModifiedOn = DateTime.Now;
                 var result = await _mediator.Send(command);
-                //_logger.LogInformation("Location updated successfully");
-                return Ok(result);
+                if (result.Id > 0)
+                {
+                    updateloc.StatusCode = 200;
+                    updateloc.Content = RespnoseMessage.Record_Save_Successfully;
+                    return Ok(updateloc);
+                }
+                else
+                {
+                    updateloc.StatusCode = 400;
+                    if (result.Id == -1)
+                    {
+                        updateloc.Content = RespnoseMessage.Duplicate_entry_for + " Location ID";
+                    }
+                    else
+                    {
+                        updateloc.Content = RespnoseMessage.Record_Not_Saved;
+                    }
+                    return BadRequest(updateloc);
+                }
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex.ToString());
-                Log.Information("error occurred :" + ex.Message);
+                Log.Information(ex, "error occurred UpdateLocation");
+                updateloc.ContentType = RespnoseMessage.Exception;
+                updateloc.StatusCode = 400;
+                updateloc.Content = RespnoseMessage.Record_Not_Saved;
+                return BadRequest(updateloc);
+
                 return new ContentResult()
                 {
                     ContentType = RespnoseMessage.Exception,
