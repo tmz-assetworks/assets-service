@@ -10,6 +10,7 @@ namespace AssetsService.Core.Repositories.Assets
     {
 
         Task<AssetsService.Core.Entities.Location> GetByIdLocation(long locationId);
+        Task<Location> GetLocationByLocationId(string locationId);
         Task<List<AssetsService.Core.Entities.Location>> GetAllLocation();
         Task<List<Core.Response.LocationData>> GetAllLocationName();
         Task<List<Core.Response.LocationsDispenser>> GetLocationsDispenserformap(List<long> Id);

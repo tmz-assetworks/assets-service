@@ -25,6 +25,16 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
             {
                 throw new ApplicationException("Issue with mapper");
             }
+            var dispensery = await _locationRepo.GetLocationByLocationId(request.LocationId.Trim());
+            if (dispensery != null)
+            {
+                if (dispensery.Id != LocationEntitiy.Id)
+                {
+                    Location loc = new Location();
+                    loc.Id = -1;
+                    return loc;
+                }
+            }
             LocationEntitiy.IsActive = true;//set newly created customer as a active
             LocationEntitiy.CreatedOn = DateTime.Now;
             LocationEntitiy.LocationAddressId = 0;
