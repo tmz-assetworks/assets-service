@@ -29,6 +29,7 @@ namespace AssetsService.Core.ConstantResponse
         public static readonly string Record_Not_Saved = "Record not saved";
         public static readonly string Record_Not_Updated = "Record not updated";
         public static readonly string Deleted = "Deleted";
+        public static readonly string VehicelDeleted = "Vehicle Deleted Successfully";
         public static readonly string Not_Deleted = "Not Deleted";
         public static readonly string Opeartion_Failed = "Opeartion failed!";
         public static readonly string Invalid_Data = "Invalid data";

@@ -20,5 +20,6 @@ namespace AssetsService.Core.Repositories
         Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest);
         Task<Vehicle> GetVehicleInfoById(long Id);
         Task<VehicleRFID> GetVehicleRFIDDetailsByName(string RfIdName);
+        Task<bool> DeleteVehicleById(int vehicleId);
     }
 }
