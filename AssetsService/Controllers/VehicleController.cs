@@ -374,6 +374,30 @@ namespace AssetsService.Api.Controllers
             }
             return vehicleResponse;
         }
+
+        [HttpDelete("DeleteVehicleById/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<DeleteVehicleRequest> DeleteVehicleById(int id)
+        {
+            DeleteVehicleRequest deleteVehicleRequest = new();
+            var result = await _mediator.Send(new DeleteVehicleCommand(id));
+
+            if (result)
+            {
+                deleteVehicleRequest.StatusCode = 200;
+                deleteVehicleRequest.StatusMessage = RespnoseMessage.VehicelDeleted;
+            }
+            else
+            {
+                deleteVehicleRequest.StatusCode = 400;
+                deleteVehicleRequest.StatusMessage = RespnoseMessage.Not_Deleted;
+            }
+
+            return deleteVehicleRequest;
+        }
+
+
+
         [HttpGet("GetVehicleDetailsById/{Id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<VehicleDetailsResponse> GetVehicleDetailsById(int Id)

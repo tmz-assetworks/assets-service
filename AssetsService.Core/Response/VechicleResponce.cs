@@ -158,4 +158,10 @@ namespace AssetsService.Core.Responses.Assets
         public string? AssetId { get; set; }
         public List<Rfids> rfids { get; set; }
     }
+
+    public class DeleteVehicleRequest
+    {
+        public int StatusCode { get; set; }
+        public string? StatusMessage { get; set; }
+    }
 }

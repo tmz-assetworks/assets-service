@@ -433,5 +433,20 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             return data;
         }
 
+        public async Task<bool> DeleteVehicleById(int vehicleId)
+        {
+            var vehicle = await _dbContext.Vehicle
+                .FirstOrDefaultAsync(v => v.Id == vehicleId);
+
+            if (vehicle == null)
+                return false;
+
+            _dbContext.Vehicle.Remove(vehicle);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }
