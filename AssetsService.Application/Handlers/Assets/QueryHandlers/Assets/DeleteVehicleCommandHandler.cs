@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using AssetsService.Core.Repositories;
+using AssetsService.Application.Queries;
 
 namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
