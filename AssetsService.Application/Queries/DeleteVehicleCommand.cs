@@ -1,9 +1,12 @@
 ﻿using MediatR;
-public class DeleteVehicleCommand : IRequest<bool>
+namespace AssetsService.Application.Queries
 {
-    public int VehicleId { get; set; }
-    public DeleteVehicleCommand(int vehicleId)
+    public class DeleteVehicleCommand : IRequest<bool>
     {
-        VehicleId = vehicleId;
+        public int VehicleId { get; set; }
+        public DeleteVehicleCommand(int vehicleId)
+        {
+            VehicleId = vehicleId;
+        }
     }
 }

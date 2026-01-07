@@ -1,17 +1,20 @@
 ﻿using MediatR;
 using AssetsService.Core.Repositories;
 
-public class DeleteVehicleCommandHandler : IRequestHandler<DeleteVehicleCommand, bool>
+namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
 {
-    private readonly IVehicleRepository _vehicleRepo;
-
-    public DeleteVehicleCommandHandler(IVehicleRepository vehicleRepo)
+    public class DeleteVehicleCommandHandler : IRequestHandler<DeleteVehicleCommand, bool>
     {
-        _vehicleRepo = vehicleRepo;
-    }
+        private readonly IVehicleRepository _vehicleRepo;
 
-    public async Task<bool> Handle( DeleteVehicleCommand request, CancellationToken cancellationToken)
-    {
-        return await _vehicleRepo.DeleteVehicleById(request.VehicleId);
+        public DeleteVehicleCommandHandler(IVehicleRepository vehicleRepo)
+        {
+            _vehicleRepo = vehicleRepo;
+        }
+
+        public async Task<bool> Handle(DeleteVehicleCommand request, CancellationToken cancellationToken)
+        {
+            return await _vehicleRepo.DeleteVehicleById(request.VehicleId);
+        }
     }
 }

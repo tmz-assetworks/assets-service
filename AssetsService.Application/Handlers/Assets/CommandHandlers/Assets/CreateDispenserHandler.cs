@@ -2,10 +2,7 @@ using AssetsService.Application.Commands.Assets;
 using AssetsService.Application.Responses.Assets;
 using AssetsService.Core.Entities;
 using AssetsService.Core.Mapper;
-using AssetsService.Core.Repositories;
 using AssetsService.Core.Repositories.Assets;
-using AssetsService.Core.Repositories.Assets.Base;
-using AssetsService.Core.Responses;
 using MediatR;
 
 namespace AssetsService.Application.Handlers.Assets.CommandHandlers
@@ -13,19 +10,11 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
     public class CreateDispenserHandler : IRequestHandler<CreateDispenserCommand, DispenserResponse>
     {
         private readonly IDispenserRepository _dispenserRepo;
-        private readonly IRepository<Port> _repositoryPort;
-        private readonly IRFIdRepository _RFIdRepository;
         private readonly ILocationRepository _locationRepository;
-        private readonly ICableRepository _cableRepo;
-        private readonly ISwitchGearRepository _switchGearRepository;
-        public CreateDispenserHandler(IDispenserRepository dispenserRepository, IRepository<Port> repositoryPort, IRFIdRepository _rfidrepository, ILocationRepository locationRepository, ICableRepository cableRepo, ISwitchGearRepository switchGearRepository)
+        public CreateDispenserHandler(IDispenserRepository dispenserRepository, ILocationRepository locationRepository)
         {
             _dispenserRepo = dispenserRepository;
-            _repositoryPort = repositoryPort;
-            _RFIdRepository = _rfidrepository;
             _locationRepository = locationRepository;
-            _cableRepo = cableRepo;
-            _switchGearRepository = switchGearRepository;
         }
         public async Task<DispenserResponse> Handle(CreateDispenserCommand request, CancellationToken cancellationToken)
         {
