@@ -122,6 +122,7 @@ namespace AssetsService.Api
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateDispenserHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateDispenserHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteDispenserHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActiveDispenserHandler).GetTypeInfo().Assembly));
 
             services.AddTransient<ILocationRepository, LocationRepository>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateLocationHandler).GetTypeInfo().Assembly));

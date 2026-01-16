@@ -47,6 +47,7 @@ namespace AssetsService.Core.ConstantResponse
         public static readonly string Please_provide_Vehicle_Rfid_card_Assigned = "Please provide Vehicle RfId Card Assigned.";
         public static readonly string Please_provide_Vehicle_ModelYear = "Please provide Vehicle ModelYear.";
         public static readonly string Please_provide_Vehicle_Id_value = "Please provide Vehicle Id value.";
+        public static readonly string Please_provide_Dispenser_Id_value = "Please provide Dispenser Id value.";
         public static readonly string Please_provide_Vehicle_ModelId = "Please provide Vehicle ModelId.";
         public static readonly string Please_provide_ModifiedBy_value = "Please provide ModifiedBy value.";
         public static readonly string Cable_Created_Successfully = "Cable Created Successfully";

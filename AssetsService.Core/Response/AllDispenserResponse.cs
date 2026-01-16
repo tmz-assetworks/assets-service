@@ -136,6 +136,8 @@ namespace AssetsService.Core.Response
     public class DispensersRequest : QueryStringParameters
     {
         public string operatorId { get; set; }
+        public List<int> LocationIds { get; set; } = new();
+        public int? ActivationStatus { get; set; }
     }
     public class DispenserLocationRequest
     {

@@ -69,6 +69,8 @@ namespace AssetsService.Core.Mapper
             CreateMap<AssetsService.Core.Entities.Charger, CreateDispenserCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Charger, UpdateDispenserCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Charger, DeleteDispenserCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Charger, IsActiveDispenserCommand>().ReverseMap();
+
 
             CreateMap<AssetsService.Core.Entities.Pad, PadResponse>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Pad, IsActiveAssetCommand>().ReverseMap();
