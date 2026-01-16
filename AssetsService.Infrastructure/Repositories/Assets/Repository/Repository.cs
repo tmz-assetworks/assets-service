@@ -80,6 +80,27 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                     _dbContext.Entry(updatingEntity);
                 }
             }
+            else if (!string.IsNullOrEmpty(types) && types.Equals("dispenser", StringComparison.OrdinalIgnoreCase))
+            {
+                var old = entity as Charger;
+
+                if (id > int.MaxValue)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(id));
+                }
+
+                var chargerId = (int)id;
+                var updatingEntity = _dbContext.Set<Charger>().Find(chargerId);
+
+                if (updatingEntity != null)
+                {
+                    updatingEntity.IsActive = old.IsActive;
+                    updatingEntity.ModifiedBy = old.ModifiedBy;
+                    updatingEntity.ModifiedOn = DateTime.UtcNow;
+                }
+            }
+
+
             else
             if (!string.IsNullOrEmpty(types) && types.ToLower() == "rfidreader")
             {

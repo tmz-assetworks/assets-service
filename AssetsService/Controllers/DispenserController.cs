@@ -299,28 +299,7 @@ namespace AssetsService.Api
             return JSONString;
         }
 
-        [HttpDelete("Deletedispenser")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<DispenserResponse>> Deletedispenser([FromBody] DeleteDispenserCommand command)
-        {
-            try
-            {
-                var result = await _mediator.Send(command);
-                ////_logger.LogInformation("Dispenser data deleted successfully");
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                ////_logger.LogError(ex.ToString());
-                Log.Information("error occurred :" + ex.Message);
-                return new ContentResult()
-                {
-                    ContentType = RespnoseMessage.Exception,
-                    StatusCode = 404,
-                    Content = RespnoseMessage.Not_Deleted
-                };
-            }
-        }
+       
 
         [HttpPost("CreateDispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -691,6 +670,67 @@ namespace AssetsService.Api
 
             }
             return dispenserByLocationQueryResponse;
+        }
+
+        [HttpDelete("Deletedispenser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<DispenserResponse>> Deletedispenser([FromBody] DeleteDispenserCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                ////_logger.LogInformation("Dispenser data deleted successfully");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                ////_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
+                return new ContentResult()
+                {
+                    ContentType = RespnoseMessage.Exception,
+                    StatusCode = 404,
+                    Content = RespnoseMessage.Not_Deleted
+                };
+            }
+        }
+
+        [HttpPut("IsActiveDispenserById")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ExpandoObject>>  IsActiveDispenserById([FromBody] IsActiveDispenserCommand isActiveDispenserCommand)
+        {
+            dynamic expandoObject = new ExpandoObject();
+            try
+            {
+                expandoObject.statusCode = 200;
+                if (isActiveDispenserCommand.Id < 0)
+                {
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_Dispenser_Id_value;
+                    return expandoObject;
+                }
+                else
+                    if (string.IsNullOrEmpty(isActiveDispenserCommand.ModifiedBy))
+                {
+                    expandoObject.statusMessage = RespnoseMessage.Please_provide_ModifiedBy_value;
+                    return expandoObject;
+                }
+                var result = await _mediator.Send(isActiveDispenserCommand);
+
+                if (result is not null && result.Id > 0)
+                    expandoObject.statusMessage = RespnoseMessage.Record_status_changed_successfully;
+                else
+                    expandoObject.statusMessage = RespnoseMessage.Record_not_found;
+
+                return expandoObject;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex.ToString());
+                Log.Information("error occurred :" + ex.Message);
+                expandoObject.statusMessage = RespnoseMessage.Opeartion_Failed;
+                expandoObject.statusCode = (int)HttpStatusCode.BadRequest;
+            }
+            return expandoObject;
         }
 
     }
