@@ -357,13 +357,96 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }).ToList();
             return data;
         }
+        //public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest)
+        //{
+        //    VehicleListData vehicleListData = new VehicleListData();
+        //    List<VehicleDTO> result = new List<VehicleDTO>();
+        //    if (string.IsNullOrEmpty(getAllVehicleRequest.SearchParam) == true)
+        //    {
+        //        result = _dbContext.Vehicle.Select(m => new VehicleDTO
+        //        {
+        //            Id = m.Id,
+        //            VIN = m.VIN,
+        //            LicencePlate = m.LicencePlate,
+        //            Department = m.Department,
+        //            DomicileLocation = m.DomicileLocation,
+        //            VehicleMacAddress = m.VehicleMacAddress,
+        //            IsActive = m.IsActive,
+        //            ModifiedOn = m.ModifiedOn,
+        //            ModelYear = m.ModelYear,
+        //            ModelName = m.ModelName,
+        //            MakeName = m.MakeName,
+        //            UnitNumber=m.UnitNumber,
+        //            vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
+
+        //            vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
+        //            {
+        //                Id = m.Id,
+        //                Name = m.Name,
+        //                IsActive = m.IsActive
+        //            }).ToList()
+        //        }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
+        //    }
+        //    else
+        //        result = _dbContext.Vehicle.Where(d => d.Department.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()) || d.VehicleMacAddress.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
+
+        //                .Select(m => new VehicleDTO
+        //                {
+        //                    Id = m.Id,
+        //                    VIN = m.VIN,
+        //                    LicencePlate = m.LicencePlate,
+        //                    Department = m.Department,
+        //                    DomicileLocation = m.DomicileLocation,
+        //                    VehicleMacAddress = m.VehicleMacAddress,
+        //                    IsActive = m.IsActive,
+        //                    ModifiedOn = m.ModifiedOn,
+        //                    ModelYear = m.ModelYear,
+        //                    ModelName = m.ModelName,
+        //                    MakeName = m.MakeName,
+        //                    UnitNumber=m.UnitNumber,
+        //                    vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
+        //                    vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
+        //                    {
+        //                        Id = m.Id,
+        //                        Name = m.Name,
+        //                        IsActive = m.IsActive
+        //                    }).ToList()
+        //                }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
+
+        //    var dataResult = PagedList<VehicleDTO>.ToPagedList(result,
+        // getAllVehicleRequest.PageNumber,
+        // getAllVehicleRequest.PageSize);
+        //    vehicleListData.data = dataResult;
+        //    vehicleListData.Active = _dbContext.Vehicle.Where(m => m.IsActive == true).Count();
+        //    vehicleListData.InActive = _dbContext.Vehicle.Where(m => m.IsActive == false).Count();
+        //    return vehicleListData;
+        //}
+
         public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest)
         {
             VehicleListData vehicleListData = new VehicleListData();
-            List<VehicleDTO> result = new List<VehicleDTO>();
-            if (string.IsNullOrEmpty(getAllVehicleRequest.SearchParam) == true)
+
+            IQueryable<Vehicle> query = _dbContext.Vehicle;
+
+            if (!string.IsNullOrWhiteSpace(getAllVehicleRequest.SearchParam))
             {
-                result = _dbContext.Vehicle.Select(m => new VehicleDTO
+                string searchParam = getAllVehicleRequest.SearchParam.Trim();
+
+                query = query.Where(v =>
+                    EF.Functions.Like(v.Department ?? string.Empty, $"%{searchParam}%") ||
+                    EF.Functions.Like(v.VehicleMacAddress ?? string.Empty, $"%{searchParam}%") ||
+                    EF.Functions.Like(v.VIN ?? string.Empty, $"%{searchParam}%") ||
+                    EF.Functions.Like(v.UnitNumber ?? string.Empty, $"%{searchParam}%") ||
+                    (v.vehicleRFID != null &&
+                     v.vehicleRFID.Any(r =>
+                         r.IsActive &&
+                         EF.Functions.Like(r.Name ?? string.Empty, $"%{searchParam}%")))
+                );
+            }
+
+            List<VehicleDTO> result = await query
+                .OrderByDescending(v => v.ModifiedOn)
+                .Select(m => new VehicleDTO
                 {
                     Id = m.Id,
                     VIN = m.VIN,
@@ -376,51 +459,42 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     ModelYear = m.ModelYear,
                     ModelName = m.ModelName,
                     MakeName = m.MakeName,
-                    UnitNumber=m.UnitNumber,
-                    vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
+                    UnitNumber = m.UnitNumber,
 
-                    vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
-                    {
-                        Id = m.Id,
-                        Name = m.Name,
-                        IsActive = m.IsActive
-                    }).ToList()
-                }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
-            }
-            else
-                result = _dbContext.Vehicle.Where(d => d.Department.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()) || d.VehicleMacAddress.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
+                    vehicleRFIDName = m.vehicleRFID != null
+                        ? string.Join(',',
+                            m.vehicleRFID
+                                .Where(r => r.IsActive)
+                                .Select(r => r.Name))
+                        : string.Empty,
 
-                        .Select(m => new VehicleDTO
+                    vehicleRFIDIds = m.vehicleRFID
+                        .Where(r => r.IsActive)
+                        .Select(r => new VehicleRFIDId
                         {
-                            Id = m.Id,
-                            VIN = m.VIN,
-                            LicencePlate = m.LicencePlate,
-                            Department = m.Department,
-                            DomicileLocation = m.DomicileLocation,
-                            VehicleMacAddress = m.VehicleMacAddress,
-                            IsActive = m.IsActive,
-                            ModifiedOn = m.ModifiedOn,
-                            ModelYear = m.ModelYear,
-                            ModelName = m.ModelName,
-                            MakeName = m.MakeName,
-                            UnitNumber=m.UnitNumber,
-                            vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
-                            vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
-                            {
-                                Id = m.Id,
-                                Name = m.Name,
-                                IsActive = m.IsActive
-                            }).ToList()
-                        }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
+                            Id = r.Id,
+                            Name = r.Name,
+                            IsActive = r.IsActive
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
 
-            var dataResult = PagedList<VehicleDTO>.ToPagedList(result,
-         getAllVehicleRequest.PageNumber,
-         getAllVehicleRequest.PageSize);
-            vehicleListData.data = dataResult;
-            vehicleListData.Active = _dbContext.Vehicle.Where(m => m.IsActive == true).Count();
-            vehicleListData.InActive = _dbContext.Vehicle.Where(m => m.IsActive == false).Count();
+            var pagedResult = PagedList<VehicleDTO>.ToPagedList(
+                result,
+                getAllVehicleRequest.PageNumber,
+                getAllVehicleRequest.PageSize
+            );
+
+            vehicleListData.data = pagedResult;
+
+            // Sonar-safe counts (no duplicated Where)
+            vehicleListData.Active = await _dbContext.Vehicle.CountAsync(v => v.IsActive);
+            vehicleListData.InActive = await _dbContext.Vehicle.CountAsync(v => !v.IsActive);
+
             return vehicleListData;
         }
+
         public async Task<List<ListDropDown>> GetVehicleMakeDDLList()
         {
             var data = _dbContext.VehicleMake.ToList().Select(m => new ListDropDown
