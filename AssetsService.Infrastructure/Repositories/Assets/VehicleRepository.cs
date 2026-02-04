@@ -357,70 +357,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }).ToList();
             return data;
         }
-        //public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest)
-        //{
-        //    VehicleListData vehicleListData = new VehicleListData();
-        //    List<VehicleDTO> result = new List<VehicleDTO>();
-        //    if (string.IsNullOrEmpty(getAllVehicleRequest.SearchParam) == true)
-        //    {
-        //        result = _dbContext.Vehicle.Select(m => new VehicleDTO
-        //        {
-        //            Id = m.Id,
-        //            VIN = m.VIN,
-        //            LicencePlate = m.LicencePlate,
-        //            Department = m.Department,
-        //            DomicileLocation = m.DomicileLocation,
-        //            VehicleMacAddress = m.VehicleMacAddress,
-        //            IsActive = m.IsActive,
-        //            ModifiedOn = m.ModifiedOn,
-        //            ModelYear = m.ModelYear,
-        //            ModelName = m.ModelName,
-        //            MakeName = m.MakeName,
-        //            UnitNumber=m.UnitNumber,
-        //            vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
-
-        //            vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
-        //            {
-        //                Id = m.Id,
-        //                Name = m.Name,
-        //                IsActive = m.IsActive
-        //            }).ToList()
-        //        }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
-        //    }
-        //    else
-        //        result = _dbContext.Vehicle.Where(d => d.Department.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()) || d.VehicleMacAddress.ToLower().Contains(getAllVehicleRequest.SearchParam.ToLower()))
-
-        //                .Select(m => new VehicleDTO
-        //                {
-        //                    Id = m.Id,
-        //                    VIN = m.VIN,
-        //                    LicencePlate = m.LicencePlate,
-        //                    Department = m.Department,
-        //                    DomicileLocation = m.DomicileLocation,
-        //                    VehicleMacAddress = m.VehicleMacAddress,
-        //                    IsActive = m.IsActive,
-        //                    ModifiedOn = m.ModifiedOn,
-        //                    ModelYear = m.ModelYear,
-        //                    ModelName = m.ModelName,
-        //                    MakeName = m.MakeName,
-        //                    UnitNumber=m.UnitNumber,
-        //                    vehicleRFIDName = m.vehicleRFID != null ? String.Join(',', m.vehicleRFID.Where(m => m.IsActive == true).Select(s => s.Name)) : "",
-        //                    vehicleRFIDIds = m.vehicleRFID.Where(m => m.IsActive == true).Select(m => new VehicleRFIDId
-        //                    {
-        //                        Id = m.Id,
-        //                        Name = m.Name,
-        //                        IsActive = m.IsActive
-        //                    }).ToList()
-        //                }).OrderByDescending(m => m.ModifiedOn).ToList<VehicleDTO>();
-
-        //    var dataResult = PagedList<VehicleDTO>.ToPagedList(result,
-        // getAllVehicleRequest.PageNumber,
-        // getAllVehicleRequest.PageSize);
-        //    vehicleListData.data = dataResult;
-        //    vehicleListData.Active = _dbContext.Vehicle.Where(m => m.IsActive == true).Count();
-        //    vehicleListData.InActive = _dbContext.Vehicle.Where(m => m.IsActive == false).Count();
-        //    return vehicleListData;
-        //}
+        
 
         public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest)
         {
@@ -436,6 +373,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     EF.Functions.Like(v.Department ?? string.Empty, $"%{searchParam}%") ||
                     EF.Functions.Like(v.VehicleMacAddress ?? string.Empty, $"%{searchParam}%") ||
                     EF.Functions.Like(v.VIN ?? string.Empty, $"%{searchParam}%") ||
+                    EF.Functions.Like(v.LicencePlate ?? string.Empty, $"%{searchParam}%") ||
                     EF.Functions.Like(v.UnitNumber ?? string.Empty, $"%{searchParam}%") ||
                     (v.vehicleRFID != null &&
                      v.vehicleRFID.Any(r =>

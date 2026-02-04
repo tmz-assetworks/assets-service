@@ -59,25 +59,7 @@ namespace AssetsService.Api
             }
             return JSONString;
         }
-        //ToDo  Operator Location Base filter not implemented
-        // [HttpGet("getAllDispenser")]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // public async Task<string> GetAllDispenser()
-        // {
-
-        //     try
-        //     {
-        //         List<AssetsService.Core.Entities.Dispenser> res = await _mediator.Send(new GetAllDispenserQuery());
-        //         return getjson(res);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-        //         //_logger.LogError(ex.ToString());
-
-        //     }
-        //     return JSONString;
-        // }
+        
         //ToDo  Operator Location Base filter not implemented
         [HttpGet("getAllDispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -98,7 +80,6 @@ namespace AssetsService.Api
                 allDispenserQueryResponse.StatusMessage = ex.Message.ToString();
                 allDispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 allDispenserQueryResponse.data = null;
-                ////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -204,7 +185,6 @@ namespace AssetsService.Api
                 dispenserQueryResponse.StatusMessage = ex.Message.ToString();
                 dispenserQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserQueryResponse.data = null;
-                ////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -224,7 +204,6 @@ namespace AssetsService.Api
                 dispenserByLocationQueryResponse.StatusMessage = RespnoseMessage.Record_found;
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.OK;
                 dispenserByLocationQueryResponse.data = dispenser;
-               // ////_logger.LogInformation("Get the all data of Dispenser location by Id");
                 }
                  else
                 {
@@ -237,7 +216,6 @@ namespace AssetsService.Api
                 dispenserByLocationQueryResponse.StatusMessage = ex.Message.ToString();
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserByLocationQueryResponse.data = null;
-                //////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -267,14 +245,11 @@ namespace AssetsService.Api
                     dispenserByChargeBoxIdResponse.data = null;
                     dispenserByChargeBoxIdResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
-                //////_logger.LogInformation("Get the all data of Dispenser location by Id");
             }
             catch (Exception ex)
             {
-                // dispenserByChargeBoxIdResponse.StatusMessage = ex..ToString();
                 dispenserByChargeBoxIdResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserByChargeBoxIdResponse.data = null;
-                //////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
             }
             return dispenserByChargeBoxIdResponse;
@@ -287,13 +262,11 @@ namespace AssetsService.Api
             try
             {
                 Charger dispenser = await _mediator.Send(new GetDispenserByStationIdQuery(StationId));
-                ////_logger.LogInformation("Get the Dispenser data by Station Id");
                 return getjson(dispenser);
             }
             catch (Exception ex)
             {
                 JSONString = "{\n  \"data\" : " + null + ",  \"StatusMessage\" : " + ex.Message.ToString() + ",\n  \"StatusCode\" : " + (int)HttpStatusCode.NotFound + " \n}";
-                ////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
             }
             return JSONString;
@@ -363,32 +336,17 @@ namespace AssetsService.Api
             return (updatertn);
         }
 
-        private string ResultMessage(long ID)
+        private static string ResultMessage(long id)
         {
-            if (ID == -1)
+            return id switch
             {
-                return RespnoseMessage.Duplicate_AssetId_can;
-            }
-            else if (ID == -2)
-            {
-                return RespnoseMessage.Mapped_RFIdReaderId_is_not_exits;
-            }
-            else if (ID == -3)
-            {
-                return RespnoseMessage.Mapped_LocationID_is_not_exits;
-            }
-            else if (ID == -4)
-            {
-                return RespnoseMessage.Mapped_CableID_is_not_exits;
-            }
-            else if (ID == -5)
-            {
-                return RespnoseMessage.Duplicate_ChargeBoxId_can;
-            }
-            else
-            {
-                return RespnoseMessage.Record_Not_Saved;
-            }
+                -1 => RespnoseMessage.Duplicate_AssetId_can,
+                -2 => RespnoseMessage.Mapped_RFIdReaderId_is_not_exits,
+                -3 => RespnoseMessage.Mapped_LocationID_is_not_exits,
+                -4 => RespnoseMessage.Mapped_CableID_is_not_exits,
+                -5 => RespnoseMessage.Duplicate_ChargeBoxId_can,
+                _ => RespnoseMessage.Record_Not_Saved
+            };
         }
 
         [HttpPost("GetDispenserByLocations")]
@@ -413,7 +371,6 @@ namespace AssetsService.Api
                     dispenserByLocationQueryResponse.data = null;
                     dispenserByLocationQueryResponse.StatusMessage = RespnoseMessage.Record_not_found;
                 }
-                ////_logger.LogInformation("Get the all data of Dispenser location by Id");
             }
             catch (Exception ex)
             {
@@ -421,7 +378,6 @@ namespace AssetsService.Api
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispenserByLocationQueryResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);
-                ////_logger.LogError(ex.ToString());
 
             }
             return dispenserByLocationQueryResponse;
@@ -467,7 +423,6 @@ namespace AssetsService.Api
                 dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispensersDetailResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);
-                ////_logger.LogError(ex.ToString());
 
             }
             return dispensersDetailResponse;
@@ -633,7 +588,6 @@ namespace AssetsService.Api
                 dispensersDetailResponse.StatusCode = (int)HttpStatusCode.NotFound;
                 dispensersDetailResponse.data = null;
                 Log.Information("error occurred :" + ex.Message);
-                ////_logger.LogError(ex.ToString());
 
             }
             return dispensersDetailResponse;
@@ -665,7 +619,6 @@ namespace AssetsService.Api
                 dispenserByLocationQueryResponse.StatusMessage = ex.Message.ToString();
                 dispenserByLocationQueryResponse.StatusCode = (int)HttpStatusCode.BadRequest;
                 dispenserByLocationQueryResponse.Data = new List<GetDispenserLocationResponse>(); 
-                //////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
 
             }
@@ -679,12 +632,10 @@ namespace AssetsService.Api
             try
             {
                 var result = await _mediator.Send(command);
-                ////_logger.LogInformation("Dispenser data deleted successfully");
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                ////_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
                 return new ContentResult()
                 {
@@ -725,7 +676,6 @@ namespace AssetsService.Api
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex.ToString());
                 Log.Information("error occurred :" + ex.Message);
                 expandoObject.statusMessage = RespnoseMessage.Opeartion_Failed;
                 expandoObject.statusCode = (int)HttpStatusCode.BadRequest;

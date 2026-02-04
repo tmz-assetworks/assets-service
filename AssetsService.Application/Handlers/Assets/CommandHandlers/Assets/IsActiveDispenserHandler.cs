@@ -18,7 +18,7 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
             var DispenserEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Charger>(request);
             if (DispenserEntitiy is null)
             {
-                throw new ApplicationException("Issue with mapper");
+                throw new InvalidOperationException("Issue with mapper");
             }
 
             var updatedispenser = await _DispenserRepo.IsActiveStatusChangeAsync(DispenserEntitiy, DispenserEntitiy.Id, "Dispenser");
