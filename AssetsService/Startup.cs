@@ -102,7 +102,6 @@ namespace AssetsService.Api
             services.AddAutoMapper(typeof(Startup));
             services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
             services.AddTransient<ICableRepository, CableRepository>();
-            //services.AddMediatR(typeof(CreateCableHandler).GetTypeInfo().Assembly);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateCableHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateCableHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreatePadHandler).GetTypeInfo().Assembly));

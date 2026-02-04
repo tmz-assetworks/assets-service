@@ -35,14 +35,9 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
                 throw new ApplicationException("Issue with mapper");
             }
             var dispensery = await _LocationRepo.GetLocationByLocationId(request.LocationId.Trim());
-            if (dispensery != null)
+            if (dispensery != null && dispensery.Id != LocationEntitiy.Id)
             {
-                if (dispensery.Id != LocationEntitiy.Id)
-                {
-                    Location loc = new Location();
-                    loc.Id = -1;
-                    return loc;
-                }
+                return new Location { Id = -1 };
             }
             LocationEntitiy.ModifiedBy = request.UserId;
             LocationEntitiy.CreatedOn = DateTime.Now;

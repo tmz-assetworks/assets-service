@@ -90,7 +90,7 @@ namespace AssetsService.Infrastructure.Repositories.Repository
                 }
 
                 var chargerId = (int)id;
-                var updatingEntity = _dbContext.Set<Charger>().Find(chargerId);
+                var updatingEntity = await _dbContext.Set<Charger>().FindAsync(chargerId);
 
                 if (updatingEntity != null)
                 {

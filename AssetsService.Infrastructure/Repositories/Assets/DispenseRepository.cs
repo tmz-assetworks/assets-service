@@ -1,14 +1,15 @@
-﻿using AssetsService.Core.Responses.Assets;
+﻿using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
-using AssetsService.Core.Repositories.Assets;
-using AssetsService.Infrastructure.Repositories.Repository;
-using Microsoft.EntityFrameworkCore;
-using AssetsService.Core.Response;
 using AssetsService.Core.PagingHelper;
+using AssetsService.Core.Repositories.Assets;
+using AssetsService.Core.Response;
+using AssetsService.Core.Responses.Assets;
 using AssetsService.Infrastructure.EnumData;
 using AssetsService.Infrastructure.Helpers;
-using static AssetsService.Core.Response.GetDispenserStatusResponse;
+using AssetsService.Infrastructure.Repositories.Repository;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using static AssetsService.Core.Response.GetDispenserStatusResponse;
 
 namespace AssetsService.Infrastructure.Repositories.Assets
 {
@@ -175,7 +176,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
         }
 
-        public async Task<AllDispenserResponse> GetAllDispensers(DispensersRequest request)
+        public async Task<AllDispenserResponse> GetAllDispensers(DispensersRequest dispensersRequest)
         {
             int countTotal = 0;
 
@@ -219,9 +220,9 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 .Include(x => x.SwitchGear);
 
             // 🔍 SEARCH FILTER
-            if (!string.IsNullOrWhiteSpace(request.SearchParam))
+            if (!string.IsNullOrWhiteSpace(dispensersRequest.SearchParam))
             {
-                string search = request.SearchParam.ToLower();
+                string search = dispensersRequest.SearchParam.ToLower();
 
                 query = query.Where(m =>
                     m.ChargeBoxId.ToLower().Contains(search) ||
@@ -233,15 +234,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
 
             // 📍 LOCATION FILTER (MULTI-SELECT)
-            if (request.LocationIds != null && request.LocationIds.Any())
+            if (dispensersRequest.LocationIds != null && dispensersRequest.LocationIds.Any())
             {
-                query = query.Where(x => request.LocationIds.Contains((int)x.LocationId!));
+                query = query.Where(x => dispensersRequest.LocationIds.Contains((int)x.LocationId!));
             }
 
             // ⚡ ACTIVATION STATUS FILTER
-            if (request.ActivationStatus.HasValue)
+            if (dispensersRequest.ActivationStatus.HasValue)
             {
-                bool isActive = request.ActivationStatus.Value == 1;
+                bool isActive = dispensersRequest.ActivationStatus.Value == 1;
                 query = query.Where(x => x.IsActive == isActive);
             }
 
@@ -273,13 +274,13 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     PowerCabinetId = dispenser.PowerCabinetId ?? 0,
                     PowerCabinetSerialNumber = dispenser.PowerCabinet.SerialNumber ?? "",
                     Status = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0
-                                ? "Offline"
+                                ? StatusConstants.Offline
                                 : dispenser.ChargerStatuses.First().ChargerStatus1
-                                    .Replace("charging", "Busy", StringComparison.OrdinalIgnoreCase)
-                                    .Replace("suspendedev", "Busy", StringComparison.OrdinalIgnoreCase)
-                                    .Replace("suspendedevse", "Busy", StringComparison.OrdinalIgnoreCase)
-                                    .Replace("finishing", "Busy", StringComparison.OrdinalIgnoreCase)
-                                    .Replace("preparing", "Busy", StringComparison.OrdinalIgnoreCase),
+                                    .Replace(StatusConstants.charging, "Busy", StringComparison.OrdinalIgnoreCase)
+                                    .Replace(StatusConstants.suspendedev, "Busy", StringComparison.OrdinalIgnoreCase)
+                                    .Replace(StatusConstants.suspendedevse, "Busy", StringComparison.OrdinalIgnoreCase)
+                                    .Replace(StatusConstants.finishing, "Busy", StringComparison.OrdinalIgnoreCase)
+                                    .Replace(StatusConstants.preparing, "Busy", StringComparison.OrdinalIgnoreCase),
                     PortType = string.Join(",",
                                 dispenser.Ports.Select(s => s.Connector.ConnectorType)),
                     PadId = dispenser.PadId ?? 0,
@@ -298,8 +299,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             // ---------------- PAGINATION ----------------
             var dataResult = PagedList<GetAllDispenserResponse>.ToPagedList(
                 results,
-                request.PageNumber,
-                request.PageSize);
+                dispensersRequest.PageNumber,
+                dispensersRequest.PageSize);
 
             return new AllDispenserResponse
             {
@@ -319,100 +320,6 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             };
         }
 
-
-        //public async Task<AllDispenserResponse> GetAllDispensers(DispensersRequest getAllDispenserRequest)
-        //{
-        //    int countTotal = 0;
-        //    var result = await (from p in _dbContext.Port
-        //                        join dispenser in _dbContext.Charger
-        //                        on p.ChargerId equals dispenser.Id
-        //                        select new PortTypeResponse
-        //                        {
-        //                            PortType = p.Connector.ConnectorType,
-        //                            Color = p.Connector.Color
-        //                        }).GroupBy(x => new { x.PortType })
-        //        .Select(y => new PortTypeResponse()
-        //        {
-        //            PortType = y.Key.PortType,
-        //            Count = y.Count(),
-        //            Color = y.Min(n => n.Color)
-        //        }).ToListAsync<PortTypeResponse>();
-        //    for (int i = 0; i < result.Count; i++)
-        //    {
-        //        countTotal += result[i].Count;
-        //    }
-        //    result.Add(new PortTypeResponse()
-        //    {
-        //        Count = countTotal,
-        //        PortType = "Total Ports",
-        //        Color = ConnectorColor.TotalPorts.GetEnumDisplayName()
-        //    });
-        //    List<String> Occupied = new List<String>();
-        //    var results = (from dispenser in (string.IsNullOrEmpty(getAllDispenserRequest.SearchParam)) ? _dbContext.Charger :
-        //                   _dbContext.Charger.Where(m => m.ChargeBoxId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.AssetId.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.MakeName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.ModelName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.SimCardMSIDN.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()) || m.Location.LocationName.ToLower().Contains(getAllDispenserRequest.SearchParam.ToLower()))
-        //                   select new GetAllDispenserResponse
-        //                   {
-        //                       Id = dispenser.Id,
-        //                       AssetId = dispenser.AssetId,
-        //                       SimCardMSIDN = dispenser.SimCardMSIDN != null? dispenser.SimCardMSIDN:"",
-        //                       ChargeBoxId = dispenser.ChargeBoxId,
-        //                       LocationId = (long)dispenser.LocationId,
-        //                       LocationName = dispenser.Location.LocationName,
-        //                       EndPointUrl = dispenser.EndPointUrl,
-        //                       FirmwareVersion = dispenser.FirmwareVersion,
-        //                       HardwareSerialNumber = dispenser.HardwareSerialNumber,
-        //                       MeterType = dispenser.MeterType,
-        //                       MultiplePorts = dispenser.MultiplePorts,
-        //                       PingSchedule = dispenser.PingSchedule,
-        //                       FleetStation = dispenser.FleetStation,
-        //                       ReadingSchedule = dispenser.ReadingSchedule,
-        //                       MakeName = dispenser.MakeName,
-        //                       ModelName = dispenser.ModelName,
-        //                       ModemId = dispenser.ModemId == null ? 0 : (long)dispenser.ModemId,
-        //                       ModemSerialNumber = dispenser.Modem != null ? dispenser.Modem.SerialNumber : "",
-        //                       RFIDReaderId = dispenser.RFIDReaderId == null ? 0 : (long)dispenser.RFIDReaderId,
-        //                       RFIDReader = dispenser.RFIDReader != null ? dispenser.RFIDReader.CardReader : "",
-        //                       PowerCabinetId = dispenser.PowerCabinetId == null ? 0 : (long)dispenser.PowerCabinetId,
-        //                       Status  = dispenser.ChargerStatuses == null || dispenser.ChargerStatuses.Count == 0 ? "Offline" :
-        //                                      dispenser.ChargerStatuses.ToList()[0].ChargerStatus1.Replace("charging", "Busy").Replace("Charging", "Busy").Replace("suspendedev", "Busy").Replace("SuspendedEV", "Busy").Replace("suspendedevse", "Busy").Replace("SuspendedEVSE", "Busy")
-        //                                      .Replace("finishing", "Busy").Replace("Finishing", "Busy").Replace("preparing", "Busy").Replace("Preparing", "Busy"),
-
-        //                       PowerCabinetSerialNumber = dispenser.PowerCabinet.SerialNumber,
-        //                       PortType = String.Join(",", dispenser.Ports.Where(p => p.ChargerId == dispenser.Id).Select(s => s.Connector.ConnectorType)),
-        //                       PadId = dispenser.PadId == null ? 0 : (long)dispenser.PadId,
-        //                       PadName = dispenser.Pad.PadName,
-        //                       CableId = dispenser.CableId == null ? 0 : (long)dispenser.CableId,
-        //                       CableSerialNumber = dispenser.Cable.SerialNumber,
-        //                       SwitchGearId = dispenser.SwitchGearId == null ? 0 : (long)dispenser.SwitchGearId,
-        //                       SwitchGearName = dispenser.SwitchGear.SwitchGearName,
-        //                       ProtocolName = dispenser.ProtocolName,
-        //                       ModifiedOn = (DateTime)dispenser.ModifiedOn,
-        //                       IsActive = dispenser.IsActive,
-        //                       IsAutomatic = dispenser.IsAutomatic,
-
-        //                   }).OrderByDescending(m => m.ModifiedOn).ToList<GetAllDispenserResponse>();
-        //    var dataResult = PagedList<GetAllDispenserResponse>.ToPagedList(results,
-        //    getAllDispenserRequest.PageNumber,
-        //    getAllDispenserRequest.PageSize);
-
-        //    AllDispenserResponse response = new AllDispenserResponse()
-        //    {
-        //        Data = dataResult,
-        //        PortType = result,
-        //        StatusCode = 200,
-        //        StatusMessage = dataResult.Count > 0 ? "Record Found" : "Record not found.",
-        //    };
-        //    response.paginationResponse = new Core.PagingHelper.PaginationResponse
-        //    {
-        //        TotalCount = dataResult.TotalCount,
-        //        PageSize = dataResult.PageSize,
-        //        CurrentPage = dataResult.CurrentPage,
-        //        TotalPages = dataResult.TotalPages,
-        //        HasNext = dataResult.HasNext,
-        //        HasPrevious = dataResult.HasPrevious
-        //    };
-        //    return response;
-        //}
 
         public async Task<GetDispenserResponse> GetDispenserDetailsById(long Id)
         {
