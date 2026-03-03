@@ -13,6 +13,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
     public class VehicleRepository : Repository<Vehicle>, IVehicleRepository
     {
+        private const string ExternalVehicleText = "External Vehicle";
         public VehicleRepository(AssetsService.Infrastructure.DBContext.DBContextCore _dbContext) : base(_dbContext)
         {
 
@@ -357,56 +358,138 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }).ToList();
             return data;
         }
-        
 
-        public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest)
+
+        //public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest getAllVehicleRequest)
+        //{
+        //    VehicleListData vehicleListData = new VehicleListData();
+
+        //    IQueryable<Vehicle> query = _dbContext.Vehicle;
+
+        //    if (!string.IsNullOrWhiteSpace(getAllVehicleRequest.SearchParam))
+        //    {
+        //        string searchParam = getAllVehicleRequest.SearchParam.Trim();
+
+        //        query = query.Where(v =>
+        //            EF.Functions.Like(v.Department ?? string.Empty, $"%{searchParam}%") ||
+        //            EF.Functions.Like(v.VehicleMacAddress ?? string.Empty, $"%{searchParam}%") ||
+        //            EF.Functions.Like(v.VIN ?? string.Empty, $"%{searchParam}%") ||
+        //            EF.Functions.Like(v.LicencePlate ?? string.Empty, $"%{searchParam}%") ||
+        //            EF.Functions.Like(v.UnitNumber ?? string.Empty, $"%{searchParam}%") ||
+        //            (v.vehicleRFID != null &&
+        //             v.vehicleRFID.Any(r =>
+        //                 r.IsActive &&
+        //                 EF.Functions.Like(r.Name ?? string.Empty, $"%{searchParam}%")))
+        //        );
+        //    }
+
+        //    List<VehicleDTO> result = await query
+        //        .OrderByDescending(v => v.ModifiedOn)
+        //        .Select(m => new VehicleDTO
+        //        {
+        //            Id = m.Id,
+        //            VIN = m.VIN,
+        //            LicencePlate = m.LicencePlate,
+        //            Department = m.Department,
+        //            DomicileLocation = m.DomicileLocation,
+        //            VehicleMacAddress = m.VehicleMacAddress,
+        //            IsActive = m.IsActive,
+        //            ModifiedOn = m.ModifiedOn,
+        //            ModelYear = m.ModelYear,
+        //            ModelName = m.ModelName,
+        //            MakeName = m.MakeName,
+        //            UnitNumber = m.UnitNumber,
+
+        //            vehicleRFIDName = m.vehicleRFID != null
+        //                ? string.Join(',',
+        //                    m.vehicleRFID
+        //                        .Where(r => r.IsActive)
+        //                        .Select(r => r.Name))
+        //                : string.Empty,
+
+        //            vehicleRFIDIds = m.vehicleRFID
+        //                .Where(r => r.IsActive)
+        //                .Select(r => new VehicleRFIDId
+        //                {
+        //                    Id = r.Id,
+        //                    Name = r.Name,
+        //                    IsActive = r.IsActive
+        //                })
+        //                .ToList()
+        //        })
+        //        .ToListAsync();
+
+        //    var pagedResult = PagedList<VehicleDTO>.ToPagedList(
+        //        result,
+        //        getAllVehicleRequest.PageNumber,
+        //        getAllVehicleRequest.PageSize
+        //    );
+
+        //    vehicleListData.data = pagedResult;
+
+        //    // Sonar-safe counts (no duplicated Where)
+        //    vehicleListData.Active = await _dbContext.Vehicle.CountAsync(v => v.IsActive);
+        //    vehicleListData.InActive = await _dbContext.Vehicle.CountAsync(v => !v.IsActive);
+
+        //    return vehicleListData;
+        //}
+        public async Task<VehicleListData> GetVehicleList(GetAllVehicleRequest request)
         {
-            VehicleListData vehicleListData = new VehicleListData();
+            IQueryable<Vehicle> vehicles = _dbContext.Vehicle.AsNoTracking();
+            IQueryable<Department> departments =
+                _dbContext.Department
+                    .AsNoTracking()
+                    .Where(d => d.IsActive);
 
-            IQueryable<Vehicle> query = _dbContext.Vehicle;
-
-            if (!string.IsNullOrWhiteSpace(getAllVehicleRequest.SearchParam))
+            if (!string.IsNullOrWhiteSpace(request.SearchParam))
             {
-                string searchParam = getAllVehicleRequest.SearchParam.Trim();
+                string search = request.SearchParam.Trim();
 
-                query = query.Where(v =>
-                    EF.Functions.Like(v.Department ?? string.Empty, $"%{searchParam}%") ||
-                    EF.Functions.Like(v.VehicleMacAddress ?? string.Empty, $"%{searchParam}%") ||
-                    EF.Functions.Like(v.VIN ?? string.Empty, $"%{searchParam}%") ||
-                    EF.Functions.Like(v.LicencePlate ?? string.Empty, $"%{searchParam}%") ||
-                    EF.Functions.Like(v.UnitNumber ?? string.Empty, $"%{searchParam}%") ||
-                    (v.vehicleRFID != null &&
-                     v.vehicleRFID.Any(r =>
-                         r.IsActive &&
-                         EF.Functions.Like(r.Name ?? string.Empty, $"%{searchParam}%")))
+                vehicles = vehicles.Where(v =>
+                    EF.Functions.Like(v.Department ?? string.Empty, $"%{search}%") ||
+                    EF.Functions.Like(v.VehicleMacAddress ?? string.Empty, $"%{search}%") ||
+                    EF.Functions.Like(v.VIN ?? string.Empty, $"%{search}%") ||
+                    EF.Functions.Like(v.LicencePlate ?? string.Empty, $"%{search}%") ||
+                    EF.Functions.Like(v.UnitNumber ?? string.Empty, $"%{search}%") ||
+                    v.vehicleRFID.Any(r =>
+                        r.IsActive &&
+                        EF.Functions.Like(r.Name ?? string.Empty, $"%{search}%"))
                 );
             }
 
-            List<VehicleDTO> result = await query
-                .OrderByDescending(v => v.ModifiedOn)
-                .Select(m => new VehicleDTO
+            var query =
+                from v in vehicles
+                join d in departments
+                    on v.Department.Trim() equals d.DepartmentName.Trim()
+                    into deptJoin
+                from d in deptJoin.DefaultIfEmpty()
+                orderby v.ModifiedOn descending
+                select new VehicleDTO
                 {
-                    Id = m.Id,
-                    VIN = m.VIN,
-                    LicencePlate = m.LicencePlate,
-                    Department = m.Department,
-                    DomicileLocation = m.DomicileLocation,
-                    VehicleMacAddress = m.VehicleMacAddress,
-                    IsActive = m.IsActive,
-                    ModifiedOn = m.ModifiedOn,
-                    ModelYear = m.ModelYear,
-                    ModelName = m.ModelName,
-                    MakeName = m.MakeName,
-                    UnitNumber = m.UnitNumber,
+                    Id = v.Id,
+                    VIN = v.VIN,
+                    LicencePlate = v.LicencePlate,
+                    Department = v.Department,
+                    IsActive = v.IsActive,
+                    ModifiedOn = v.ModifiedOn,
+                    DomicileLocation = v.DomicileLocation,
+                    VehicleMacAddress = v.VehicleMacAddress,
+                    ModelYear = v.ModelYear,
+                    ModelName = v.ModelName,
+                    MakeName = v.MakeName,
+                    UnitNumber = v.UnitNumber,
 
-                    vehicleRFIDName = m.vehicleRFID != null
-                        ? string.Join(',',
-                            m.vehicleRFID
-                                .Where(r => r.IsActive)
-                                .Select(r => r.Name))
+                    // ? String-based UI flag
+                    ExternalVehicleLabel = d != null
+                        ? ExternalVehicleText
                         : string.Empty,
 
-                    vehicleRFIDIds = m.vehicleRFID
+                    vehicleRFIDName = string.Join(',',
+                        v.vehicleRFID
+                            .Where(r => r.IsActive)
+                            .Select(r => r.Name)),
+
+                    vehicleRFIDIds = v.vehicleRFID
                         .Where(r => r.IsActive)
                         .Select(r => new VehicleRFIDId
                         {
@@ -415,22 +498,22 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                             IsActive = r.IsActive
                         })
                         .ToList()
-                })
-                .ToListAsync();
+                };
+
+            List<VehicleDTO> result = await query.ToListAsync();
 
             var pagedResult = PagedList<VehicleDTO>.ToPagedList(
                 result,
-                getAllVehicleRequest.PageNumber,
-                getAllVehicleRequest.PageSize
+                request.PageNumber,
+                request.PageSize
             );
 
-            vehicleListData.data = pagedResult;
-
-            // Sonar-safe counts (no duplicated Where)
-            vehicleListData.Active = await _dbContext.Vehicle.CountAsync(v => v.IsActive);
-            vehicleListData.InActive = await _dbContext.Vehicle.CountAsync(v => !v.IsActive);
-
-            return vehicleListData;
+            return new VehicleListData
+            {
+                data = pagedResult,
+                Active = await _dbContext.Vehicle.CountAsync(v => v.IsActive),
+                InActive = await _dbContext.Vehicle.CountAsync(v => !v.IsActive)
+            };
         }
 
         public async Task<List<ListDropDown>> GetVehicleMakeDDLList()

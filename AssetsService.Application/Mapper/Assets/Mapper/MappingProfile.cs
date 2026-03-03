@@ -27,6 +27,8 @@ namespace AssetsService.Core.Mapper
             CreateMap<AssetsService.Core.Entities.Cable, UpdateCableCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Vehicle, VehicleResponse>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Vehicle, CreateVehicleCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Department, CreateDepartmentCommand>().ReverseMap();
+            CreateMap<AssetsService.Core.Entities.Department, UpdateDepartmentCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Vehicle, CreateNewVehicleCommandExternal>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Vehicle, UpdateVehicleCommand>().ReverseMap();
             CreateMap<AssetsService.Core.Entities.Vehicle, IsActiveVehicleCommand>().ReverseMap();

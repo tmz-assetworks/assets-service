@@ -133,6 +133,9 @@ namespace AssetsService.Api
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreatePowerCabinetHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdatePowerCabinetHandler).GetTypeInfo().Assembly));
 
+            services.AddTransient<IDepartmentRepository, DepartmentRepository>();
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateDepartmentHandler).GetTypeInfo().Assembly));
+            
             services.AddTransient<IVehicleRepository, VehicleRepository>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateVehicleHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateVehicleHandler).GetTypeInfo().Assembly));
