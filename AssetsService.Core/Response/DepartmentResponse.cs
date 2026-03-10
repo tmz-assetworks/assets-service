@@ -3,9 +3,6 @@ using AssetsService.Core.PagingHelper;
 
 namespace AssetsService.Core.Response
 {
-    public class DepartmentResponse
-    {
-    }
     public class GetAllDepartmentRequest : QueryStringParameters
     {
         public string? opratorid { get; set; }
@@ -51,6 +48,7 @@ namespace AssetsService.Core.Response
     {
         public long Id { get; set; }
         public string DepartmentName { get; set; }
+        public decimal? DeptkWhRate { get; set; }
         public string ContactPersonName { get; set; }
         public string Address { get; set; }
         public bool IsActive { get; set; }

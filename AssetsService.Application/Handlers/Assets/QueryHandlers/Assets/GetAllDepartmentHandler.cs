@@ -15,7 +15,7 @@ namespace AssetsService.Application.Handlers.Assets.QueryHandlers.Assets
         }
         public async Task<StatusAllDepartmentResponse> Handle(GetAllDepartmentQuery request, CancellationToken cancellationToken)
         {
-            return (StatusAllDepartmentResponse)await _departmentRepository.GetAllDepartment(request.GetAllDepartmentRequest);
+            return await _departmentRepository.GetAllDepartment(request.GetAllDepartmentRequest);
         }
     }
 }

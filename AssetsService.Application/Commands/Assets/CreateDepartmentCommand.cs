@@ -12,5 +12,6 @@ namespace AssetsService.Application.Commands.Assets
         [Required]
         [MaxLength(200)]
         public string DepartmentName { get; set; }
+        public decimal DeptkWhRate { get; set; }
     }
 }

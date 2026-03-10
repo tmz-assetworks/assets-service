@@ -59,6 +59,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     CreatedOn = DateTime.UtcNow,
                     ModifiedOn = DateTime.UtcNow,
                     Address = "N/A",
+                    DeptkWhRate = department.DeptkWhRate
                 };
 
                 _dbContext.Department.Add(entity);
@@ -84,14 +85,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
 
         public async Task<CreateDepartmentResult> UpdateDepartment(Department department)
         {
-            if (department == null || string.IsNullOrWhiteSpace(department.DepartmentName))
-            {
-                return new CreateDepartmentResult
-                {
-                    Id = 0,
-                    DepartmentName = null
-                };
-            }
+            department.IsActive = true;
             try
             {
                 var existingDepartment = await _dbContext.Department.FirstOrDefaultAsync(d => d.Id == department.Id);
@@ -110,6 +104,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 existingDepartment.IsActive = department.IsActive;
                 existingDepartment.ModifiedBy = department.CreatedBy;
                 existingDepartment.ModifiedOn = DateTime.UtcNow;
+                existingDepartment.DeptkWhRate = department.DeptkWhRate;
 
                 // 4️⃣ Save changes
                 await _dbContext.SaveChangesAsync();
@@ -122,20 +117,18 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error occurred while updating department");
-                throw; // don't swallow update errors
+                Log.Error(ex, "Error occurred while updating department with Id {DepartmentId}", department.Id);
+
+                throw new InvalidOperationException( $"Failed to update department with Id {department.Id}", ex);
             }
         }
 
-        public async Task<StatusAllDepartmentResponse> GetAllDepartment(GetAllDepartmentRequest request)
+        public async Task<StatusAllDepartmentResponse> GetAllDepartment(GetAllDepartmentRequest getAllDepartmentRequest)
         {
             try
             {
                 var query =
                     from d in _dbContext.Department.AsNoTracking()
-                    join u in _dbContext.Users.AsNoTracking()
-                        on d.CreatedBy equals u.Id.ToString() into userJoin
-                    from user in userJoin.DefaultIfEmpty() // LEFT JOIN
                     select new DepartmentListDto
                     {
                         Id = d.Id,
@@ -144,13 +137,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                         Address = d.Address,
                         IsActive = d.IsActive,
                         CreatedOn = d.CreatedOn,
-                        CreatedByUserName = d.CreatedBy
+                        CreatedByUserName = d.CreatedBy,
+                        DeptkWhRate = d.DeptkWhRate
+
                     };
 
                 // 🔍 Search
-                if (!string.IsNullOrWhiteSpace(request.SearchParam))
+                if (!string.IsNullOrWhiteSpace(getAllDepartmentRequest.SearchParam))
                 {
-                    var search = request.SearchParam.Trim().ToLower();
+                    var search = getAllDepartmentRequest.SearchParam.Trim().ToLower();
 
                     query = query.Where(d =>
                         d.DepartmentName.ToLower().Contains(search));
@@ -169,8 +164,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 {
                     data = PagedList<DepartmentListDto>.ToPagedList(
                         result,
-                        request.PageNumber,
-                        request.PageSize),
+                        getAllDepartmentRequest.PageNumber,
+                        getAllDepartmentRequest.PageSize),
 
                     Active = activeCount.ToString(),
                     Inactive = inactiveCount.ToString()
@@ -178,13 +173,17 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error occurred while fetching departments");
+                Log.Error(ex, "Error occurred while fetching departments. SearchParam: {SearchParam}, PageNumber: {PageNumber}, PageSize: {PageSize}",
+                    getAllDepartmentRequest.SearchParam,
+                    getAllDepartmentRequest.PageNumber,
+                    getAllDepartmentRequest.PageSize);
+
                 throw;
             }
         }
 
 
-        public async Task<Department?> GetDepartmentInfoById(long id)
+        public async Task<Department?> GetDepartmentInfoById(long Id)
         {
             return await _dbContext.Department
                 .AsNoTracking()
@@ -194,14 +193,15 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     DepartmentName = d.DepartmentName,
                     ContactPersonName = d.ContactPersonName,
                     Address = d.Address,
-                    IsActive = d.IsActive
+                    IsActive = d.IsActive,
+                    DeptkWhRate = d.DeptkWhRate
                 })
-                .FirstOrDefaultAsync(d => d.Id == id);
+                .FirstOrDefaultAsync(d => d.Id == Id);
         }
-        public async Task<bool> DeleteDepartmentById(int departmentId)
+        public async Task<bool> DeleteDepartmentById(int DepartmentId)
         {
             var department = await _dbContext.Department
-                .FirstOrDefaultAsync(v => v.Id == departmentId);
+                .FirstOrDefaultAsync(v => v.Id == DepartmentId);
 
             if (department == null)
                 return false;

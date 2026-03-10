@@ -96,22 +96,21 @@ namespace AssetsService.Api.Controllers
 
         [HttpPost("GetAllDepartment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<GetAllDepartment>> GetAllDepartment(
-            [FromBody] GetAllDepartmentRequest request)
+        public async Task<ActionResult<GetAllDepartment>> GetAllDepartment( [FromBody] GetAllDepartmentRequest getAllDepartmentRequest)
         {
             var response = new GetAllDepartment();
 
             try
             {
-                request.PageSize = request.PageSize == 0 ? 10 : request.PageSize;
-                request.PageNumber = request.PageNumber == 0 ? 1 : request.PageNumber;
+                getAllDepartmentRequest.PageSize = getAllDepartmentRequest.PageSize == 0 ? 10 : getAllDepartmentRequest.PageSize;
+                getAllDepartmentRequest.PageNumber = getAllDepartmentRequest.PageNumber == 0 ? 1 : getAllDepartmentRequest.PageNumber;
 
-                if (!string.IsNullOrWhiteSpace(request.SearchParam))
+                if (!string.IsNullOrWhiteSpace(getAllDepartmentRequest.SearchParam))
                 {
-                    request.PageNumber = 1;
+                    getAllDepartmentRequest.PageNumber = 1;
                 }
 
-                var result = await _mediator.Send(new GetAllDepartmentQuery(request));
+                var result = await _mediator.Send(new GetAllDepartmentQuery(getAllDepartmentRequest));
 
                 if (result?.data?.Count > 0)
                 {

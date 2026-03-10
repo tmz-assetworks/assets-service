@@ -20,17 +20,11 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers
     public class UpdateDispenserHandler : IRequestHandler<UpdateDispenserCommand, DispenserResponse>
     {
         private readonly IDispenserRepository _DispenserRepo;
-        private readonly IRFIdRepository _RFIdRepository;
         private readonly ILocationRepository _locationRepository;
-        private readonly ICableRepository _cableRepo;
-        private readonly ISwitchGearRepository _switchGearRepository;
-        public UpdateDispenserHandler(IDispenserRepository DispenserRepository, IRFIdRepository _rfidrepository, ILocationRepository locationRepository, ICableRepository cableRepo, ISwitchGearRepository switchGearRepository)
+        public UpdateDispenserHandler(IDispenserRepository DispenserRepository, ILocationRepository locationRepository)
         {
             _DispenserRepo = DispenserRepository;
-            _RFIdRepository = _rfidrepository;
             _locationRepository = locationRepository;
-            _cableRepo = cableRepo;
-            _switchGearRepository = switchGearRepository;
         }
 
 
