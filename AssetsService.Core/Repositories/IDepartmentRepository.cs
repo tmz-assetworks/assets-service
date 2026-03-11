@@ -9,6 +9,6 @@ namespace AssetsService.Core.Repositories
         Task<CreateDepartmentResult> UpdateDepartment(Department department);
         Task<StatusAllDepartmentResponse> GetAllDepartment(GetAllDepartmentRequest getAllDepartmentRequest);
         Task<Department?> GetDepartmentInfoById(long Id);
-        Task<bool> DeleteDepartmentById(int vehicleId);
+        Task<bool> DeleteDepartmentById(int DepartmentId);
     }
 }

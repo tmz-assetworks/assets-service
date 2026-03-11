@@ -16,14 +16,13 @@ namespace AssetsService.Application.Handlers.Assets.CommandHandlers.Assets
 
         public async Task<CreateDepartmentResult> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
-            CreateDepartmentResult createDepartmentResponse = new();
             var departmentEntitiy = Mapper.Mappers.Map<AssetsService.Core.Entities.Department>(request);
             if (departmentEntitiy is null)
             {
-                throw new ApplicationException("Issue with mapper");
+                throw new InvalidOperationException("Issue with mapper");
             }
-            createDepartmentResponse = await _departmentRepository.CreateDepartment(departmentEntitiy);
-            return createDepartmentResponse;
+            return await _departmentRepository.CreateDepartment(departmentEntitiy);
+             
         }
     }
 }
