@@ -122,6 +122,9 @@ namespace AssetsService.Api
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateDispenserHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteDispenserHandler).GetTypeInfo().Assembly));
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActiveDispenserHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActiveDispenserHandler).GetTypeInfo().Assembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(DeleteDispenserCommandHandler).GetTypeInfo().Assembly));
+
 
             services.AddTransient<ILocationRepository, LocationRepository>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateLocationHandler).GetTypeInfo().Assembly));
@@ -175,6 +178,8 @@ namespace AssetsService.Api
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(UpdateSwitchGearHandler).GetTypeInfo().Assembly));
             services.AddTransient<ISwitchGearRepository, SwitchGearRepository>();
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(IsActiveAssetHandler).GetTypeInfo().Assembly));
+
+
             services.AddScoped<TokenBase>();
             services.AddHealthChecks()
                 .AddCheck<AssetHealthCheck>("example_health_check");

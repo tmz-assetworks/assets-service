@@ -1,27 +1,20 @@
 using AssetsService.Application.Commands.Assets;
+using AssetsService.Application.Queries;
+using AssetsService.Application.Responses.Assets;
+using AssetsService.Core.ConstantResponse;
 using AssetsService.Core.Entities;
-using AssetsService.Application.Commands.Assets;
 using AssetsService.Core.Queries;
-using AssetsService.Core.Responses;
+using AssetsService.Core.Response;
+using AssetsService.Infrastructure.Helpers;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using Serilog;
+using System.Dynamic;
 using System.Net;
 using System.Text.Json;
-using AssetsService.Core.Responses.Assets;
-using AssetsService.Application.Responses.Assets;
-using AssetsService.Application.Queries;
-using System.Collections.Generic;
-using AssetsService.Core.Response;
-using Serilog;
 using static AssetsService.Core.Response.GetDispenserStatusResponse;
-using System.Dynamic;
-using Microsoft.AspNetCore.Authorization;
-using AssetsService.Infrastructure.Helpers;
-using Microsoft.AspNetCore.Authentication;
-using AssetsService.Core.ConstantResponse;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AssetsService.Api
 {
@@ -36,7 +29,7 @@ namespace AssetsService.Api
         TokenBase _token;
         public DispenserController(IMediator mediator, ILogger<DispenserController> logger,TokenBase token)
         {
-            //_logger = logger;
+
             _mediator = mediator;
             _token = token;
             
@@ -60,7 +53,6 @@ namespace AssetsService.Api
             return JSONString;
         }
         
-        //ToDo  Operator Location Base filter not implemented
         [HttpGet("getAllDispenser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<AllDispenserQueryResponse> GetAllDispenser()
@@ -681,6 +673,45 @@ namespace AssetsService.Api
                 expandoObject.statusCode = (int)HttpStatusCode.BadRequest;
             }
             return expandoObject;
+        }
+
+
+        [HttpDelete("DeleteDispenserById/{id:int}")]
+        [ProducesResponseType(typeof(DispenserQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DispenserQueryResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(DispenserQueryResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<DispenserQueryResponse>> DeleteDispenserById(int id,CancellationToken cancellationToken)
+        {
+            try
+            {
+                var isDeleted = await _mediator.Send(
+                    new DeleteDispenserCommandById(id),
+                    cancellationToken);
+
+                return isDeleted
+                    ? Ok(CreateResponse(
+                        StatusCodes.Status200OK,
+                        RespnoseMessage.DespenserDeleted))
+                    : NotFound(CreateResponse(
+                        StatusCodes.Status404NotFound,
+                        RespnoseMessage.Record_not_found));
+            }
+            catch
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    CreateResponse(
+                        StatusCodes.Status500InternalServerError,
+                        "An unexpected error occurred while deleting charger."));
+            }
+        }
+        private static DispenserQueryResponse CreateResponse(int statusCode, string message)
+        {
+            return new DispenserQueryResponse
+            {
+                StatusCode = statusCode,
+                StatusMessage = message
+            };
         }
 
     }

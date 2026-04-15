@@ -70,7 +70,8 @@ namespace AssetsService.Core.ConstantResponse
         public static readonly string RfID_Already_Assigned_To_Vehicle = "RfID  is already assigned to vehicle.";
         public static readonly string VIN_Already_Assigned_To_Vehicle = "VIN  is already assigned to vehicle.";
         public static readonly string Duplicat_Rfid = "Please enter Unique RFID";
-        
+        public static readonly string DespenserDeleted = "Charger deleted successfully";
+
     }
     public static class StatusConstants
     {

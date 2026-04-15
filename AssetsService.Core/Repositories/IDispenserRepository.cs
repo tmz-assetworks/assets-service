@@ -27,5 +27,7 @@ namespace AssetsService.Core.Repositories.Assets
         Task<ChargerResponse>ValidateChargerId(string ChargeBoxId);
         Task<List<ListDropDown>> GetModemDDLList(string userId,int? dispenserId);
         Task<Charger> UpdateDispenser(Charger dispenser);
+        Task<bool> DeleteDispenserById(int dispenserId);
+
     }
 }

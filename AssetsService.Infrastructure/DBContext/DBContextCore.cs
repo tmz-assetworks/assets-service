@@ -59,6 +59,8 @@ namespace AssetsService.Infrastructure.DBContext
 
         public DbSet<AssetsService.Core.Entities.Charger> Charger { get; set; }
 
+        public DbSet<ChargerConfiguration> ChargerConfigurations { get; set; }
+
 
         public DbSet<AssetsService.Core.Entities.PowerCabinet> PowerCabinet { get; set; }
 
@@ -132,6 +134,16 @@ namespace AssetsService.Infrastructure.DBContext
                 entity.HasOne(d => d.Charger)
                     .WithMany(p => p.ChargerStatusHistories)
                     .HasForeignKey(d => d.ChargerId);
+            });
+
+            builder.Entity<ChargerConfiguration>(entity =>
+            {
+                entity.ToTable("ChargerConfigurations");
+
+                entity.HasOne(x => x.Charger)
+                    .WithMany()
+                    .HasForeignKey(x => x.ChargerId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<SpecificTimeZone>(SpecificTimeZone =>
