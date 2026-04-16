@@ -885,7 +885,41 @@ namespace AssetsService.Infrastructure.Repositories.Assets
             }
             return Task.FromResult(dispenser);
         }
+        public async Task<bool> DeleteDispenserById(int dispenserId)
+        {
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
+            try
+            {
+                await _dbContext.ChargerConfigurations
+                    .Where(x => x.ChargerId == dispenserId)
+                    .ExecuteDeleteAsync();
+
+                await _dbContext.ChargerStatuses
+                    .Where(x => x.ChargerId == dispenserId)
+                    .ExecuteDeleteAsync();
+
+                await _dbContext.ChargerStatusHistories
+                    .Where(x => x.ChargerId == dispenserId)
+                    .ExecuteDeleteAsync();
+
+                await _dbContext.Port
+                    .Where(x => x.ChargerId == dispenserId)
+                    .ExecuteDeleteAsync();
+
+                var deleted = await _dbContext.Charger
+                    .Where(x => x.Id == dispenserId)
+                    .ExecuteDeleteAsync() > 0;
+
+                await transaction.CommitAsync();
+                return deleted;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
 
         #endregion
 
