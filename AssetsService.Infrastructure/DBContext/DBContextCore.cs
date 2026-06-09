@@ -178,6 +178,9 @@ namespace AssetsService.Infrastructure.DBContext
               .HasIndex(u => u.AssetId)
               .IsUnique();
 
+            builder.Entity<Charger>()
+          .HasQueryFilter(x => !x.IsDeleted);
+
             builder.Entity<AssetsService.Core.Entities.VehicleRFID>()
               .HasIndex(u => u.Name)
               .IsUnique();

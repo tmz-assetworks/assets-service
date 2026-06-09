@@ -210,6 +210,8 @@ namespace AssetsService.Core.Entities
         public virtual ICollection<Port> Ports { get; set; }
         public virtual ICollection<ChargerStatus> ChargerStatuses { get; set; }
         public virtual ICollection<ChargerStatusHistory> ChargerStatusHistories { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAtUtc { get; set; }
     }
 }
 
