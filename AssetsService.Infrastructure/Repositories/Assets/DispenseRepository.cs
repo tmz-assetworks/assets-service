@@ -887,7 +887,8 @@ namespace AssetsService.Infrastructure.Repositories.Assets
         }
         public async Task<bool> DeleteDispenserById(int dispenserId)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await using var transaction =
+                await _dbContext.Database.BeginTransactionAsync();
 
             try
             {
@@ -899,20 +900,19 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                     .Where(x => x.ChargerId == dispenserId)
                     .ExecuteDeleteAsync();
 
-                await _dbContext.ChargerStatusHistories
-                    .Where(x => x.ChargerId == dispenserId)
-                    .ExecuteDeleteAsync();
-
                 await _dbContext.Port
                     .Where(x => x.ChargerId == dispenserId)
                     .ExecuteDeleteAsync();
 
-                var deleted = await _dbContext.Charger
+                await _dbContext.Charger
                     .Where(x => x.Id == dispenserId)
-                    .ExecuteDeleteAsync() > 0;
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.IsDeleted, true)
+                        .SetProperty(x => x.DeletedAtUtc, DateTime.UtcNow));
 
                 await transaction.CommitAsync();
-                return deleted;
+
+                return true;
             }
             catch
             {
@@ -920,6 +920,7 @@ namespace AssetsService.Infrastructure.Repositories.Assets
                 throw;
             }
         }
+
 
         #endregion
 
